@@ -1,0 +1,147 @@
+{
+  "name": "tourkit",
+  "version": "0.1.0",
+  "description": "Guided tours for React apps: Practice and Watch playback, semantic recording, an authoring Studio, a lesson library, screenshot capture, document exports, share links and an optional review layer.",
+  "license": "MIT",
+  "author": "Ahmad Jalil",
+  "homepage": "https://ahzs645.github.io/tourkit/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahzs645/tourkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ahzs645/tourkit/issues"
+  },
+  "keywords": [
+    "react",
+    "tutorial",
+    "onboarding",
+    "product-tour",
+    "walkthrough",
+    "driver.js"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "exports": {
+    "./core": {
+      "types": "./dist/types/core/index.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./player": {
+      "types": "./dist/types/player/index.d.ts",
+      "import": "./dist/player.js"
+    },
+    "./recording": {
+      "types": "./dist/types/recording/index.d.ts",
+      "import": "./dist/recording.js"
+    },
+    "./export": {
+      "types": "./dist/types/export/index.d.ts",
+      "import": "./dist/export.js"
+    },
+    "./studio": {
+      "types": "./dist/types/studio/index.d.ts",
+      "import": "./dist/studio.js"
+    },
+    "./ui": {
+      "types": "./dist/types/ui/index.d.ts",
+      "import": "./dist/ui.js"
+    },
+    "./library": {
+      "types": "./dist/types/library/index.d.ts",
+      "import": "./dist/library.js"
+    },
+    "./review": {
+      "types": "./dist/types/review/index.d.ts",
+      "import": "./dist/review.js"
+    },
+    "./share": {
+      "types": "./dist/types/share.d.ts",
+      "import": "./dist/share.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./session": {
+      "types": "./dist/types/components/tutorial-session.d.ts",
+      "import": "./dist/session.js"
+    },
+    "./capture": {
+      "types": "./dist/types/recording/capture.d.ts",
+      "import": "./dist/capture.js"
+    },
+    "./validation": {
+      "types": "./dist/types/tooling/validate-lesson.d.ts",
+      "import": "./dist/validation.js"
+    }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "check": "node tooling/check.mjs && tsc -p tsconfig.json",
+    "test": "node --test tooling/boundaries.test.mjs tooling/build-share-codec.test.mjs && vitest run --config vitest.config.ts",
+    "build": "node tooling/build.mjs",
+    "build:examples": "node tooling/build-example.mjs task-list && node tooling/build-example.mjs dialog-workflow && node tooling/build-example.mjs studio && node tooling/build-example.mjs library && node tooling/build-example.mjs review",
+    "test:browser": "node --test tooling/studio-browser.test.mjs tooling/library-browser.test.mjs tooling/review-browser.test.mjs tooling/native-capture.test.mjs",
+    "capture": "node tooling/capture-native.mjs",
+    "validate:lesson": "node tooling/validate-lesson.mjs",
+    "prepare": "node tooling/build.mjs",
+    "build:site": "node tooling/build-site.mjs"
+  },
+  "peerDependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "1.8.0",
+    "@radix-ui/react-tooltip": "1.4.1",
+    "clsx": "2.1.1",
+    "docx": "9.7.2",
+    "driver.js": "1.10.2",
+    "gifenc": "1.0.3",
+    "html2canvas-pro": "2.5.2",
+    "jszip": "3.10.2",
+    "lucide-react": "1.48.0",
+    "pdfmake": "0.3.11",
+    "pptxgenjs": "4.0.1",
+    "tailwind-merge": "3.7.0",
+    "zod": "4.6.6"
+  },
+  "devDependencies": {
+    "@cantoo/pdf-lib": "2.11.1",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/node": "4.3.3",
+    "@tailwindcss/oxide": "4.3.3",
+    "@types/node": "26.6.5",
+    "@types/pdfmake": "0.3.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "esbuild": "0.28.2",
+    "fake-indexeddb": "6.2.5",
+    "happy-dom": "21.0.4",
+    "jiti": "2.7.0",
+    "pdfjs-dist": "6.3.289",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  },
+  "overrides": {
+    "pptxgenjs": {
+      "image-size": "2.0.3"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "ADOPTING.md",
+    "DESIGN.md",
+    "RUNTIME_SUPPORT.md",
+    "VERIFICATION.md",
+    "guidance"
+  ]
+}

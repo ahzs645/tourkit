@@ -1,0 +1,4 @@
+interface:
+  display_name: "Integrate Tourkit"
+  short_description: "Connect Tourkit guided tours to a React application"
+  default_prompt: "Use $integrate-tourkit to connect the Tourkit lesson library and Studio to this application, with scoped state and real Practice, Watch, recording, capture, sharing, and export verification."

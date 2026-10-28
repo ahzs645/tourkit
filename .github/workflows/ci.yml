@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Check, test and build
+        run: |
+          npm run check
+          npm test
+          npm run build:examples
+      - run: npx playwright install --with-deps chromium
+      - name: Verify Studio, library, review and native capture in Chromium
+        env:
+          TUTORIAL_STUDIO_ARTIFACT_DIR: ${{ runner.temp }}/evidence/studio
+          TUTORIAL_LIBRARY_ARTIFACT_DIR: ${{ runner.temp }}/evidence/library
+          TUTORIAL_REVIEW_SCREENSHOTS: ${{ runner.temp }}/evidence/review
+          TUTORIAL_NATIVE_ARTIFACT_DIR: ${{ runner.temp }}/evidence/native
+        run: npm run test:browser
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+      - name: Keep browser evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-evidence
+          path: ${{ runner.temp }}/evidence
+          if-no-files-found: ignore
+          retention-days: 7

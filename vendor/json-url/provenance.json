@@ -1,0 +1,685 @@
+{
+  "repository": "https://github.com/ahzs645/json-url",
+  "revision": "59de32db7ade287f7cf9cd22eb19933cbabefa8b",
+  "version": "4.4.0",
+  "entry": "src/main/web-share.ts",
+  "codecs": [
+    "lz",
+    "gz",
+    "df",
+    "zl",
+    "raw",
+    "hgz"
+  ],
+  "build": "esbuild browser ESM; ES2022; minified; node:* external; pinned browser aliases; six-codec registry selection",
+  "compiler": {
+    "name": "esbuild",
+    "version": "0.28.2"
+  },
+  "buildOptions": {
+    "bundle": true,
+    "platform": "browser",
+    "format": "esm",
+    "target": "es2022",
+    "minify": true,
+    "external": [
+      "node:*"
+    ],
+    "define": {
+      "process.env.NODE_ENV": "\"production\""
+    }
+  },
+  "browserAliases": {
+    "assert": "node_modules/assert/build/assert.js",
+    "events": "node_modules/events/events.js",
+    "util": "node_modules/util/util.js",
+    "lzma": "node_modules/lzma/src/lzma_worker-min.js"
+  },
+  "modifications": [
+    {
+      "file": "src/main/codecs/index.ts",
+      "operation": "Keep only the six tutorial codec loader registrations; selected algorithms and web-share entry are unchanged.",
+      "sha256": "3c14183509731c9a0816bda08ee77dffb0b4056440df643ef905984e499ae9d2"
+    }
+  ],
+  "sourceNormalization": "UTF-8; remove terminal LF characters; stage with one LF.",
+  "sourceFiles": {
+    "LICENSE": "eae872883e3c037c772a711c53d281a862db1aa687bea6451578023f37714c51",
+    "package.json": "ba16af0a11d225c82d1324adba70f88c9b9b4eb1d7f8f59871bb91df8831c531",
+    "src/main/browser.ts": "708a7baccac3d517e59c15797f19f510e5f0b7adea83f044569006ccff6428db",
+    "src/main/checksum.ts": "d5139469e14b2320205f4b6aed91ee590437162195e1630cc6e1478a6ed4c6aa",
+    "src/main/codecs/br.ts": "e658d6d9a32baba1426fabdca6755bc68341351a043c982fccd1c1c32fe41863",
+    "src/main/codecs/df.ts": "0570b210dab82a65a4d0993b94d88cf8757c49f0f3cad9c3897e3ea80a5afc72",
+    "src/main/codecs/gz.ts": "d911f10c05841a744de7647b7023faee5ec84669c592f2d44b00a3e437fe5e14",
+    "src/main/codecs/hbr.ts": "f5bf6619998d6888d46cf01619602f26b40331c2ffc59b4cc73b83fb2a671418",
+    "src/main/codecs/hgz.ts": "5e6fcd1629c2bcce2ca90aa86c9653cd53918c72c45794f5eb6fe8b61e1bdf40",
+    "src/main/codecs/homogeneous-json-codec.ts": "821484f098870eae25c4ad238ab33c001e3330f3acd37f2487172107e13b7370",
+    "src/main/codecs/index.ts": "679bdd06d14cc093c719f79a5926bdc9859ed7bb9e6d08af38297c0a910deafa",
+    "src/main/codecs/lz.ts": "33a07be0aa975e55883016c96e221987b72829ca594cb83c06858fe2165f1e71",
+    "src/main/codecs/lzma.ts": "4a596355fe4945037cdba267b8d970aa25748c5e9667122b522bc7d55d48d9ef",
+    "src/main/codecs/lzstring.ts": "24a05b727c2a252896c01c67449d78c524b964f338a4d75e85eea32b5c05a662",
+    "src/main/codecs/lzw.ts": "5d998fde37c5eca604f329a8e0a309a7ba367270d074f414439a3baa18703d95",
+    "src/main/codecs/pack.ts": "cac554c507312a2411c0267fb4779165f6224b447df2515ab53af6c88b7dc6d8",
+    "src/main/codecs/pbr.ts": "cfcb0b8a1d4de9d07461c416d59ec39fcc3f69fc2dba709e1f1787b2c5ed9c9d",
+    "src/main/codecs/pdf.ts": "b992bc0687310599a6c005ca1ec0801dfeb43a429c6be952b6357744a8ac46d9",
+    "src/main/codecs/raw.ts": "bc8bc2f6cf677d623b735b28ccd5c4919fe89bb3801f6d2a4e9a8f2abcd33692",
+    "src/main/codecs/stream-codec.ts": "d98e3f0ddf550e9436d5e0933aebb6273d8d63b3fbce27244ff6ed6e6a2b02ad",
+    "src/main/codecs/zl.ts": "c1ec31d1fd078ee32c0ef25859cb1118f1db571e02581839184a9dfcb19146e8",
+    "src/main/core-loaders.ts": "1973832bde1bf21223d0fff9885ced888a932d677b5b83089a99ec195ce2a2e9",
+    "src/main/decode-utils.ts": "1dbb28e36a02828e51bad8c05ba1b5308c40778271f8fbda2c5b75c41f9b160a",
+    "src/main/defaults-transform.ts": "8f15907b116f8917fe6815ed8447db287a68113553e1e6bfa464b7a31522cade",
+    "src/main/engine.ts": "c75a7b5c3a086136847471646e2b577cb94c6072f180f9c041d3f8d42fad93b7",
+    "src/main/external-modules.d.ts": "f27d9547526f8f317731cb6a7e3fac0e4d9b4582f94dba13c81b433241a3de27",
+    "src/main/index.ts": "279bb852194a7e9fc330ea7ce2c4d7d624e494316ee14d29ca7eca8028386197",
+    "src/main/key-map-transform.ts": "5eeead754d28bb030beba512eb3091f7ad34396592d1a25412cb47990a57bfa1",
+    "src/main/load-lzma.ts": "5d97f6c8fd6e95188f8cd2e82fcc25f5eb3de64c5dd5e7152c4996e6555b50a1",
+    "src/main/load-lzstring.ts": "0dd4f96d5b542a4e138cc492d9573b624d0f718844a68e5e61f2ca1f27de1357",
+    "src/main/load-lzw.ts": "7bb83bb6f0924575c2f3de84dfac101ac641961560e8a3a0a131a4caeb6e8a61",
+    "src/main/number-precision-transform.ts": "498ecd32ef60359630184014cb887280b6fd500d448410f1fbdc5015dce278ef",
+    "src/main/reference-transform.ts": "7289dc7124095bdb15d1c895e515520e865cb1bd75dbd62f8ceafe8d83a7ab8f",
+    "src/main/resolve-default-export.ts": "3df2e36120f0cb77dd0099f3116610d425aa273bad73cb9b11053954829021f3",
+    "src/main/resolver-reference-transform.ts": "3fec006ca3d61ae8439eaef91d4ef5331123c1318677f43c64d33f2dda8e7d1a",
+    "src/main/safe64.ts": "9744a324f2c4a8954d08fd527125a80f480b587d3d2543f116f77b02c064bdf6",
+    "src/main/types.ts": "7cacf5cdfebad59b24609d186067a2580dd73b194548d7bba7aaa8b89d36f457",
+    "src/main/url-utils.ts": "9fe65537a07411fdb6e380c6d5fea18f1593d393044d6df5c2f9e71a327d618f",
+    "src/main/web-share.ts": "32045a32045058fd31dc8f8a9bc64d17ee4a3a647a5e212f94a21407c8851cb1",
+    "tsconfig.json": "b9b84394f0c24898eb21d7de14336291d45412bbf00fdf0faadc51a6b1ee238e"
+  },
+  "lockSha256": "45b634d6101ca9ecfb3551d8a59b2b7b0e5782c74d0364fc9d0b968acd110cd3",
+  "builderSha256": "fb082c67e43d919f58b8810f49635a05efa6774c359e4ae49d9b7e9b13c4caae",
+  "sha256": "8b48915292033bdbc43188529f09386a73253622ad4712102a9a4b852ff6e0ab",
+  "dependencies": {
+    "assert@2.1.0": {
+      "name": "assert",
+      "version": "2.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "49d1978483df56e8c22d8d0cacef808f7da7474c3840e5da292e871cfee0e8e3"
+    },
+    "available-typed-arrays@1.0.7": {
+      "name": "available-typed-arrays",
+      "version": "1.0.7",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "797befe437f6438fa49ad2edc79afec9021177f533be704f5f56fc0443a430de"
+    },
+    "base64-js@1.5.1": {
+      "name": "base64-js",
+      "version": "1.5.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "501eef88bc811b6a96819c4c2a0cd4eaf4ca9ff0a31da42526a253dfb7d39828"
+    },
+    "bl@5.1.0": {
+      "name": "bl",
+      "version": "5.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE.md"
+      ],
+      "inputSha256": "62709aee0b096577f4d0041c2589eca20e8ac463e66844d8b86c99fb56a4b7e5"
+    },
+    "buffer@6.0.3": {
+      "name": "buffer",
+      "version": "6.0.3",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "83fe3e19694dc182c4067d3ed37e5ee455ff3e1c5168d98c592f65aa7fbd8bcb"
+    },
+    "call-bind-apply-helpers@1.0.2": {
+      "name": "call-bind-apply-helpers",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "e4e0ba56f689eeb5c0c5eefcc1752f98b2748fae9423a0262c3b7e8c3ddad591"
+    },
+    "call-bind@1.0.9": {
+      "name": "call-bind",
+      "version": "1.0.9",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "ca92107acf8a42a26e314836753112e3bf9f85e84a157f78e80e881b4edc5a75"
+    },
+    "call-bound@1.0.4": {
+      "name": "call-bound",
+      "version": "1.0.4",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "e76b968aaed3eb42896cd1d9becaa82fa78933139d1e9e17c934c70bc9a777df"
+    },
+    "define-data-property@1.1.4": {
+      "name": "define-data-property",
+      "version": "1.1.4",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "ee2f5dd869778af36f514d36595c0fdbea78dfa1dae314e1d372cb13224faff0"
+    },
+    "define-properties@1.2.1": {
+      "name": "define-properties",
+      "version": "1.2.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "16f03d81c53cb8a47a275c703246c01123a80d521263d6afcd1f92c6737ceb5c"
+    },
+    "dunder-proto@1.0.1": {
+      "name": "dunder-proto",
+      "version": "1.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "aa17075f191a597635e2e9c7e20fd587ba5bb7c5b57f1d20c2779d07490f403d"
+    },
+    "es-define-property@1.0.1": {
+      "name": "es-define-property",
+      "version": "1.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "7f7dcaedffb49b04ce40af63dffdcd0d0986f6e9c6e27e8a052bf2cb803432f0"
+    },
+    "es-errors@1.3.0": {
+      "name": "es-errors",
+      "version": "1.3.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "509c47b85e92041737ef8a36ad8bea70e20a5a55d9c728fc2188eabea65007e5"
+    },
+    "es-object-atoms@1.1.2": {
+      "name": "es-object-atoms",
+      "version": "1.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "7b9e0830d30245c0ca82432985be6c4254707d5b84e5563eca2afcfa88c2c61f"
+    },
+    "events@3.3.0": {
+      "name": "events",
+      "version": "3.3.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "cf7e63df9ab3a0b5451598ab2a67f448d1e80b1d24685997cdf09f6328b10344"
+    },
+    "for-each@0.3.5": {
+      "name": "for-each",
+      "version": "0.3.5",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "20146a84925e8bcf94e39748cfc5fc4a46fa09f82ec31aa6270b74919d3710ba"
+    },
+    "function-bind@1.1.2": {
+      "name": "function-bind",
+      "version": "1.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "b3674afd18d395eed833ac2dcb8034a384b56f71a44d59d5261995ae16a2660d"
+    },
+    "generator-function@2.0.1": {
+      "name": "generator-function",
+      "version": "2.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE.md"
+      ],
+      "inputSha256": "973bdd542d033c953e19bc53d52ad1b0950b779f3a43ff97fad555becee4e692"
+    },
+    "get-intrinsic@1.3.0": {
+      "name": "get-intrinsic",
+      "version": "1.3.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "5d9a9f24764834ce937536504f78ae28b0617ebc0c7690a0b86a869a6cefca6d"
+    },
+    "get-proto@1.0.1": {
+      "name": "get-proto",
+      "version": "1.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "6151e90a132a0e85066ba026ee6d45ebb25588abcbe2c3d7e2c3ee3da1530b02"
+    },
+    "gopd@1.2.0": {
+      "name": "gopd",
+      "version": "1.2.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "1f623b6ed83fbd77fb2097cfaa5adb876fc9cd2174d3e19b316c4f19997d036b"
+    },
+    "has-property-descriptors@1.0.2": {
+      "name": "has-property-descriptors",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "ab2da1cbbd3a51561cb04336cc33dc932e0f07ec88049dda44b7bd473bd5335a"
+    },
+    "has-symbols@1.1.0": {
+      "name": "has-symbols",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "1dbe631cd60ea0d442f05c9d9bc1ac377ce1827bb23efdd63be26bd90afde6b0"
+    },
+    "has-tostringtag@1.0.2": {
+      "name": "has-tostringtag",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "cbbf52911fe2be0255003dd1b7354516aa4c92602c9aa25ebad2b282a318840c"
+    },
+    "hasown@2.0.4": {
+      "name": "hasown",
+      "version": "2.0.4",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "80a88a10f9d215244b6db003d22c6e48df714047946c5e2ee2fc292527d35a3b"
+    },
+    "ieee754@1.2.1": {
+      "name": "ieee754",
+      "version": "1.2.1",
+      "license": "BSD-3-Clause",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "aa5fc12cc054dcdd54d9575d597f4059f968b86b65a7a772c590368eb2b222fd"
+    },
+    "inherits@2.0.4": {
+      "name": "inherits",
+      "version": "2.0.4",
+      "license": "ISC",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "cf4a1b7a49ee07886e99169e1ed33ba69146cdf1c687db207c52364d296c9925"
+    },
+    "is-arguments@1.2.0": {
+      "name": "is-arguments",
+      "version": "1.2.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "87f5a55c2bda7eb367974196a95230e90c7b96b3aa5e75642300fcf05e411ccf"
+    },
+    "is-callable@1.2.7": {
+      "name": "is-callable",
+      "version": "1.2.7",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "4fef3e719847adaef7f4e638f0f8899d9c5bbe4dfc5dcc1c77df7d29a62bcf5f"
+    },
+    "is-generator-function@1.1.2": {
+      "name": "is-generator-function",
+      "version": "1.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "f24d76f3b7fbbb95171b7465f704f066e0480570c05fe4e9c3adfc5dce521515"
+    },
+    "is-nan@1.3.2": {
+      "name": "is-nan",
+      "version": "1.3.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "9229aece3124996728555839997ee830631b63a383a36df69644eb0219b91866"
+    },
+    "is-regex@1.2.1": {
+      "name": "is-regex",
+      "version": "1.2.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "9df8c1c16cece48cacc4e5dd15cfd36bd789178175f951d8dc5eac49557b1cee"
+    },
+    "is-typed-array@1.1.15": {
+      "name": "is-typed-array",
+      "version": "1.1.15",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "df37b94b091c92564799d38a7d098d61fced9d603ba73b1f3513c4fd66a897be"
+    },
+    "lz-string@1.5.0": {
+      "name": "lz-string",
+      "version": "1.5.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "05c636ccaa303b2eb5f63605cb42f66e7a326af0ed312da3030aa585340fee37"
+    },
+    "math-intrinsics@1.1.0": {
+      "name": "math-intrinsics",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "f01fa9371a4eb21e212544274a75ce3b74489c21d17a0278efd7cbb0d3d9132d"
+    },
+    "msgpack5@6.0.2": {
+      "name": "msgpack5",
+      "version": "6.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "20818c4002660249a991a03ac59dbdaaf916791359ef400f47c7b7a30e29f48c"
+    },
+    "object-is@1.1.6": {
+      "name": "object-is",
+      "version": "1.1.6",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "40d59b92cb83f66624a52a57dc8f5168473613b7a2b7562088f17b855c1bdf3c"
+    },
+    "object-keys@1.1.1": {
+      "name": "object-keys",
+      "version": "1.1.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "8fc09c31a6af2bfa702d4a43481d98e48613e00b806dd5f9ed9ca19fb8962fef"
+    },
+    "object.assign@4.1.7": {
+      "name": "object.assign",
+      "version": "4.1.7",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "74180d1b60faa4955c7252cf205095d97e5fe61bb608b6faab5525c8e651bfc4"
+    },
+    "possible-typed-array-names@1.1.0": {
+      "name": "possible-typed-array-names",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "54c43024b98cfa01c57f7513cba13005c865b8b478dd89b528202deb785101c6"
+    },
+    "readable-stream@3.6.2": {
+      "name": "readable-stream",
+      "version": "3.6.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "b48cb33b485a94e3db97150f5df561d7323d65c1f0865d1bf753a2dd6424a505"
+    },
+    "safe-buffer@5.1.2": {
+      "name": "safe-buffer",
+      "version": "5.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "2bc512f32228f6282c13199257d78eb668967a5b46e603fb2502c040e4db8a8d"
+    },
+    "safe-buffer@5.2.1": {
+      "name": "safe-buffer",
+      "version": "5.2.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "6d0a09fb9c2ccb4ca2fccf4421c9fa4db8371a3d615ca9d25b79e581d30d8497"
+    },
+    "safe-regex-test@1.1.0": {
+      "name": "safe-regex-test",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "31cd0806aee1adf2bb2db06c13cebb43efd69772bfc16ab0690e0abd5861c427"
+    },
+    "set-function-length@1.2.2": {
+      "name": "set-function-length",
+      "version": "1.2.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "016288bbd95423047667660a72eb54a0298ad6c8dde16c917df2611ab4b0bdc8"
+    },
+    "string_decoder@1.1.1": {
+      "name": "string_decoder",
+      "version": "1.1.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "df161bf27cf9d5493c75a79189ffd4e79a7052b3cf93289d93ecba81dff9ed4e"
+    },
+    "util-deprecate@1.0.2": {
+      "name": "util-deprecate",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "b3221f46169fd5db3fc1933fd14dbfd87b07c710048d222c502d9b6a4accd9ea"
+    },
+    "util@0.12.5": {
+      "name": "util",
+      "version": "0.12.5",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "9b1ef3f9338da08e134826fcbf66ce4661c6bbec0e7d86c055366ab835c6eb43"
+    },
+    "which-typed-array@1.1.24": {
+      "name": "which-typed-array",
+      "version": "1.1.24",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "inputSha256": "71e5cc82f915d9def74d3aa786332f5b12d5489260f00f97a402b4f3c4595bd8"
+    }
+  },
+  "inputs": {
+    "node_modules/assert/build/assert.js": "bb31fcb698582cfc7655363c3d9b4f4bc98279f6a3046b1a5c2b4a5321a85dcd",
+    "node_modules/assert/build/internal/assert/assertion_error.js": "f91026a6e2df1d4f19b4a4f2a6d25a2e0c8ec8b91f2d49ec8ab8e293adb62927",
+    "node_modules/assert/build/internal/errors.js": "15999a1bec9d99cd4f877777af9c993b1c6d181dbbd9e4c2dd8faeecd0439b87",
+    "node_modules/assert/build/internal/util/comparisons.js": "ab5b705b9747116a3eedb2cd4f89f06fb2efdd97ed32b3b01eb97d5d8fda9a8f",
+    "node_modules/available-typed-arrays/index.js": "0b4e17ccda15822a701f951627b5eb898a6679ede6ef36a45dc93e80d4ec5d66",
+    "node_modules/base64-js/index.js": "829eadd8a1a441d25be0cb93b00e16a0d0c20fd294db95d8f2ed87e6954b7182",
+    "node_modules/bl/BufferList.js": "cb21ad5d2dd255e2195460ecd5a0bdd65cff0adee2a9fd6c860951c22c9fd4b8",
+    "node_modules/bl/bl.js": "71e59aeed4af10ad4268bb35e4c51fe89c640ea9a3f1a9cb597594b02376e249",
+    "node_modules/bl/node_modules/readable-stream/errors-browser.js": "346033597378d23e59068d120d6257f7cd85ae88c40b1f85c3329cece0d119c4",
+    "node_modules/bl/node_modules/readable-stream/lib/_stream_duplex.js": "e2e55263df344f33d016a3e051de1a86e2206989a2162951e651e5557665954c",
+    "node_modules/bl/node_modules/readable-stream/lib/_stream_passthrough.js": "af6250df6a49a0148eed8b5f2e28b2f692c3ffa9df538a59dc716a4bd10901e2",
+    "node_modules/bl/node_modules/readable-stream/lib/_stream_readable.js": "9837de8cae91f9a80da75368855b45c3ada9a858983355fd873d8885cab1c5ab",
+    "node_modules/bl/node_modules/readable-stream/lib/_stream_transform.js": "a2f6e6d17a74dfa75bc7b34b50546ebcb76eeb2f4aac6d1090f80915aee20342",
+    "node_modules/bl/node_modules/readable-stream/lib/_stream_writable.js": "0f3f2accecd343dfae91d7daa72f3ad125b6f139d5883ff51362042d8cb65cf6",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/async_iterator.js": "56a7dde0d36ee9f55032df01e78229602c6afed6b6915362f33dc65bc0359972",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/buffer_list.js": "15b266db6ad5c6ee0309d13ed4ce137d8974d2fd236c1af7f3d602b7028a90df",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/destroy.js": "e1c1a185a2cc4bee2be5e7d33b5e294eb0fb55c1a47b61853a8c43e50cb822a4",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/end-of-stream.js": "2c35cabc9b279cb81e73d0d14859b2056ea10d9688d16a12199d2ca9904b93ae",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/from-browser.js": "4b4404c7bd6f66a2175cb7a29c60ce4395c055775ec45eaa35af4357656f604f",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/pipeline.js": "6d51b72e1ae5ee0965f0f549e27ececdb4963605995ffad8b698d5359a9999c2",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/state.js": "bf9c5ce1ccde2131d474422bef258dc968d6d19ccac72f9b178e8246faf0c9ed",
+    "node_modules/bl/node_modules/readable-stream/lib/internal/streams/stream-browser.js": "72d46a15491627d8fb1489a47d03583cfe5c21902918016ab532b53e615e5a9a",
+    "node_modules/bl/node_modules/readable-stream/readable-browser.js": "c4ff3ea62ef65a2c68ea721dcbd58b621150660facd02be95ebfc556c4dd123f",
+    "node_modules/buffer/index.js": "c25853fd31addfce188b01061fe85bfe667d5fb6c7a7bbb1c83d0ddfd8627acc",
+    "node_modules/call-bind-apply-helpers/actualApply.js": "1cbe921bb00b03294815ff0ece4212f276870466961773ce238802bc71474540",
+    "node_modules/call-bind-apply-helpers/applyBind.js": "3e65d83cecb93fa80dc5ad4d86d98f9e715e101ac3d8ec56d36ee669f1180bd0",
+    "node_modules/call-bind-apply-helpers/functionApply.js": "6170e997fbe03c6f8ff48946ada7d54c7aadc01531509af81f0edfdb7be00e27",
+    "node_modules/call-bind-apply-helpers/functionCall.js": "22d50c812748973250e9aa1994882a880c6e3bfc90d45e41f609cab97beee3fe",
+    "node_modules/call-bind-apply-helpers/index.js": "6a7ff51e964c2f1e24e3f3a90f41895bec230f07c3001eb29f45741ff99d7a83",
+    "node_modules/call-bind-apply-helpers/reflectApply.js": "e3ee45fb4c54bdb5f76ad4ef42780da004412ddb6d668993de4b9014efe246ff",
+    "node_modules/call-bind/callBound.js": "2b2fce7622fdd680256d28bcd59c30913546a825bf69d754d21a1d21ccc2928c",
+    "node_modules/call-bind/index.js": "ebf3d0dc319511810ccbaf38135eb5b08b249abee9f4687d5b572c7ba60889cf",
+    "node_modules/call-bound/index.js": "aaf524d09b5a4f8f732a516aa1c81e6e8c5d65ae3d01bce392e8fc1ac55c14ff",
+    "node_modules/define-data-property/index.js": "e34746e8c69bbf6ba2182b7362e9c4dc5fb3c19cace48091781ae967370bc065",
+    "node_modules/define-properties/index.js": "4cdb9ccd20dc4ceb0709328cc68da842a334bafbf501543922c67e15a99901d4",
+    "node_modules/dunder-proto/get.js": "9671388b2fa2cbce2f4b8645cc1dedae2f182113a78c93dd142d987c2517dacf",
+    "node_modules/es-define-property/index.js": "92d23d0217808c68692a1881369c207db1a35fc09dd24b98dd5f1a07d6bb3ed0",
+    "node_modules/es-errors/eval.js": "d3161a97f162b483206e9849e41bb17fd54166810c76ebaa1df068133e54caae",
+    "node_modules/es-errors/index.js": "28fee350e89561019cf27ea37a313b4b4995f521fd087198fa235a8f135962de",
+    "node_modules/es-errors/range.js": "e376220f3a0226bd5b09b6d5a1411bbac274db8d2d9f7eb723142b7e676374be",
+    "node_modules/es-errors/ref.js": "31945f1740a0a2143fb8c38943afc6cce5de5ba6fab7af42d17b7874a19a0900",
+    "node_modules/es-errors/syntax.js": "56574ecd3eb54c06efd319080cc8923992791e430c914520b85e92c2f5e373f5",
+    "node_modules/es-errors/type.js": "c71b2f41c15edb3824f50dd24df900495c8caaba5b6e9a80851b82bb2309827b",
+    "node_modules/es-errors/uri.js": "e1e5591bde037a2ffeda822fa03fac22ff7c93c7b269ed9adf1cbea0e21614b0",
+    "node_modules/es-object-atoms/index.js": "44ee7a57ed1c50c4c5fd2a6fcaee8772f4b7d0869326eed0aadcef87bc305212",
+    "node_modules/events/events.js": "b6d7d26a2395a94dd1b9dc0d06e699bb50b4ec664589fd477ce7cc344e20e172",
+    "node_modules/for-each/index.js": "53cd78ccaacfbf0fd2629f3c762197ad55e031f9306832581d3a7fc245b8c0c7",
+    "node_modules/function-bind/implementation.js": "5c52eb40601e0716dafff9759cf28d8d4af3e2fc2e2c96384f43dbfd0f7370b5",
+    "node_modules/function-bind/index.js": "12fa1b92429db25599f6fe118cbbb877f7f62b83cb9bfe2fc896b2d6a8110647",
+    "node_modules/generator-function/index.js": "7902fa3a4c4b078308905cd66362f28ae7b34a2915d7193908d2a02880163147",
+    "node_modules/get-intrinsic/index.js": "c3bc7278af37cede0da2db32724fa0b89a07c44205c44c4f5db0e4d8d497d49c",
+    "node_modules/get-proto/Object.getPrototypeOf.js": "66d51243588d269eb28f5bc8236e111a9a36e010e9b5b9b496be2963882a9e28",
+    "node_modules/get-proto/Reflect.getPrototypeOf.js": "bab0332997a67c0eb3d2ab24ee9ae5d106d275a8ef5bde2a711faa1c96899c59",
+    "node_modules/get-proto/index.js": "ee310261ff252b6d90c1a9fc4b9eceb63ddb963e7eec5125631cf169daad38c1",
+    "node_modules/gopd/gOPD.js": "48a04dcb3fb5cccb6c8541a3a8227b8d9f881ea3ffef3177ac4bb0338556b839",
+    "node_modules/gopd/index.js": "8f8092ee3aaa2932a71e9f264a9b273dc33f7c52f4cdb0815956fccf80230d8c",
+    "node_modules/has-property-descriptors/index.js": "d5415d5957de8e923fb1a976cb3f2524f1800ecf5e3b958a4d76183d2a9dee91",
+    "node_modules/has-symbols/index.js": "fd9bef8dd0d913bc8beac3156a0019d1a83a6e091498d1af1cbdbd536776e189",
+    "node_modules/has-symbols/shams.js": "41277ab2db4a31094dc6f4ca2c3cbbe5576da5e5bddac4bda6c1f0d9c0e0c417",
+    "node_modules/has-tostringtag/shams.js": "e5e0b7bbca35fa5911487361da2bc00b880d62114be6f3be87a876a59037020b",
+    "node_modules/hasown/index.js": "8f875520f41a3d711566013882af290c840969316cc72cd6b35f7e81d7dfc6d2",
+    "node_modules/ieee754/index.js": "fe3e2b20c1ebb57c3b390c8f685ad1e04e6f493517fa7e432f4351bb77a1a4d0",
+    "node_modules/inherits/inherits_browser.js": "ad322a7b1dec60f3d2ebda2091816469efb55b567d241cf3cf0fa4c5a4afe500",
+    "node_modules/is-arguments/index.js": "72cc3148913533a6a73b97d8448a4ef8ebd1f520585b6e7b3fcbb0c3a25f8f42",
+    "node_modules/is-callable/index.js": "6364203119a7e9d75d9bc481406d9840c35ee914227278dae7cd4bfc1832f4c8",
+    "node_modules/is-generator-function/index.js": "eb029c0215501950880b36c492c321983d762384bc373969cb2da5b6e8f1c189",
+    "node_modules/is-nan/implementation.js": "f96f4af366d89d64311fc9b5000e85bd79bae6a7a5949fbdd013f76f6e0dfa18",
+    "node_modules/is-nan/index.js": "61f63efee81501e65a9fb6b5cf98d320cfae2f37476e4472051407d409f40075",
+    "node_modules/is-nan/polyfill.js": "54a4bde860fff81ceae89d34b0b9e2eb1907f040387d42c0ff7b57e19725476e",
+    "node_modules/is-nan/shim.js": "58f4ddb9141465d28fd27a2a759f5c81aabcd4ce06f9a71b790d6f86a50235ea",
+    "node_modules/is-regex/index.js": "162399fe494f3c2423051a38115ba8c099c331f52f02edb3f00728885ca21865",
+    "node_modules/is-typed-array/index.js": "d5791fb8f8610beff388ddfd49c96088eee19af62f1e46eef34c9e8ec058a2ed",
+    "node_modules/lz-string/libs/lz-string.js": "550034b821027008776cb9bcd1700bb5d31e8b3de224cb130fc966a75dab0e5e",
+    "node_modules/math-intrinsics/abs.js": "276961e4323370f3632410c6da81dda018b78c0cfb2a83ea72d48c80a3eaaeb1",
+    "node_modules/math-intrinsics/floor.js": "ea904c30b45d6fbbc1780f4db7d78c360bbecf98ecd789f0c817156102714c3f",
+    "node_modules/math-intrinsics/isNaN.js": "1aa84179527aef8df84457dd8d4e828d76d58fd9170e7a9893ee7e0e774534e8",
+    "node_modules/math-intrinsics/max.js": "92326f3eab1e40148bd68fb65a85d2c3f18fc32a03be27353b2054ba27ba7409",
+    "node_modules/math-intrinsics/min.js": "b78c68ab96cb2764df12ff8038f5b05b05376b4c39608a7a25b3b0b168e7c2e2",
+    "node_modules/math-intrinsics/pow.js": "8dd625bd4c7b31b7656ab99babc9fea1617f36c35f5dbd339ebdc2d0f4bd97d2",
+    "node_modules/math-intrinsics/round.js": "1d4794c5869d554732cdc82208f954df348e4035f3cbd09ab758c553a207dc1e",
+    "node_modules/math-intrinsics/sign.js": "aef51335e4671ddd0f55a81e2e4395b1d96afee20102b50e33e2b485f7cd2598",
+    "node_modules/msgpack5/index.js": "af1b78ba539b65b0caedbbe9f4101250f6b11583598b6ca6e935102709f20b66",
+    "node_modules/msgpack5/lib/codecs/DateCodec.js": "7bb435d09d6596c3534888ffb13dcb97a1ce7a5b69e8bf7d6e67d995cc04e2f0",
+    "node_modules/msgpack5/lib/decoder.js": "089611f213821368694ef54e313110e9b770d8a9500a23bcf62d52ebbf34428f",
+    "node_modules/msgpack5/lib/encoder.js": "e9978cde9a6d4b89d1a8848d7ba0c2f54399c46a92e406f074ede613860ebb82",
+    "node_modules/msgpack5/lib/helpers.js": "bc84c093a658b15a562bab98488b17acc30608ff946f85b3afb884bfe0f32c2d",
+    "node_modules/msgpack5/lib/streams.js": "eeeae89149522d166c8dc9ccedb5468691768ac819187fd0c8e2ad77d1b9dcf8",
+    "node_modules/msgpack5/node_modules/readable-stream/errors-browser.js": "346033597378d23e59068d120d6257f7cd85ae88c40b1f85c3329cece0d119c4",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/_stream_duplex.js": "e2e55263df344f33d016a3e051de1a86e2206989a2162951e651e5557665954c",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/_stream_passthrough.js": "af6250df6a49a0148eed8b5f2e28b2f692c3ffa9df538a59dc716a4bd10901e2",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/_stream_readable.js": "9837de8cae91f9a80da75368855b45c3ada9a858983355fd873d8885cab1c5ab",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/_stream_transform.js": "a2f6e6d17a74dfa75bc7b34b50546ebcb76eeb2f4aac6d1090f80915aee20342",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/_stream_writable.js": "0f3f2accecd343dfae91d7daa72f3ad125b6f139d5883ff51362042d8cb65cf6",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/async_iterator.js": "56a7dde0d36ee9f55032df01e78229602c6afed6b6915362f33dc65bc0359972",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/buffer_list.js": "15b266db6ad5c6ee0309d13ed4ce137d8974d2fd236c1af7f3d602b7028a90df",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/destroy.js": "e1c1a185a2cc4bee2be5e7d33b5e294eb0fb55c1a47b61853a8c43e50cb822a4",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/end-of-stream.js": "2c35cabc9b279cb81e73d0d14859b2056ea10d9688d16a12199d2ca9904b93ae",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/from-browser.js": "4b4404c7bd6f66a2175cb7a29c60ce4395c055775ec45eaa35af4357656f604f",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/pipeline.js": "6d51b72e1ae5ee0965f0f549e27ececdb4963605995ffad8b698d5359a9999c2",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/state.js": "bf9c5ce1ccde2131d474422bef258dc968d6d19ccac72f9b178e8246faf0c9ed",
+    "node_modules/msgpack5/node_modules/readable-stream/lib/internal/streams/stream-browser.js": "72d46a15491627d8fb1489a47d03583cfe5c21902918016ab532b53e615e5a9a",
+    "node_modules/msgpack5/node_modules/readable-stream/readable-browser.js": "c4ff3ea62ef65a2c68ea721dcbd58b621150660facd02be95ebfc556c4dd123f",
+    "node_modules/object-is/implementation.js": "3511c578d1c2ffce03ff1a0b4fbf41f072bf6b5ede1740752b62c318a5288289",
+    "node_modules/object-is/index.js": "b34540fd64a7f529f0e6217481a9579c43d4852a12da94edd75c05a575be4597",
+    "node_modules/object-is/polyfill.js": "ccaacf13be4930444e7d5fff16eb5c40a2b64b93057b886d29a606be02589d11",
+    "node_modules/object-is/shim.js": "c4f6cdcdd4c8dfd235ed618b3f2e387cd227b42f8979b292fd5eb47504a2aeb1",
+    "node_modules/object-keys/implementation.js": "4dd43bf86b886f6adc16aa34b2f0d3a27b92ecf65adcb87224e54cd394d2024c",
+    "node_modules/object-keys/index.js": "4004588aa7a3769d8c34ef9a837e1632237487e53ed57caec51bfcc6668f2c29",
+    "node_modules/object-keys/isArguments.js": "31f36ded2784150b7480f56ca42e7fda6e119d4345d5884a4d5f55e13fe6ac30",
+    "node_modules/object.assign/implementation.js": "7453e2476a6241eb5e09e4c1524c85a1c35f2cc095e43719447000c1fd1a49b5",
+    "node_modules/object.assign/polyfill.js": "a3eb71f8c21fb517b6f96e1ff01aca5eafd506fbb2959e75b45223eca64c5385",
+    "node_modules/possible-typed-array-names/index.js": "62df611325b009f56810f26498ea91cfb5b2acae7021bd20231a5f41dc84307e",
+    "node_modules/safe-buffer/index.js": "184d5c4a83512e3f49d4d5b52f7073f601f933bad11f1fbb3ad364ca5e6478e1",
+    "node_modules/safe-regex-test/index.js": "2225bfdc0cd70b6cce80c966e8d431f1a36bc4a6d800ece43f548f12e667e81f",
+    "node_modules/set-function-length/index.js": "a523e45ae8c58b13795b66841fcaf104ac3e394ab123197bd46dd09088cabcd5",
+    "node_modules/string_decoder/lib/string_decoder.js": "f1d36d47b2c579063392c1a68963467f2d4f51a069af09eb068d974c63ee3b37",
+    "node_modules/string_decoder/node_modules/safe-buffer/index.js": "d58af21cb0518864d0c505742d1af71e5b5e1f142f4c0f27353aa0f431a616d4",
+    "node_modules/util-deprecate/browser.js": "abaef53ebcdc98f3655331f834986a2d11b6a824f58d670369669246d1b7b69b",
+    "node_modules/util/support/isBufferBrowser.js": "a19427e215657e8c4a83a9a8376e81d73e52a9383002e6af901282be04546256",
+    "node_modules/util/support/types.js": "3f8d37bb8f7cc9757fe05ac60ada6546f4c4f0023e0adf834de55796b12c5b07",
+    "node_modules/util/util.js": "c4552c9c14122795f3920548f834559ebf64fd00ab5694bc9d0a34dee6290a29",
+    "node_modules/which-typed-array/index.js": "3c8d063b41eb891a92dff22ee81647ff83b4c0e3752fa6dd60f76a3b9f7ffe92",
+    "src/main/checksum.ts": "8d9b050d11e1d4277b4dad53dfd2a65e9edb822a526e7c1d179cf843b64bec16",
+    "src/main/codecs/df.ts": "dfeda5a1c85c4e11bfd433252236afd17f0a95e311821f28f721f4c639b50b5c",
+    "src/main/codecs/gz.ts": "88fda4903ae6c7e84b351b71a6056343338844fc16799aa0e44bc9d1d04b3829",
+    "src/main/codecs/hgz.ts": "8702f6b26e8572c657f2347535e4c96a185033ae15b0ec0bf8f47fb677db12bd",
+    "src/main/codecs/homogeneous-json-codec.ts": "f878dd29431f8cee4614c03c7b19c0300fa4459d4cb4b1221bc9eae5dcdb394c",
+    "src/main/codecs/index.ts": "3c14183509731c9a0816bda08ee77dffb0b4056440df643ef905984e499ae9d2",
+    "src/main/codecs/lz.ts": "a66897fe5b0b99f21854b10a5a67799648cc2677099ee29804854ed371ca3ab9",
+    "src/main/codecs/raw.ts": "a6bf587911743d5e8c1f4a94ff0dbf6da073895954e6f5d8d4d086f88b2fd461",
+    "src/main/codecs/stream-codec.ts": "01300908657e3a09ca04001ddfdc7689a94ab0c54f9e513b2e70dffab750b394",
+    "src/main/codecs/zl.ts": "587586058ca235164f61390d19e52ae5b01f8054d07379b0bd2f20479908036d",
+    "src/main/core-loaders.ts": "b086fce9ec486bf1ab554b3e017b4944178b4fd20e04fad21ced9d8c6f00b0fe",
+    "src/main/decode-utils.ts": "7d84f27930dc3c88948b49ac7759b823285ab831094acc75a42c440e08991d41",
+    "src/main/defaults-transform.ts": "3e741b0922abe5a27c87e36db86c2d2df6d08d062b4266189d9790e426cd6e56",
+    "src/main/engine.ts": "5bac165f3b99f73dec37d244c2d03b3d92bec8bdf744987685aaae1c90ba5264",
+    "src/main/key-map-transform.ts": "4e0d5dc21eea83de3ca5adc65e02164c240f0e7f00d53efc90c05f63ee4801b4",
+    "src/main/load-lzstring.ts": "c4b8047ac29ce6bd091ee5294f0453a5c701253ae2e9c64ffd671222c8a89e4b",
+    "src/main/number-precision-transform.ts": "8a4ba4ec9b72301e137768e3502f99895d179b5cb30a7aeff5170c4fe635da82",
+    "src/main/reference-transform.ts": "a657fda739ecce7adb38273b06bc148cffdc40d37e1c8877a7c17c40d83f0a7a",
+    "src/main/resolve-default-export.ts": "fa54d7062f6e19f0f32b7ac8d2437d036e0e328cc130e9c26ae6ce9e86aa3b0a",
+    "src/main/resolver-reference-transform.ts": "d0e81839b357037fff89977de8aba81c66b1f78d8e15781f6977425892f77fe6",
+    "src/main/safe64.ts": "c03d87a066b7f2d71b1d4d2ec24316ed0507a242e4247b269adcdcabd0e87e1e",
+    "src/main/url-utils.ts": "b1ad34c6422844b095511f4476b4c2af53dd358516ee3dc9dffd0d5664e5fd0d",
+    "src/main/web-share.ts": "6f3ae717428eaa88959363435ca1023f86a19bc00528a7f6f8cd98705b407ca5"
+  },
+  "notices": {
+    "LICENSE": "b16669773f8400524a9ed4a103616ea0fd3e2730d506d9a945e57eae9ef6d2e6",
+    "THIRD_PARTY_NOTICES.txt": "15846fd1f124d27f471ba4f1f2fc9d0b0e7a172271ca95fc62651eece09aa16f"
+  }
+}

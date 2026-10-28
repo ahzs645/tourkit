@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "rootDir": ".",
+    "outDir": "./dist/types"
+  },
+  "include": [
+    "core/**/*",
+    "player/**/*",
+    "recording/**/*",
+    "export/**/*",
+    "studio/**/*",
+    "components/**/*",
+    "shared/**/*",
+    "ui/**/*",
+    "library/**/*",
+    "review/**/*",
+    "share.ts",
+    "types/**/*.d.ts",
+    "tooling/validate-lesson.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/__tests__/**"
+  ]
+}

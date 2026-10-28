@@ -1,0 +1,52 @@
+{
+  "source": "ahzs645/json-url@59de32db7ade287f7cf9cd22eb19933cbabefa8b (unmodified upstream source)",
+  "manifest": {
+    "schemaVersion": 1,
+    "id": "portable-link",
+    "title": "Legacy shared lesson",
+    "track": "getting-started",
+    "level": "beginner",
+    "estimatedMinutes": 5,
+    "prerequisites": [],
+    "listed": true,
+    "defaultMode": "practice",
+    "spotlightStyle": "glow",
+    "interaction": "free",
+    "card": {
+      "placement": "attached",
+      "size": "default",
+      "pointer": true
+    },
+    "launch": {
+      "fixture": "demo",
+      "path": "/projects/",
+      "hash": {}
+    },
+    "chapters": [
+      {
+        "id": "start",
+        "title": "Start",
+        "steps": [
+          {
+            "id": "read",
+            "completion": "continue",
+            "overlay": {
+              "title": "Read",
+              "body": "Review the project board.",
+              "showProgress": true
+            },
+            "advanceDelayMs": 250
+          }
+        ]
+      }
+    ]
+  },
+  "tokens": {
+    "lz": "t1.lz.N4IgzgxgFgpgtgQwGowE5gJYHsB2IBcAjADQgYAmBIADlqgC4IBGANjALQsY4DWIp9DPTZUAMjADmCCAE8ABGCgJUMcnLZgwufiHqppffCAkx6gnBPZhGDVTrYA3GCypNJ3HGh0xrGRPVUAWW4AVwCwAgBWUmoVFQBHEIxMcIIAbQBdUi5rO3w9EJhSchgAMwQQlnpArBKqWOlBCBgdMFphDAkoegBlehkRIwkWLAB3HW4A-QhBbSNSlRbSCGVKfFBqFml4GBx6KgQzaVhKUkwALxajEvLK-ZisSa981EKAX2yKnGgCUFKMAAe9BCKioJTgWB01EOUCoAHpYlgAFYwGZgOE6JSKX5vD4gaAIahTCL4NKgChUazKe66ISDEB9amtALUElkshrEAqBCnfFYOCbUzYPBGCC4cyFHRYJyoLYyX604RXEAAJRgPJ0TFq8qMaocGBgozk9FgckRKJmci1qwAdK0oGMAAqoLASFSaAgFGB4nkOBDfGAAEWcCBkgRJACZIgAGN4ZONvIA.0ytduel",
+    "gz": "t1.gz.H4sIAAAAAAAAA02QwW4bMQxEf2UxZ6VpCuSic441UCRALoEPtESv1GglheLa3Rr774HWbpEjpeHwzVzQXOCJXllaLBn2wSB6WNQiSofEdynmdxho1MSw-MkjuWVogYT9kLi1kvu3kHuHxciqMY93TUmUPQwSnzjB4sBjzJkFBtw0TqTsdzHPyg320aAKC3_MscXt5W1vkGLrHlZlZgPPR5qT7orvHFXIaXQMg1aLpjgGfdFlYxxTOcMgZuVN1XPhKNzFjsTDXlATOZ44KyxIlVzYaFv82x1ut2BQy2ZzhVgNEs3Zhe5wjH90lqt6Kl1KGmBxX6X8ZqftHgaBWhevq4ELVJWlZ7tcO95K-tLty21uyvWLTJg6mitTTXxL40rWmOeeqJxYEi0d6Z_R83XjUPyyTafI50EDDze04VBI_Ld-KpTzLymjcGv_M5I_UXb8xImWXYP98fh93a_79RM_D2-aLQIAAA.1ji3fqd",
+    "df": "t1.df.TZDBbhsxDER_ZTFnpWkK5KJzjjVQJEAugQ-0RK_UaCWF4trdGvvvgdZukSOl4fDNXNBc4IleWVosGfbBIHpY1CJKh8R3KeZ3GGjUxLD4ySO5ZWiBhP2QuLWS-7eQe4fFyKoxj3dNSZQ9DBKfOMHiwGPMmQUG3DROpOx3Mc_KDfbRoAoLf8yxxe3lbW-QYuseVmVmA89HmpPuiu8cVchpdAyDVoumOAZ90WVjHFM5wyBm5U3Vc-Eo3MWOxMNeUBM5njgrLEiVXNhoW_zbHW63YFDLZnOFWA0SzdmF7nCMf3SWq3oqXUoaYHFfpfxmp-0eBoFaF6-rgQtUlaVnu1w73kr60u3LbW7K9YtMmDqaK1NNfEvjStaY556onFgSLR3pn9HzdeNQ_LJNp8jnQQMPN7ThUEj8t34qlPMvKaNwa_8zkj9RdvzEiZZdg_3x-H3dr_v1Ew.0ffi7s0",
+    "zl": "t1.zl.eJxNkMFuGzEMRH9lMWelaQrkonOONVAkQC6BD7REr9RoJYXi2t0a---B1m6RI6Xh8M1c0FzgiV5ZWiwZ9sEgeljUIkqHxHcp5ncYaNTEsPjJI7llaIGE_ZC4tZL7t5B7h8XIqjGPd01JlD0MEp84weLAY8yZBQbcNE6k7Hcxz8oN9tGgCgt_zLHF7eVtb5Bi6x5WZWYDz0eak-6K7xxVyGl0DINWi6Y4Bn3RZWMcUznDIGblTdVz4SjcxY7Ew15QEzmeOCssSJVc2Ghb_NsdbrdgUMtmc4VYDRLN2YXucIx_dJareipdShpgcV-l_Gan7R4GgVoXr6uBC1SVpWe7XDveSvrS7cttbsr1i0yYOporU018S-NK1pjnnqicWBItHemf0fN141D8sk2nyOdBAw83tOFQSPy3fiqU8y8po3Br_zOSP1F2_MSJll2D_fH4fd2v-_UT5He-7g.05ye8tq",
+    "raw": "t1.raw.eyJzY2hlbWFWZXJzaW9uIjoxLCJpZCI6InBvcnRhYmxlLWxpbmsiLCJ0aXRsZSI6IkxlZ2FjeSBzaGFyZWQgbGVzc29uIiwidHJhY2siOiJnZXR0aW5nLXN0YXJ0ZWQiLCJsZXZlbCI6ImJlZ2lubmVyIiwiZXN0aW1hdGVkTWludXRlcyI6NSwicHJlcmVxdWlzaXRlcyI6W10sImxpc3RlZCI6dHJ1ZSwiZGVmYXVsdE1vZGUiOiJwcmFjdGljZSIsInNwb3RsaWdodFN0eWxlIjoiZ2xvdyIsImludGVyYWN0aW9uIjoiZnJlZSIsImNhcmQiOnsicGxhY2VtZW50IjoiYXR0YWNoZWQiLCJzaXplIjoiZGVmYXVsdCIsInBvaW50ZXIiOnRydWV9LCJsYXVuY2giOnsiZml4dHVyZSI6ImRlbW8iLCJwYXRoIjoiL3Byb2plY3RzLyIsImhhc2giOnt9fSwiY2hhcHRlcnMiOlt7ImlkIjoic3RhcnQiLCJ0aXRsZSI6IlN0YXJ0Iiwic3RlcHMiOlt7ImlkIjoicmVhZCIsImNvbXBsZXRpb24iOiJjb250aW51ZSIsIm92ZXJsYXkiOnsidGl0bGUiOiJSZWFkIiwiYm9keSI6IlJldmlldyB0aGUgcHJvamVjdCBib2FyZC4iLCJzaG93UHJvZ3Jlc3MiOnRydWV9LCJhZHZhbmNlRGVsYXlNcyI6MjUwfV19XX0.1q2xjk5",
+    "hgz": "t1.hgz.H4sIAAAAAAAAA02QsW4bMRBEf-UwNR07AdywTuHCAowYSBOoWJGrI20eySz3pFyE-_eAJ8VwueTs7Jt5enmwFzQXeKKfLC2WDPvVIHpY1CJKh8R3KeZ3GGjUxLB45pHcMrRAwn5I3FrJ_VvIvcNiZNWYx7umJMoeBolPnGBx4DHmzAIDbhonUva7mGflBvtoUIWFf8-xxe3l194gxdY9rMrMBp6PNCfdFd85qpDT6BgGrRZNcQz6qsvGOKZyhkHMypuq58JRuIsdiYe9oCZyPHFWWJAqubDRtvi3O9xuwaCWzeYKsRokmrML3eEY_-gsV_VUupQ0wOK-Snljp-0eBoFaF6-rgQtUlaVnu1w73kr61O3rbW7K9ZNMmDqaK1NNfEvjStaY556onFgSLR3pv9GP68ah-GWbTpHPgwYebmjDoZD4L_1UKOcXKaNwax8ZyZ8oO_7OiZZdg_32-LDu1_36D-8U5FoxAgAA.1btyntj"
+  }
+}

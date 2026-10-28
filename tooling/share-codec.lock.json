@@ -1,0 +1,812 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/ahzs645/json-url",
+  "revision": "59de32db7ade287f7cf9cd22eb19933cbabefa8b",
+  "name": "@firstform/json-url",
+  "version": "4.4.0",
+  "entry": "src/main/web-share.ts",
+  "compiler": {
+    "name": "esbuild",
+    "version": "0.28.2"
+  },
+  "codecs": [
+    "lz",
+    "gz",
+    "df",
+    "zl",
+    "raw",
+    "hgz"
+  ],
+  "sourceNormalization": "UTF-8; remove terminal LF characters; stage with one LF.",
+  "sourceFiles": {
+    "LICENSE": "eae872883e3c037c772a711c53d281a862db1aa687bea6451578023f37714c51",
+    "package.json": "ba16af0a11d225c82d1324adba70f88c9b9b4eb1d7f8f59871bb91df8831c531",
+    "src/main/browser.ts": "708a7baccac3d517e59c15797f19f510e5f0b7adea83f044569006ccff6428db",
+    "src/main/checksum.ts": "d5139469e14b2320205f4b6aed91ee590437162195e1630cc6e1478a6ed4c6aa",
+    "src/main/codecs/br.ts": "e658d6d9a32baba1426fabdca6755bc68341351a043c982fccd1c1c32fe41863",
+    "src/main/codecs/df.ts": "0570b210dab82a65a4d0993b94d88cf8757c49f0f3cad9c3897e3ea80a5afc72",
+    "src/main/codecs/gz.ts": "d911f10c05841a744de7647b7023faee5ec84669c592f2d44b00a3e437fe5e14",
+    "src/main/codecs/hbr.ts": "f5bf6619998d6888d46cf01619602f26b40331c2ffc59b4cc73b83fb2a671418",
+    "src/main/codecs/hgz.ts": "5e6fcd1629c2bcce2ca90aa86c9653cd53918c72c45794f5eb6fe8b61e1bdf40",
+    "src/main/codecs/homogeneous-json-codec.ts": "821484f098870eae25c4ad238ab33c001e3330f3acd37f2487172107e13b7370",
+    "src/main/codecs/index.ts": "679bdd06d14cc093c719f79a5926bdc9859ed7bb9e6d08af38297c0a910deafa",
+    "src/main/codecs/lz.ts": "33a07be0aa975e55883016c96e221987b72829ca594cb83c06858fe2165f1e71",
+    "src/main/codecs/lzma.ts": "4a596355fe4945037cdba267b8d970aa25748c5e9667122b522bc7d55d48d9ef",
+    "src/main/codecs/lzstring.ts": "24a05b727c2a252896c01c67449d78c524b964f338a4d75e85eea32b5c05a662",
+    "src/main/codecs/lzw.ts": "5d998fde37c5eca604f329a8e0a309a7ba367270d074f414439a3baa18703d95",
+    "src/main/codecs/pack.ts": "cac554c507312a2411c0267fb4779165f6224b447df2515ab53af6c88b7dc6d8",
+    "src/main/codecs/pbr.ts": "cfcb0b8a1d4de9d07461c416d59ec39fcc3f69fc2dba709e1f1787b2c5ed9c9d",
+    "src/main/codecs/pdf.ts": "b992bc0687310599a6c005ca1ec0801dfeb43a429c6be952b6357744a8ac46d9",
+    "src/main/codecs/raw.ts": "bc8bc2f6cf677d623b735b28ccd5c4919fe89bb3801f6d2a4e9a8f2abcd33692",
+    "src/main/codecs/stream-codec.ts": "d98e3f0ddf550e9436d5e0933aebb6273d8d63b3fbce27244ff6ed6e6a2b02ad",
+    "src/main/codecs/zl.ts": "c1ec31d1fd078ee32c0ef25859cb1118f1db571e02581839184a9dfcb19146e8",
+    "src/main/core-loaders.ts": "1973832bde1bf21223d0fff9885ced888a932d677b5b83089a99ec195ce2a2e9",
+    "src/main/decode-utils.ts": "1dbb28e36a02828e51bad8c05ba1b5308c40778271f8fbda2c5b75c41f9b160a",
+    "src/main/defaults-transform.ts": "8f15907b116f8917fe6815ed8447db287a68113553e1e6bfa464b7a31522cade",
+    "src/main/engine.ts": "c75a7b5c3a086136847471646e2b577cb94c6072f180f9c041d3f8d42fad93b7",
+    "src/main/external-modules.d.ts": "f27d9547526f8f317731cb6a7e3fac0e4d9b4582f94dba13c81b433241a3de27",
+    "src/main/index.ts": "279bb852194a7e9fc330ea7ce2c4d7d624e494316ee14d29ca7eca8028386197",
+    "src/main/key-map-transform.ts": "5eeead754d28bb030beba512eb3091f7ad34396592d1a25412cb47990a57bfa1",
+    "src/main/load-lzma.ts": "5d97f6c8fd6e95188f8cd2e82fcc25f5eb3de64c5dd5e7152c4996e6555b50a1",
+    "src/main/load-lzstring.ts": "0dd4f96d5b542a4e138cc492d9573b624d0f718844a68e5e61f2ca1f27de1357",
+    "src/main/load-lzw.ts": "7bb83bb6f0924575c2f3de84dfac101ac641961560e8a3a0a131a4caeb6e8a61",
+    "src/main/number-precision-transform.ts": "498ecd32ef60359630184014cb887280b6fd500d448410f1fbdc5015dce278ef",
+    "src/main/reference-transform.ts": "7289dc7124095bdb15d1c895e515520e865cb1bd75dbd62f8ceafe8d83a7ab8f",
+    "src/main/resolve-default-export.ts": "3df2e36120f0cb77dd0099f3116610d425aa273bad73cb9b11053954829021f3",
+    "src/main/resolver-reference-transform.ts": "3fec006ca3d61ae8439eaef91d4ef5331123c1318677f43c64d33f2dda8e7d1a",
+    "src/main/safe64.ts": "9744a324f2c4a8954d08fd527125a80f480b587d3d2543f116f77b02c064bdf6",
+    "src/main/types.ts": "7cacf5cdfebad59b24609d186067a2580dd73b194548d7bba7aaa8b89d36f457",
+    "src/main/url-utils.ts": "9fe65537a07411fdb6e380c6d5fea18f1593d393044d6df5c2f9e71a327d618f",
+    "src/main/web-share.ts": "32045a32045058fd31dc8f8a9bc64d17ee4a3a647a5e212f94a21407c8851cb1",
+    "tsconfig.json": "b9b84394f0c24898eb21d7de14336291d45412bbf00fdf0faadc51a6b1ee238e"
+  },
+  "dependencies": {
+    "assert@2.1.0": {
+      "name": "assert",
+      "version": "2.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "6239c6144c31e58cf925c34483606969c555574d64ffa96518ab5d7f45c75d43",
+        "build/assert.js": "bb31fcb698582cfc7655363c3d9b4f4bc98279f6a3046b1a5c2b4a5321a85dcd",
+        "build/internal/assert/assertion_error.js": "f91026a6e2df1d4f19b4a4f2a6d25a2e0c8ec8b91f2d49ec8ab8e293adb62927",
+        "build/internal/errors.js": "15999a1bec9d99cd4f877777af9c993b1c6d181dbbd9e4c2dd8faeecd0439b87",
+        "build/internal/util/comparisons.js": "ab5b705b9747116a3eedb2cd4f89f06fb2efdd97ed32b3b01eb97d5d8fda9a8f",
+        "package.json": "16486d0cbd4c207ee07484a9392fdada949e5401ccdd12437f7ca9ea4e87e26f"
+      }
+    },
+    "available-typed-arrays@1.0.7": {
+      "name": "available-typed-arrays",
+      "version": "1.0.7",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "6d0917530cf3b3dca12c1ab7798e4d38ad0a6798ecc1bd27849a3048ba91d265",
+        "index.js": "0b4e17ccda15822a701f951627b5eb898a6679ede6ef36a45dc93e80d4ec5d66",
+        "package.json": "ffce2bbb0b85b9a20bcc674e4c78307ead42af0299e1d28a9dfb249566e0a319"
+      }
+    },
+    "base64-js@1.5.1": {
+      "name": "base64-js",
+      "version": "1.5.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5b37224c080cdcc97c871ada971c224e9926370fe74f11b539aa1cf9f3b1aca1",
+        "index.js": "829eadd8a1a441d25be0cb93b00e16a0d0c20fd294db95d8f2ed87e6954b7182",
+        "package.json": "9758f3ab8c45e07bb9a368e32f9a8b3729623bbf47cbbb205b32d674ab2a91f0"
+      }
+    },
+    "bl@5.1.0": {
+      "name": "bl",
+      "version": "5.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE.md"
+      ],
+      "files": {
+        "BufferList.js": "cb21ad5d2dd255e2195460ecd5a0bdd65cff0adee2a9fd6c860951c22c9fd4b8",
+        "LICENSE.md": "9377db95383c8befacf05c6e465d969d756edf178487ca1344fdf3ba147c596f",
+        "bl.js": "71e59aeed4af10ad4268bb35e4c51fe89c640ea9a3f1a9cb597594b02376e249",
+        "package.json": "f9f1620ab350383334429a44109a2b778b62f3aa79f2d968ee944dbfa44f4482"
+      }
+    },
+    "buffer@6.0.3": {
+      "name": "buffer",
+      "version": "6.0.3",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "06bafa45fdad2579ba0e43b0c9b2c6290287c99c4203c300254a462b38a307f6",
+        "index.js": "c25853fd31addfce188b01061fe85bfe667d5fb6c7a7bbb1c83d0ddfd8627acc",
+        "package.json": "5b105ac0abbf5985cbe62ad28a34032d85c7ef623e0eb01f39441b0feb419004"
+      }
+    },
+    "call-bind-apply-helpers@1.0.2": {
+      "name": "call-bind-apply-helpers",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292",
+        "actualApply.js": "1cbe921bb00b03294815ff0ece4212f276870466961773ce238802bc71474540",
+        "applyBind.js": "3e65d83cecb93fa80dc5ad4d86d98f9e715e101ac3d8ec56d36ee669f1180bd0",
+        "functionApply.js": "6170e997fbe03c6f8ff48946ada7d54c7aadc01531509af81f0edfdb7be00e27",
+        "functionCall.js": "22d50c812748973250e9aa1994882a880c6e3bfc90d45e41f609cab97beee3fe",
+        "index.js": "6a7ff51e964c2f1e24e3f3a90f41895bec230f07c3001eb29f45741ff99d7a83",
+        "package.json": "59639b628c6846f674857c6a613fd47e2e4d2a24036cdf0f7a62ac634f4c8a5f",
+        "reflectApply.js": "e3ee45fb4c54bdb5f76ad4ef42780da004412ddb6d668993de4b9014efe246ff"
+      }
+    },
+    "call-bind@1.0.9": {
+      "name": "call-bind",
+      "version": "1.0.9",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "39c5ec504cf6bd5cd782a7c695828e09189df79f5d94840e4f08feb97b9fd416",
+        "callBound.js": "2b2fce7622fdd680256d28bcd59c30913546a825bf69d754d21a1d21ccc2928c",
+        "index.js": "ebf3d0dc319511810ccbaf38135eb5b08b249abee9f4687d5b572c7ba60889cf",
+        "package.json": "c11be8b7f9bbe367c27d42fba734b8226c0b15e1e5e1c2d842822d9791f053c7"
+      }
+    },
+    "call-bound@1.0.4": {
+      "name": "call-bound",
+      "version": "1.0.4",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292",
+        "index.js": "aaf524d09b5a4f8f732a516aa1c81e6e8c5d65ae3d01bce392e8fc1ac55c14ff",
+        "package.json": "dcc8abb3c4ad3774234272149020cb36d7b1a3d377a419454d1e7adb368dd9c3"
+      }
+    },
+    "define-data-property@1.1.4": {
+      "name": "define-data-property",
+      "version": "1.1.4",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "b41d08bc3624d8c436fc80237d73ebb361985a67f4504bbcd703e5ca2b27254c",
+        "index.js": "e34746e8c69bbf6ba2182b7362e9c4dc5fb3c19cace48091781ae967370bc065",
+        "package.json": "bde7f1465b344a24da2b10d2ee99f87edf8e0ecd177c28370b60ad9595de730e"
+      }
+    },
+    "define-properties@1.2.1": {
+      "name": "define-properties",
+      "version": "1.2.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "00d402c2bbe7c67369bd01ce2c16b8ed46ccc949a1ee2d6bb8f9606afa8c7434",
+        "index.js": "4cdb9ccd20dc4ceb0709328cc68da842a334bafbf501543922c67e15a99901d4",
+        "package.json": "b61b15058833610f17197bfb60847926703e077b180de684ccc50866906f6fb1"
+      }
+    },
+    "dunder-proto@1.0.1": {
+      "name": "dunder-proto",
+      "version": "1.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "2b770a704c15de238c3f622b01b0044ddd60b49ee30608ea6991ebf19db7a7a1",
+        "get.js": "9671388b2fa2cbce2f4b8645cc1dedae2f182113a78c93dd142d987c2517dacf",
+        "package.json": "24df71008e4225c858f389dd2728b76cf66b752256d42a38ed7930aacae7fe2b"
+      }
+    },
+    "es-define-property@1.0.1": {
+      "name": "es-define-property",
+      "version": "1.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292",
+        "index.js": "92d23d0217808c68692a1881369c207db1a35fc09dd24b98dd5f1a07d6bb3ed0",
+        "package.json": "3a2cb30dae30a96705dcd9aa2d5fb190cf8200f27badccfa5a81a4374e5708b4"
+      }
+    },
+    "es-errors@1.3.0": {
+      "name": "es-errors",
+      "version": "1.3.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292",
+        "eval.js": "d3161a97f162b483206e9849e41bb17fd54166810c76ebaa1df068133e54caae",
+        "index.js": "28fee350e89561019cf27ea37a313b4b4995f521fd087198fa235a8f135962de",
+        "package.json": "1a0a0bcccc76b915cb64073317312840cf6363e9144b96f406d0059774dd5278",
+        "range.js": "e376220f3a0226bd5b09b6d5a1411bbac274db8d2d9f7eb723142b7e676374be",
+        "ref.js": "31945f1740a0a2143fb8c38943afc6cce5de5ba6fab7af42d17b7874a19a0900",
+        "syntax.js": "56574ecd3eb54c06efd319080cc8923992791e430c914520b85e92c2f5e373f5",
+        "type.js": "c71b2f41c15edb3824f50dd24df900495c8caaba5b6e9a80851b82bb2309827b",
+        "uri.js": "e1e5591bde037a2ffeda822fa03fac22ff7c93c7b269ed9adf1cbea0e21614b0"
+      }
+    },
+    "es-object-atoms@1.1.2": {
+      "name": "es-object-atoms",
+      "version": "1.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292",
+        "index.js": "44ee7a57ed1c50c4c5fd2a6fcaee8772f4b7d0869326eed0aadcef87bc305212",
+        "package.json": "e4b7882975d10c68457945c883e1060d0b058af5b1216215c872263f42e12fc9"
+      }
+    },
+    "events@3.3.0": {
+      "name": "events",
+      "version": "3.3.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "631987b7616a325a5b97566c232418481ddf7dbb5ecadefb991e791876cc2599",
+        "events.js": "b6d7d26a2395a94dd1b9dc0d06e699bb50b4ec664589fd477ce7cc344e20e172",
+        "package.json": "878ad3687fef7efe3757c1872a3af998c95197129a7445d632486a9591ee542e"
+      }
+    },
+    "for-each@0.3.5": {
+      "name": "for-each",
+      "version": "0.3.5",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "d07913d776eef217a95d7ee3ee83577fc3c365b9c870f5a3411f785b81090614",
+        "index.js": "53cd78ccaacfbf0fd2629f3c762197ad55e031f9306832581d3a7fc245b8c0c7",
+        "package.json": "789a488ade1ea7535497f7c86fded54281c4e7ff861fe8e0e667772a00680711"
+      }
+    },
+    "function-bind@1.1.2": {
+      "name": "function-bind",
+      "version": "1.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "773e131a7684726005a7e4688a80b4620033bc08499bc1404dd1a1eb3bca725e",
+        "implementation.js": "5c52eb40601e0716dafff9759cf28d8d4af3e2fc2e2c96384f43dbfd0f7370b5",
+        "index.js": "12fa1b92429db25599f6fe118cbbb877f7f62b83cb9bfe2fc896b2d6a8110647",
+        "package.json": "edb1c4faf4148e6e3d74ed8dbac1a1dc359a647ff4207aad4851396dc7a3559a"
+      }
+    },
+    "generator-function@2.0.1": {
+      "name": "generator-function",
+      "version": "2.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE.md"
+      ],
+      "files": {
+        "LICENSE.md": "1ac0263302bfb8eedc54a10a44175b0df51419306d5bc1539bfd7a7da121bd08",
+        "index.js": "7902fa3a4c4b078308905cd66362f28ae7b34a2915d7193908d2a02880163147",
+        "package.json": "b7627a785e689ec434dc28b7e1dc2e75db98695b1361a696c519ae6875553761"
+      }
+    },
+    "get-intrinsic@1.3.0": {
+      "name": "get-intrinsic",
+      "version": "1.3.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "39c5ec504cf6bd5cd782a7c695828e09189df79f5d94840e4f08feb97b9fd416",
+        "index.js": "c3bc7278af37cede0da2db32724fa0b89a07c44205c44c4f5db0e4d8d497d49c",
+        "package.json": "45b14763baacc59b0fd7b39e3ad983d5d2aaf7f5ed682f2fce9edb469826c999"
+      }
+    },
+    "get-proto@1.0.1": {
+      "name": "get-proto",
+      "version": "1.0.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "be46ce1e3b0479af9ce82d22b465a6d7d2ff084fca0aaf3d54172da2b5eb5781",
+        "Object.getPrototypeOf.js": "66d51243588d269eb28f5bc8236e111a9a36e010e9b5b9b496be2963882a9e28",
+        "Reflect.getPrototypeOf.js": "bab0332997a67c0eb3d2ab24ee9ae5d106d275a8ef5bde2a711faa1c96899c59",
+        "index.js": "ee310261ff252b6d90c1a9fc4b9eceb63ddb963e7eec5125631cf169daad38c1",
+        "package.json": "73839e012ac7134a632c9d9fc6bdb700ac9ab5553cce39eb789ba2b65663e734"
+      }
+    },
+    "gopd@1.2.0": {
+      "name": "gopd",
+      "version": "1.2.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "d90bf0a089da4cf43d644ed240a0b3825dcdb705e64e38371d56995a4cc9e4c5",
+        "gOPD.js": "48a04dcb3fb5cccb6c8541a3a8227b8d9f881ea3ffef3177ac4bb0338556b839",
+        "index.js": "8f8092ee3aaa2932a71e9f264a9b273dc33f7c52f4cdb0815956fccf80230d8c",
+        "package.json": "33ace32dc861f6da9d1fd9d0a44c66e8c6ff3b13358d070683c1c2978ff5f19f"
+      }
+    },
+    "has-property-descriptors@1.0.2": {
+      "name": "has-property-descriptors",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "0f0ca96f50793990031ebc488a38f7292ff70bce8ab6a8e5eeda674abc32ccdf",
+        "index.js": "d5415d5957de8e923fb1a976cb3f2524f1800ecf5e3b958a4d76183d2a9dee91",
+        "package.json": "59a91e2cf32e4303d248708999a9ec3afd8e3649a87ba7abcf2177dc1984e3d5"
+      }
+    },
+    "has-symbols@1.1.0": {
+      "name": "has-symbols",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "206c1adcf206dc0031b11232f5b054ec5f1662407ab1ca415247921cab2068ab",
+        "index.js": "fd9bef8dd0d913bc8beac3156a0019d1a83a6e091498d1af1cbdbd536776e189",
+        "package.json": "5190268c0e3308d7446d1f7c036238f329f786938453e6017cb90980b3612e7a",
+        "shams.js": "41277ab2db4a31094dc6f4ca2c3cbbe5576da5e5bddac4bda6c1f0d9c0e0c417"
+      }
+    },
+    "has-tostringtag@1.0.2": {
+      "name": "has-tostringtag",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "e2560e002e13281578c75c850061d9255c33d16d732939e8c2db64c2506642fa",
+        "package.json": "30ab773c52021a6b800ea48f251abeeb1f6e378300f819204dfbb38d6e43f3ad",
+        "shams.js": "e5e0b7bbca35fa5911487361da2bc00b880d62114be6f3be87a876a59037020b"
+      }
+    },
+    "hasown@2.0.4": {
+      "name": "hasown",
+      "version": "2.0.4",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "bf9b0d665be2a689851eea667ca9f42066ea1d903b38349c51e6a44b2577680a",
+        "index.js": "8f875520f41a3d711566013882af290c840969316cc72cd6b35f7e81d7dfc6d2",
+        "package.json": "40b750c55a8bacf2c5ac316f5299dd44d48acc101c189a00cd59d39376b5eb89"
+      }
+    },
+    "ieee754@1.2.1": {
+      "name": "ieee754",
+      "version": "1.2.1",
+      "license": "BSD-3-Clause",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "18d45466ba3253deae04667e267a91ea8de8548f18c1125264d1c9db28194cc1",
+        "index.js": "fe3e2b20c1ebb57c3b390c8f685ad1e04e6f493517fa7e432f4351bb77a1a4d0",
+        "package.json": "a8004b9c8dffe2e1b01a058ecf968a5d50beabcabc43cc98c655184ba6afc050"
+      }
+    },
+    "inherits@2.0.4": {
+      "name": "inherits",
+      "version": "2.0.4",
+      "license": "ISC",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5ffe28e7ade7d8f10d85d5337a73fd793dac5c462fb9a28fbf8c5046c7fbca3b",
+        "inherits_browser.js": "ad322a7b1dec60f3d2ebda2091816469efb55b567d241cf3cf0fa4c5a4afe500",
+        "package.json": "be645800bc94fd8de29c8ae91690549b316cc437100108aeea7b2f347693cc80"
+      }
+    },
+    "is-arguments@1.2.0": {
+      "name": "is-arguments",
+      "version": "1.2.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "dc0fe5a22d9336f345ee984f9bf56f11f22877a3aa5fd16a1db9a8ca0e23a5d1",
+        "index.js": "72cc3148913533a6a73b97d8448a4ef8ebd1f520585b6e7b3fcbb0c3a25f8f42",
+        "package.json": "8962afc6bca1e62fc8d6413c1c82b0e060ff51fec9cb1d00d7c6b82337666e52"
+      }
+    },
+    "is-callable@1.2.7": {
+      "name": "is-callable",
+      "version": "1.2.7",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "c61652db3d2808f667b48af0a358f0d85fd07ad4a0d0b1a50882dec3b764c522",
+        "index.js": "6364203119a7e9d75d9bc481406d9840c35ee914227278dae7cd4bfc1832f4c8",
+        "package.json": "0d0981565f03ca488d263c94d038717ec4face8b129b8ff18e792dabae2af755"
+      }
+    },
+    "is-generator-function@1.1.2": {
+      "name": "is-generator-function",
+      "version": "1.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "dc0fe5a22d9336f345ee984f9bf56f11f22877a3aa5fd16a1db9a8ca0e23a5d1",
+        "index.js": "eb029c0215501950880b36c492c321983d762384bc373969cb2da5b6e8f1c189",
+        "package.json": "03f415ea6031c1c9497892bf2b85fdc8d1d45e1d12787334d0d4da74836d8f6a"
+      }
+    },
+    "is-nan@1.3.2": {
+      "name": "is-nan",
+      "version": "1.3.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "dc0fe5a22d9336f345ee984f9bf56f11f22877a3aa5fd16a1db9a8ca0e23a5d1",
+        "implementation.js": "f96f4af366d89d64311fc9b5000e85bd79bae6a7a5949fbdd013f76f6e0dfa18",
+        "index.js": "61f63efee81501e65a9fb6b5cf98d320cfae2f37476e4472051407d409f40075",
+        "package.json": "9800358c959aa505160af1ff6b56092e9398b5ad94457802cdab536fdd7ea0eb",
+        "polyfill.js": "54a4bde860fff81ceae89d34b0b9e2eb1907f040387d42c0ff7b57e19725476e",
+        "shim.js": "58f4ddb9141465d28fd27a2a759f5c81aabcd4ce06f9a71b790d6f86a50235ea"
+      }
+    },
+    "is-regex@1.2.1": {
+      "name": "is-regex",
+      "version": "1.2.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "dc0fe5a22d9336f345ee984f9bf56f11f22877a3aa5fd16a1db9a8ca0e23a5d1",
+        "index.js": "162399fe494f3c2423051a38115ba8c099c331f52f02edb3f00728885ca21865",
+        "package.json": "b99ff9cb5a079a1d6060bce2d31f06780d4296539a5b57106047a86561cd4db3"
+      }
+    },
+    "is-typed-array@1.1.15": {
+      "name": "is-typed-array",
+      "version": "1.1.15",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "c61652db3d2808f667b48af0a358f0d85fd07ad4a0d0b1a50882dec3b764c522",
+        "index.js": "d5791fb8f8610beff388ddfd49c96088eee19af62f1e46eef34c9e8ec058a2ed",
+        "package.json": "51dcf15ccc424ce76b36bef2ef64df7a53e75294cbddf08b4f7e639133145cc5"
+      }
+    },
+    "lz-string@1.5.0": {
+      "name": "lz-string",
+      "version": "1.5.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "433fc9dfe659dbfb1e91eed8351f13651e97bfa3ac6d03394c3d63f61d4bbc80",
+        "libs/lz-string.js": "550034b821027008776cb9bcd1700bb5d31e8b3de224cb130fc966a75dab0e5e",
+        "package.json": "f0990a8fd6c347d66c1469d18918f5460d372c6b3af8a0a5737dfd34c809e20d"
+      }
+    },
+    "math-intrinsics@1.1.0": {
+      "name": "math-intrinsics",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "2b770a704c15de238c3f622b01b0044ddd60b49ee30608ea6991ebf19db7a7a1",
+        "abs.js": "276961e4323370f3632410c6da81dda018b78c0cfb2a83ea72d48c80a3eaaeb1",
+        "floor.js": "ea904c30b45d6fbbc1780f4db7d78c360bbecf98ecd789f0c817156102714c3f",
+        "isNaN.js": "1aa84179527aef8df84457dd8d4e828d76d58fd9170e7a9893ee7e0e774534e8",
+        "max.js": "92326f3eab1e40148bd68fb65a85d2c3f18fc32a03be27353b2054ba27ba7409",
+        "min.js": "b78c68ab96cb2764df12ff8038f5b05b05376b4c39608a7a25b3b0b168e7c2e2",
+        "package.json": "39d74aa5a354153130706286dd60a2d8409ce0c8f66546eff2edcac0afff17e1",
+        "pow.js": "8dd625bd4c7b31b7656ab99babc9fea1617f36c35f5dbd339ebdc2d0f4bd97d2",
+        "round.js": "1d4794c5869d554732cdc82208f954df348e4035f3cbd09ab758c553a207dc1e",
+        "sign.js": "aef51335e4671ddd0f55a81e2e4395b1d96afee20102b50e33e2b485f7cd2598"
+      }
+    },
+    "msgpack5@6.0.2": {
+      "name": "msgpack5",
+      "version": "6.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "508ee763a2e18adf6859f0527a2917ac8a8a96f5b1475909f1a4cf6b852bb4a5",
+        "index.js": "af1b78ba539b65b0caedbbe9f4101250f6b11583598b6ca6e935102709f20b66",
+        "lib/codecs/DateCodec.js": "7bb435d09d6596c3534888ffb13dcb97a1ce7a5b69e8bf7d6e67d995cc04e2f0",
+        "lib/decoder.js": "089611f213821368694ef54e313110e9b770d8a9500a23bcf62d52ebbf34428f",
+        "lib/encoder.js": "e9978cde9a6d4b89d1a8848d7ba0c2f54399c46a92e406f074ede613860ebb82",
+        "lib/helpers.js": "bc84c093a658b15a562bab98488b17acc30608ff946f85b3afb884bfe0f32c2d",
+        "lib/streams.js": "eeeae89149522d166c8dc9ccedb5468691768ac819187fd0c8e2ad77d1b9dcf8",
+        "package.json": "d056b1f53baa233599a5ed157ead8b1c575af0197e4e00d4a74bb2410702b9b1"
+      }
+    },
+    "object-is@1.1.6": {
+      "name": "object-is",
+      "version": "1.1.6",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "dc0fe5a22d9336f345ee984f9bf56f11f22877a3aa5fd16a1db9a8ca0e23a5d1",
+        "implementation.js": "3511c578d1c2ffce03ff1a0b4fbf41f072bf6b5ede1740752b62c318a5288289",
+        "index.js": "b34540fd64a7f529f0e6217481a9579c43d4852a12da94edd75c05a575be4597",
+        "package.json": "642cdbac75e401aa7ccb5c3a1ae12765dbf03ee9e844c6e2215114f8b0ad7f2f",
+        "polyfill.js": "ccaacf13be4930444e7d5fff16eb5c40a2b64b93057b886d29a606be02589d11",
+        "shim.js": "c4f6cdcdd4c8dfd235ed618b3f2e387cd227b42f8979b292fd5eb47504a2aeb1"
+      }
+    },
+    "object-keys@1.1.1": {
+      "name": "object-keys",
+      "version": "1.1.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5640e5cbe2e9f57f6ccfdd8dbfbeadb875495bdbcb69d2666ce3177ccd0942e4",
+        "implementation.js": "4dd43bf86b886f6adc16aa34b2f0d3a27b92ecf65adcb87224e54cd394d2024c",
+        "index.js": "4004588aa7a3769d8c34ef9a837e1632237487e53ed57caec51bfcc6668f2c29",
+        "isArguments.js": "31f36ded2784150b7480f56ca42e7fda6e119d4345d5884a4d5f55e13fe6ac30",
+        "package.json": "60128330481888bf0e83a713699bee6668c5948821ef06106d8c9613b6081b45"
+      }
+    },
+    "object.assign@4.1.7": {
+      "name": "object.assign",
+      "version": "4.1.7",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "a596744eec6b05682ed972bf93937668bbc8da2caed93fbf6510389de019b5c0",
+        "implementation.js": "7453e2476a6241eb5e09e4c1524c85a1c35f2cc095e43719447000c1fd1a49b5",
+        "package.json": "982c86a45d0edc61215628380656301e17e5a7f83c9e3072b38dff6778b0e1aa",
+        "polyfill.js": "a3eb71f8c21fb517b6f96e1ff01aca5eafd506fbb2959e75b45223eca64c5385"
+      }
+    },
+    "possible-typed-array-names@1.1.0": {
+      "name": "possible-typed-array-names",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "5e325595b4ea8cfec3802f545b1def5d7b73e4a5b8e9ba63e32a320f67732292",
+        "index.js": "62df611325b009f56810f26498ea91cfb5b2acae7021bd20231a5f41dc84307e",
+        "package.json": "0ff73753495cfff4556a5f8b7847ba1c06530341986e642a8637c6db74d87894"
+      }
+    },
+    "readable-stream@3.6.2": {
+      "name": "readable-stream",
+      "version": "3.6.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "ec62dc96da0099b87f4511736c87309335527fb7031639493e06c95728dc8c54",
+        "errors-browser.js": "346033597378d23e59068d120d6257f7cd85ae88c40b1f85c3329cece0d119c4",
+        "lib/_stream_duplex.js": "e2e55263df344f33d016a3e051de1a86e2206989a2162951e651e5557665954c",
+        "lib/_stream_passthrough.js": "af6250df6a49a0148eed8b5f2e28b2f692c3ffa9df538a59dc716a4bd10901e2",
+        "lib/_stream_readable.js": "9837de8cae91f9a80da75368855b45c3ada9a858983355fd873d8885cab1c5ab",
+        "lib/_stream_transform.js": "a2f6e6d17a74dfa75bc7b34b50546ebcb76eeb2f4aac6d1090f80915aee20342",
+        "lib/_stream_writable.js": "0f3f2accecd343dfae91d7daa72f3ad125b6f139d5883ff51362042d8cb65cf6",
+        "lib/internal/streams/async_iterator.js": "56a7dde0d36ee9f55032df01e78229602c6afed6b6915362f33dc65bc0359972",
+        "lib/internal/streams/buffer_list.js": "15b266db6ad5c6ee0309d13ed4ce137d8974d2fd236c1af7f3d602b7028a90df",
+        "lib/internal/streams/destroy.js": "e1c1a185a2cc4bee2be5e7d33b5e294eb0fb55c1a47b61853a8c43e50cb822a4",
+        "lib/internal/streams/end-of-stream.js": "2c35cabc9b279cb81e73d0d14859b2056ea10d9688d16a12199d2ca9904b93ae",
+        "lib/internal/streams/from-browser.js": "4b4404c7bd6f66a2175cb7a29c60ce4395c055775ec45eaa35af4357656f604f",
+        "lib/internal/streams/pipeline.js": "6d51b72e1ae5ee0965f0f549e27ececdb4963605995ffad8b698d5359a9999c2",
+        "lib/internal/streams/state.js": "bf9c5ce1ccde2131d474422bef258dc968d6d19ccac72f9b178e8246faf0c9ed",
+        "lib/internal/streams/stream-browser.js": "72d46a15491627d8fb1489a47d03583cfe5c21902918016ab532b53e615e5a9a",
+        "package.json": "469ea81f64037d1f179bcd46412217903a2924dd2e7d7d9b728659b6f12c3e69",
+        "readable-browser.js": "c4ff3ea62ef65a2c68ea721dcbd58b621150660facd02be95ebfc556c4dd123f"
+      }
+    },
+    "safe-buffer@5.1.2": {
+      "name": "safe-buffer",
+      "version": "5.1.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "c7cc929b57080f4b9d0c6cf57669f0463fc5b39906344dfc8d3bc43426b30eac",
+        "index.js": "d58af21cb0518864d0c505742d1af71e5b5e1f142f4c0f27353aa0f431a616d4",
+        "package.json": "3d8b6d944be9e931a178914afbb3d6b79bfa199c032872b687bed41ed996c747"
+      }
+    },
+    "safe-buffer@5.2.1": {
+      "name": "safe-buffer",
+      "version": "5.2.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "c7cc929b57080f4b9d0c6cf57669f0463fc5b39906344dfc8d3bc43426b30eac",
+        "index.js": "184d5c4a83512e3f49d4d5b52f7073f601f933bad11f1fbb3ad364ca5e6478e1",
+        "package.json": "e4018fdbfe625433371f48274fee26f520bbe865e0d8c85bf3aa07424134b90c"
+      }
+    },
+    "safe-regex-test@1.1.0": {
+      "name": "safe-regex-test",
+      "version": "1.1.0",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "d90bf0a089da4cf43d644ed240a0b3825dcdb705e64e38371d56995a4cc9e4c5",
+        "index.js": "2225bfdc0cd70b6cce80c966e8d431f1a36bc4a6d800ece43f548f12e667e81f",
+        "package.json": "b9efdb318b7f4094e6d2605ba9fbef93570abe1119488a491a4e8f3216781030"
+      }
+    },
+    "set-function-length@1.2.2": {
+      "name": "set-function-length",
+      "version": "1.2.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "bf9b0d665be2a689851eea667ca9f42066ea1d903b38349c51e6a44b2577680a",
+        "index.js": "a523e45ae8c58b13795b66841fcaf104ac3e394ab123197bd46dd09088cabcd5",
+        "package.json": "2c81bab7f7a60d625164bd840d863548e3f9d4d1aa976b9d2966e5e1e36132a7"
+      }
+    },
+    "string_decoder@1.1.1": {
+      "name": "string_decoder",
+      "version": "1.1.1",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "11f2aafb37d06b3ee5bdaf06e9811141d0da05263c316f3d627f45c20d43261b",
+        "lib/string_decoder.js": "f1d36d47b2c579063392c1a68963467f2d4f51a069af09eb068d974c63ee3b37",
+        "package.json": "e278ca18803862a6d1b6bedc6a3394159ac86e5c4a162614fef006c79dcda3a2"
+      }
+    },
+    "util-deprecate@1.0.2": {
+      "name": "util-deprecate",
+      "version": "1.0.2",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "0154425673db15cdfa80ecba2c9b1f1a867f7197a006764712849bfc3a93cbb7",
+        "browser.js": "abaef53ebcdc98f3655331f834986a2d11b6a824f58d670369669246d1b7b69b",
+        "package.json": "7bba467f049074957e693fc06672848b040c38fa071b6eed8690f5fbe090a8b2"
+      }
+    },
+    "util@0.12.5": {
+      "name": "util",
+      "version": "0.12.5",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "6239c6144c31e58cf925c34483606969c555574d64ffa96518ab5d7f45c75d43",
+        "package.json": "4957e41a94a2177b25ddd4fa46e60062e2324f0fc665d4318b90a7e4c2401f74",
+        "support/isBufferBrowser.js": "a19427e215657e8c4a83a9a8376e81d73e52a9383002e6af901282be04546256",
+        "support/types.js": "3f8d37bb8f7cc9757fe05ac60ada6546f4c4f0023e0adf834de55796b12c5b07",
+        "util.js": "c4552c9c14122795f3920548f834559ebf64fd00ab5694bc9d0a34dee6290a29"
+      }
+    },
+    "which-typed-array@1.1.24": {
+      "name": "which-typed-array",
+      "version": "1.1.24",
+      "license": "MIT",
+      "notices": [
+        "LICENSE"
+      ],
+      "files": {
+        "LICENSE": "c61652db3d2808f667b48af0a358f0d85fd07ad4a0d0b1a50882dec3b764c522",
+        "index.js": "3c8d063b41eb891a92dff22ee81647ff83b4c0e3752fa6dd60f76a3b9f7ffe92",
+        "package.json": "e175b4177a92cd5f7ae31bc7954edd57369dd059d6faf5f1100f1ab962c6ef01"
+      }
+    }
+  },
+  "dependencyLocations": {
+    "node_modules/assert": "assert@2.1.0",
+    "node_modules/available-typed-arrays": "available-typed-arrays@1.0.7",
+    "node_modules/base64-js": "base64-js@1.5.1",
+    "node_modules/bl": "bl@5.1.0",
+    "node_modules/bl/node_modules/readable-stream": "readable-stream@3.6.2",
+    "node_modules/buffer": "buffer@6.0.3",
+    "node_modules/call-bind": "call-bind@1.0.9",
+    "node_modules/call-bind-apply-helpers": "call-bind-apply-helpers@1.0.2",
+    "node_modules/call-bound": "call-bound@1.0.4",
+    "node_modules/define-data-property": "define-data-property@1.1.4",
+    "node_modules/define-properties": "define-properties@1.2.1",
+    "node_modules/dunder-proto": "dunder-proto@1.0.1",
+    "node_modules/es-define-property": "es-define-property@1.0.1",
+    "node_modules/es-errors": "es-errors@1.3.0",
+    "node_modules/es-object-atoms": "es-object-atoms@1.1.2",
+    "node_modules/events": "events@3.3.0",
+    "node_modules/for-each": "for-each@0.3.5",
+    "node_modules/function-bind": "function-bind@1.1.2",
+    "node_modules/generator-function": "generator-function@2.0.1",
+    "node_modules/get-intrinsic": "get-intrinsic@1.3.0",
+    "node_modules/get-proto": "get-proto@1.0.1",
+    "node_modules/gopd": "gopd@1.2.0",
+    "node_modules/has-property-descriptors": "has-property-descriptors@1.0.2",
+    "node_modules/has-symbols": "has-symbols@1.1.0",
+    "node_modules/has-tostringtag": "has-tostringtag@1.0.2",
+    "node_modules/hasown": "hasown@2.0.4",
+    "node_modules/ieee754": "ieee754@1.2.1",
+    "node_modules/inherits": "inherits@2.0.4",
+    "node_modules/is-arguments": "is-arguments@1.2.0",
+    "node_modules/is-callable": "is-callable@1.2.7",
+    "node_modules/is-generator-function": "is-generator-function@1.1.2",
+    "node_modules/is-nan": "is-nan@1.3.2",
+    "node_modules/is-regex": "is-regex@1.2.1",
+    "node_modules/is-typed-array": "is-typed-array@1.1.15",
+    "node_modules/lz-string": "lz-string@1.5.0",
+    "node_modules/math-intrinsics": "math-intrinsics@1.1.0",
+    "node_modules/msgpack5": "msgpack5@6.0.2",
+    "node_modules/msgpack5/node_modules/readable-stream": "readable-stream@3.6.2",
+    "node_modules/object-is": "object-is@1.1.6",
+    "node_modules/object-keys": "object-keys@1.1.1",
+    "node_modules/object.assign": "object.assign@4.1.7",
+    "node_modules/possible-typed-array-names": "possible-typed-array-names@1.1.0",
+    "node_modules/safe-buffer": "safe-buffer@5.2.1",
+    "node_modules/safe-regex-test": "safe-regex-test@1.1.0",
+    "node_modules/set-function-length": "set-function-length@1.2.2",
+    "node_modules/string_decoder": "string_decoder@1.1.1",
+    "node_modules/string_decoder/node_modules/safe-buffer": "safe-buffer@5.1.2",
+    "node_modules/util": "util@0.12.5",
+    "node_modules/util-deprecate": "util-deprecate@1.0.2",
+    "node_modules/which-typed-array": "which-typed-array@1.1.24"
+  }
+}

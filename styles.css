@@ -1,0 +1,6 @@
+/* Optional complete stylesheet for an independent consumer. A host that already
+   supplies Tailwind imports ui/theme.css and adds this module to its @source
+   list instead, so it does not get a second preflight. */
+@import "tailwindcss" source(none);
+@import "./ui/theme.css";
+@source "./**/*.{ts,tsx}";
