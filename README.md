@@ -208,6 +208,43 @@ const tour = parseTutorialManifest({
 - `onComplete` fires on Finish and `onStop` on the stop icon, Skip or Escape,
   so a host can tell a finished tour from a skipped one.
 
+To make the card look exactly like the host's own popovers, pass
+`renderCard`. Tourkit still positions it, lights the control, moves focus and
+handles the keyboard; the host draws the contents from the step's title, body,
+formatted progress, labels and `next`/`previous`/`stop` handlers. Render the
+supplied `notice` somewhere in the card: it carries Tourkit's paused, "Bring
+it into view" and hint content, so those moments stay recoverable. The card
+element carries `data-card-position` (the side of the control it sits on) and
+`--tourkit-arrow-offset` (where along that edge the control is), enough to
+draw a popover arrow in CSS:
+
+```tsx
+renderCard={(card) => (
+  <div className="my-popover">
+    <button className="my-popover-close" aria-label={card.labels.stop} onClick={card.stop}>×</button>
+    <h2>{card.title}</h2>
+    <p>{card.body}</p>
+    {card.notice}
+    <footer>
+      <button onClick={card.stop}>{card.labels.skip}</button>
+      <span>{card.progress}</span>
+      <button disabled={!card.canGoPrevious} onClick={card.previous}>{card.labels.previous}</button>
+      <button disabled={!card.canGoNext} onClick={card.next}>
+        {card.isFinish ? card.labels.finish : card.labels.next}
+      </button>
+    </footer>
+  </div>
+)}
+```
+
+```css
+[data-card-position="bottom"] .my-popover::before {
+  content: ""; position: absolute; top: -10px;
+  left: calc(var(--tourkit-arrow-offset) - 5px);
+  border: 5px solid transparent; border-bottom-color: var(--card);
+}
+```
+
 Theme the card and ring with CSS variables on `.tourkit-surface` and
 `.tourkit-overlay`. Tourkit's defaults have zero specificity, so a host rule
 wins in any stylesheet order:

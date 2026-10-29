@@ -1,7 +1,7 @@
 "use client";
 import {placeCardOutsideFocus} from "./focus-card-placement";
 
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { driver, type Driver } from "driver.js";
 import { autoUpdate } from "@floating-ui/dom";
@@ -13,7 +13,7 @@ import { DEFAULT_TUTORIAL_DOM_POLICY, type TutorialDomPolicy } from "./dom-polic
 import { additionalFocusCutouts, drawFocusHighlights, focusAnnotationAvoidRects, resolveFocusHighlights } from "./focus-highlights";
 import { tutorialArrow } from "./arrow-placement";
 import type { TutorialHighlightStyle } from "../core/highlight";
-import { bestCenteredCardSpot, type CardPosition, type CardSide } from "./card-placement";
+import { bestCenteredCardSpot, isCardCorner, type CardPosition, type CardSide } from "./card-placement";
 import { positionTutorialCard } from "./floating-placement";
 import { tutorialPlacementRegion } from "./placement-region";
 import { boxMinus, cutoutPath, isDegenerateStage, paddedBox, stageOverlayPath, type StageRect } from "./spotlight";
@@ -24,6 +24,7 @@ import type { TutorialCardLayout } from "../core/schema";
 import {
   DEFAULT_TUTORIAL_PLAYER_LABELS,
   formatTutorialLabel,
+  type TutorialCardRenderProps,
   type TutorialInteraction,
   type TutorialMode,
   type TutorialPlayerAppearance,
@@ -82,6 +83,8 @@ interface TutorialOverlayProps {
   appearance?: TutorialPlayerAppearance;
   /** ArrowRight / ArrowLeft press the card's Next / Back while it offers them. */
   keyboardNavigation?: boolean;
+  /** Host-drawn card contents; Tourkit keeps only the card's position. */
+  renderCard?: (card: TutorialCardRenderProps) => ReactNode;
 }
 
 /**
@@ -324,6 +327,7 @@ export function TutorialOverlay({
   labels = DEFAULT_TUTORIAL_PLAYER_LABELS,
   appearance,
   keyboardNavigation = false,
+  renderCard,
 }: TutorialOverlayProps) {
   const stagePadding = appearance?.stagePadding ?? STAGE_PADDING;
   const stageRadius = appearance?.stageRadius ?? STAGE_RADIUS;
@@ -789,6 +793,18 @@ export function TutorialOverlay({
           card.dataset.cardPosition = placement.position;
           card.style.left = `${Math.round(placement.left)}px`;
           card.style.top = `${Math.round(placement.top)}px`;
+          // Where along the facing edge a popover arrow should sit: the middle
+          // of the stretch of edge that faces the control, kept off the corners.
+          if (!isCardCorner(placement.position)) {
+            const across = placement.position === "top" || placement.position === "bottom";
+            const origin = across ? placement.left : placement.top;
+            const size = across ? card.offsetWidth : card.offsetHeight;
+            const from = Math.max(across ? ringRect.left : ringRect.top, origin);
+            const to = Math.min(across ? ringRect.right : ringRect.bottom, origin + size);
+            const middle = to > from ? (from + to) / 2 : across ? (ringRect.left + ringRect.right) / 2 : (ringRect.top + ringRect.bottom) / 2;
+            const offset = Math.min(Math.max(middle - origin, 16), Math.max(16, size - 16));
+            card.style.setProperty("--tourkit-arrow-offset", `${Math.round(offset)}px`);
+          }
         } else if (!card.dataset.cardPosition) {
           // Layout-free DOMs report no geometry; keep the card readable.
           card.dataset.cardPosition = "bottom-right";
@@ -1174,60 +1190,15 @@ export function TutorialOverlay({
     </svg>
   ) : null;
 
-  return createPortal(
-    <div
-      className="tourkit-overlay"
-      data-testid="tutorial-overlay"
-      data-spotlight-style={spotlightStyle}
-      data-card-placement={cardLayout.placement}
-      data-card-size={cardLayout.size}
-      data-status={status}
-      data-suspended={suspended ? "true" : "false"}
-      data-suspension-reason={suspensionReason ?? ""}
-      data-action-id={step.action?.id}
-    >
-      <style>{TUTORIAL_SURFACE_CSS + OVERLAY_CSS}</style>
-      {showBox && regionOutline}
-      {spotlightRing}
-      {pointerArrow}
-      <section
-        ref={cardRef}
-        role="dialog"
-        aria-modal={false}
-        aria-label={`${tutorialTitle}: tutorial step ${stepIndex + 1}`}
-        aria-describedby={suspended ? statusId : statusMessage ? `${descriptionId} ${statusId}` : descriptionId}
-        aria-live="polite"
-        tabIndex={-1}
-        {...TUTORIAL_SURFACE_PROPS}
-        // Names the card for review feedback ("the wording on this step").
-        data-tutorial-step={step.id}
-        style={{
-          position: "fixed",
-          ...cardPlacementStyle,
-          zIndex: 8000,
-          maxHeight: "calc(100vh - 32px)",
-          overflowY: "auto",
-          overflowX: "hidden",
-          padding: metrics.padding,
-          border: "1px solid var(--tourkit-line-soft)",
-          borderRadius: 14,
-          background: "var(--tourkit-bg)",
-          color: "var(--tourkit-ink)",
-          boxShadow: "0 20px 55px rgba(15, 23, 42, 0.32)",
-          fontFamily: "var(--tourkit-font, ui-sans-serif, system-ui, sans-serif)",
-          outline: "none",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <span data-testid="tutorial-card-heading" style={{ fontSize: 12, fontWeight: 700, color: accent, letterSpacing: ".03em", textTransform: "uppercase" }}>
-            {cardHeading}
-          </span>
-          <button type="button" onClick={onStop} aria-label={labels.stop} title={labels.stop} style={buttonStyle}>
-            {appearance?.closeIcon === "close" ? <X size={16} /> : <Square size={14} fill="currentColor" />}
-          </button>
-        </div>
-        <h2 style={{ display: suspended ? "none" : undefined, margin: metrics.titleMargin, fontSize: metrics.title, lineHeight: 1.25, letterSpacing: "-.01em" }}>{step.overlay.title}</h2>
-        <p id={descriptionId} style={{ display: suspended ? "none" : undefined, margin: metrics.bodyMargin, color: "var(--tourkit-ink-2)", fontSize: metrics.body, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{step.overlay.body}</p>
+  // Status, hints, narration and Watch timing: the parts of the card that
+  // keep unusual moments recoverable, whoever draws the rest of it.
+  const hasNotice = Boolean((!suspended && step.narration) || statusMessage
+    || (suspensionReason === "context" && onRestoreView) || suspensionReason === "anchor-out-of-view"
+    || (!suspended && gateAdvance && hintOffered && step.check?.description)
+    || (!suspended && guided && blockedNonce > 0)
+    || (!suspended && mode === "autoplay" && autoplayDurationMs && autoplayProgressActive));
+  const notice = (
+    <>
         {!suspended && step.narration ? (
           <audio
             key={`${step.id}:${step.narration.src}:${step.narration.startMs}`}
@@ -1318,6 +1289,94 @@ export function TutorialOverlay({
             </div>
           </div>
         ) : null}
+    </>
+  );
+  const customCard = renderCard?.({
+    step,
+    stepIndex,
+    stepCount,
+    mode,
+    title: step.overlay.title,
+    body: step.overlay.body,
+    progress: step.overlay.showProgress ? formatTutorialLabel(labels.progress, { current: stepIndex + 1, total: stepCount }) : "",
+    labels,
+    canGoNext: nextAvailable,
+    isFinish: mode === "practice" ? practiceOffersFinish : stepIndex === stepCount - 1,
+    canGoPrevious: previousAvailable,
+    busy,
+    suspended,
+    paused,
+    notice: hasNotice ? notice : null,
+    next: onNext,
+    previous: onPrevious,
+    togglePause: onTogglePause,
+    stop: onStop,
+  });
+  const { width: _builtInWidth, ...customCardPlacementStyle } = cardPlacementStyle;
+
+  return createPortal(
+    <div
+      className="tourkit-overlay"
+      data-testid="tutorial-overlay"
+      data-spotlight-style={spotlightStyle}
+      data-card-placement={cardLayout.placement}
+      data-card-size={cardLayout.size}
+      data-status={status}
+      data-suspended={suspended ? "true" : "false"}
+      data-suspension-reason={suspensionReason ?? ""}
+      data-action-id={step.action?.id}
+    >
+      <style>{TUTORIAL_SURFACE_CSS + OVERLAY_CSS}</style>
+      {showBox && regionOutline}
+      {spotlightRing}
+      {pointerArrow}
+      <section
+        ref={cardRef}
+        role="dialog"
+        aria-modal={false}
+        aria-label={`${tutorialTitle}: tutorial step ${stepIndex + 1}`}
+        aria-describedby={renderCard ? (statusMessage ? statusId : undefined) : suspended ? statusId : statusMessage ? `${descriptionId} ${statusId}` : descriptionId}
+        aria-live="polite"
+        tabIndex={-1}
+        {...TUTORIAL_SURFACE_PROPS}
+        // Names the card for review feedback ("the wording on this step").
+        data-tutorial-step={step.id}
+        data-custom-card={renderCard ? "true" : undefined}
+        style={renderCard ? {
+          position: "fixed",
+          ...customCardPlacementStyle,
+          zIndex: 8000,
+          maxWidth: "calc(100vw - 32px)",
+          outline: "none",
+        } : {
+          position: "fixed",
+          ...cardPlacementStyle,
+          zIndex: 8000,
+          maxHeight: "calc(100vh - 32px)",
+          overflowY: "auto",
+          overflowX: "hidden",
+          padding: metrics.padding,
+          border: "1px solid var(--tourkit-line-soft)",
+          borderRadius: 14,
+          background: "var(--tourkit-bg)",
+          color: "var(--tourkit-ink)",
+          boxShadow: "0 20px 55px rgba(15, 23, 42, 0.32)",
+          fontFamily: "var(--tourkit-font, ui-sans-serif, system-ui, sans-serif)",
+          outline: "none",
+        }}
+      >
+        {renderCard ? customCard : <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <span data-testid="tutorial-card-heading" style={{ fontSize: 12, fontWeight: 700, color: accent, letterSpacing: ".03em", textTransform: "uppercase" }}>
+            {cardHeading}
+          </span>
+          <button type="button" onClick={onStop} aria-label={labels.stop} title={labels.stop} style={buttonStyle}>
+            {appearance?.closeIcon === "close" ? <X size={16} /> : <Square size={14} fill="currentColor" />}
+          </button>
+        </div>
+        <h2 style={{ display: suspended ? "none" : undefined, margin: metrics.titleMargin, fontSize: metrics.title, lineHeight: 1.25, letterSpacing: "-.01em" }}>{step.overlay.title}</h2>
+        <p id={descriptionId} style={{ display: suspended ? "none" : undefined, margin: metrics.bodyMargin, color: "var(--tourkit-ink-2)", fontSize: metrics.body, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{step.overlay.body}</p>
+        {notice}
         {suspended ? null : mode === "practice" ? (
           // Action steps advance when the outcome lands. Reading steps and
           // outcomes already present at entry wait for explicit Next. Back lets a learner
@@ -1381,6 +1440,7 @@ export function TutorialOverlay({
             </button>
           </div>
         )}
+        </>}
       </section>
     </div>,
     document.body,

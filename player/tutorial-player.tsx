@@ -287,6 +287,7 @@ function TutorialPlayerRun({
   labels: labelOverrides,
   appearance,
   keyboardNavigation,
+  renderCard,
 }: TutorialPlayerProps) {
   const labels = useMemo(() => ({ ...DEFAULT_TUTORIAL_PLAYER_LABELS, ...labelOverrides }), [labelOverrides]);
   const domPolicyRef = useLatestRef(domPolicy);
@@ -1672,6 +1673,7 @@ function TutorialPlayerRun({
       labels={labels}
       appearance={appearance}
       keyboardNavigation={keyboardNavigation}
+      renderCard={renderCard}
     />
     </>
   );

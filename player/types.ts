@@ -149,7 +149,55 @@ export interface TutorialPlayerAppearance {
   closeIcon?: "stop" | "close";
 }
 
+/**
+ * Everything a host-rendered card needs. Tourkit still positions the card,
+ * lights the control, moves focus and handles the keyboard; the host draws
+ * what is inside. The card's element carries `data-card-position` (the side
+ * of the control it sits on: top, right, bottom, left, or a corner) and the
+ * CSS variable `--tourkit-arrow-offset`, the distance along that edge to the
+ * point facing the control, for drawing a popover arrow.
+ */
+export interface TutorialCardRenderProps {
+  step: TutorialStep;
+  stepIndex: number;
+  stepCount: number;
+  mode: TutorialMode;
+  title: string;
+  body: string;
+  /** Formatted progress ("3 of 7"); empty when the step hides it. */
+  progress: string;
+  labels: TutorialPlayerLabels;
+  /** Next (or Finish, on the last step) is on offer and may be pressed. */
+  canGoNext: boolean;
+  /** Pressing Next ends the run. */
+  isFinish: boolean;
+  /** Back is on offer and may be pressed. */
+  canGoPrevious: boolean;
+  /** A step is being prepared; navigation is held until it is shown. */
+  busy: boolean;
+  /** The control is covered or out of view; `notice` says why. */
+  suspended: boolean;
+  /** Watch playback is paused. */
+  paused: boolean;
+  /**
+   * Tourkit's own status and recovery content for this moment (a paused
+   * notice, "Bring it into view", a hint, narration, Watch timing), or null.
+   * Render it somewhere in the card so those situations stay recoverable.
+   */
+  notice: import("react").ReactNode;
+  next: () => void;
+  previous: () => void;
+  togglePause: () => void;
+  /** Ends the run, as the stop control, Skip and Escape do. */
+  stop: () => void;
+}
+
 export interface TutorialPlayerProps {
+  /**
+   * Draw the step card's contents yourself, to match the host's own popovers.
+   * Tourkit then leaves the card unstyled apart from its position.
+   */
+  renderCard?: (card: TutorialCardRenderProps) => import("react").ReactNode;
   /** Words on the player's own surfaces, for localisation. Unset keys keep English. */
   labels?: Partial<TutorialPlayerLabels>;
   /** Spotlight and card presentation. Unset keeps the authored player appearance. */

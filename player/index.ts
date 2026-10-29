@@ -15,6 +15,7 @@ export type {
 } from "./iframe-protocol";
 export type {
   TutorialActionSubscription,
+  TutorialCardRenderProps,
   TutorialCompletionAction,
   TutorialExecutionContext,
   TutorialManifest,

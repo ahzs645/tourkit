@@ -121,6 +121,43 @@ it("ignores the arrow keys unless keyboard navigation is on", async () => {
   expect(title()).toBe("The toolbar");
 });
 
+it("lets the host draw the card while Tourkit keeps navigation and recovery", async () => {
+  const onComplete = vi.fn();
+  await mount({
+    onComplete,
+    keyboardNavigation: true,
+    renderCard: (card) => (
+      <div className="host-popover">
+        <strong>{card.title}</strong>
+        <p>{card.body}</p>
+        {card.notice}
+        <footer>
+          <span data-testid="host-progress">{card.progress}</span>
+          <button type="button" disabled={!card.canGoPrevious} onClick={card.previous}>Prev</button>
+          <button type="button" disabled={!card.canGoNext} onClick={card.next}>{card.isFinish ? "Done" : "Next"}</button>
+        </footer>
+      </div>
+    ),
+  });
+  const card = document.querySelector<HTMLElement>('[data-testid="tutorial-overlay"] section')!;
+  expect(card.dataset.customCard).toBe("true");
+  expect(card.querySelector(".host-popover strong")?.textContent).toBe("The toolbar");
+  expect(document.querySelector('[data-testid="host-progress"]')?.textContent).toBe("1 of 2");
+  expect(button("Prev")?.disabled).toBe(true);
+  expect(document.querySelector('[data-testid="tutorial-card-heading"]')).toBeNull();
+  // Tourkit's own card chrome is gone, but its styles stay off the host's card.
+  expect(card.style.background).toBe("");
+
+  await act(async () => button("Next")!.click());
+  await flush();
+  expect(card.querySelector(".host-popover strong")?.textContent).toBe("Your files");
+  expect(button("Prev")?.disabled).toBe(false);
+
+  await act(async () => document.body.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true })));
+  await flush();
+  expect(onComplete).toHaveBeenCalledTimes(1);
+});
+
 it("keeps prepare actions and card alignment through a Studio draft", () => {
   const draft = tutorialManifestToRecordingDraft(tour, new Date("2026-01-01T00:00:00.000Z"));
   expect(draft.steps[0].anchorAlign).toBe("start");
