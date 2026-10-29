@@ -13,6 +13,8 @@ export async function positionTutorialCard(
   current: CardPosition | null,
   gap: number,
   align: "start" | "end" | null = null,
+  /** An aligned card lines up with the lit cutout's edge, this far outside the control. */
+  alignInset = 0,
 ) {
   const focus = target.getBoundingClientRect();
   const context = tutorialPlacementRegion(target);
@@ -32,12 +34,15 @@ export async function positionTutorialCard(
     strategy: "fixed",
     placement: aligned(placement),
     middleware: [
-      offset(({ placement: side }) => gap + ({
-        right: avoid.right - focus.right,
-        left: focus.left - avoid.left,
-        bottom: avoid.bottom - focus.bottom,
-        top: focus.top - avoid.top,
-      }[side.split("-")[0] as CardSide])),
+      offset(({ placement: side }) => ({
+        mainAxis: gap + ({
+          right: avoid.right - focus.right,
+          left: focus.left - avoid.left,
+          bottom: avoid.bottom - focus.bottom,
+          top: focus.top - avoid.top,
+        }[side.split("-")[0] as CardSide]),
+        alignmentAxis: -alignInset,
+      })),
       flip({ padding: 12, crossAxis: false, fallbackPlacements: fallbacks.map(aligned) }),
       shift({ padding: 12 }),
       hide({ strategy: "referenceHidden" }),

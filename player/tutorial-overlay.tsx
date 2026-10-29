@@ -227,6 +227,9 @@ const STAGE_RADIUS = 10;
 const CARD_GAP = 20;
 const CARD_GAP_WITH_EXPORT_ARROW = 72;
 
+/** Closest a host's popover arrow comes to the card's corners. */
+const ARROW_INSET = 16;
+
 /** Focus is somewhere typing goes; arrow keys there move the caret, not the tour. */
 function isEditableTarget(target: EventTarget | null): boolean {
   if (!(target instanceof Element)) return false;
@@ -786,23 +789,27 @@ export function TutorialOverlay({
         const measurable = rect.width > 0 && rect.height > 0;
         if (measurable) {
           const placement = await positionTutorialCard(anchorBox, ringElement, card,
-            preferredSide, cardPositionRef.current, cardGap, cardAlign);
+            preferredSide, cardPositionRef.current, cardGap, cardAlign, stagePadding);
           if (disposed || request !== revision) return;
           referenceHidden = placement.referenceHidden;
           cardPositionRef.current = placement.position;
           card.dataset.cardPosition = placement.position;
           card.style.left = `${Math.round(placement.left)}px`;
           card.style.top = `${Math.round(placement.top)}px`;
-          // Where along the facing edge a popover arrow should sit: the middle
-          // of the stretch of edge that faces the control, kept off the corners.
+          // Where along the facing edge a popover arrow should sit: within the
+          // stretch of edge that faces the control — at its aligned end for a
+          // start- or end-aligned card, else its middle — kept off the corners.
           if (!isCardCorner(placement.position)) {
             const across = placement.position === "top" || placement.position === "bottom";
             const origin = across ? placement.left : placement.top;
             const size = across ? card.offsetWidth : card.offsetHeight;
             const from = Math.max(across ? ringRect.left : ringRect.top, origin);
             const to = Math.min(across ? ringRect.right : ringRect.bottom, origin + size);
-            const middle = to > from ? (from + to) / 2 : across ? (ringRect.left + ringRect.right) / 2 : (ringRect.top + ringRect.bottom) / 2;
-            const offset = Math.min(Math.max(middle - origin, 16), Math.max(16, size - 16));
+            const inset = Math.min(ARROW_INSET, (to - from) / 2);
+            const point = to <= from
+              ? (across ? (ringRect.left + ringRect.right) / 2 : (ringRect.top + ringRect.bottom) / 2)
+              : cardAlign === "start" ? from + inset : cardAlign === "end" ? to - inset : (from + to) / 2;
+            const offset = Math.min(Math.max(point - origin, ARROW_INSET), Math.max(ARROW_INSET, size - ARROW_INSET));
             card.style.setProperty("--tourkit-arrow-offset", `${Math.round(offset)}px`);
           }
         } else if (!card.dataset.cardPosition) {
@@ -934,7 +941,7 @@ export function TutorialOverlay({
       cleanupTarget();
       cleanupAnchor();
     };
-  }, [anchor, anchorIsBody, anchorlessDialog, attached, cardAlign, cardGap, centered, domPolicy, preferredSide, suspended, targetId, highlightStyle, showPointer, step.id, step.highlights, dialogSuspended]);
+  }, [anchor, anchorIsBody, anchorlessDialog, attached, cardAlign, cardGap, centered, stagePadding, domPolicy, preferredSide, suspended, targetId, highlightStyle, showPointer, step.id, step.highlights, dialogSuspended]);
 
   // Bring a control that starts outside its scroll pane into view when the
   // step opens, instead of asking the learner to find it. Only once per step:
