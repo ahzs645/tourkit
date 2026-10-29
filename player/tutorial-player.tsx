@@ -22,7 +22,7 @@ import { DEFAULT_TUTORIAL_DOM_POLICY, type TutorialDomPolicy } from "./dom-polic
 import { TUTORIAL_SURFACE_CSS, TUTORIAL_SURFACE_PROPS } from "./surface";
 import { TutorialOverlay } from "./tutorial-overlay";
 import { autoplayStepDurationMs } from "./playback-timing";
-import { flattenTutorialSteps } from "./types";
+import { DEFAULT_TUTORIAL_PLAYER_LABELS, flattenTutorialSteps } from "./types";
 import { isTutorialAnchorFullyVisible } from "./visibility";
 import type {
   TutorialObservedAction,
@@ -284,7 +284,11 @@ function TutorialPlayerRun({
   onStop,
   completionActions,
   onDismissCompletion,
+  labels: labelOverrides,
+  appearance,
+  keyboardNavigation,
 }: TutorialPlayerProps) {
+  const labels = useMemo(() => ({ ...DEFAULT_TUTORIAL_PLAYER_LABELS, ...labelOverrides }), [labelOverrides]);
   const domPolicyRef = useLatestRef(domPolicy);
   const flatSteps = useMemo(() => flattenTutorialSteps(manifest), [manifest]);
   const launchMode = modeOverride ?? manifest.defaultMode;
@@ -629,6 +633,34 @@ function TutorialPlayerRun({
     if (!tutorialContextMatches(step.context, stateRef.current)) throw new Error(`Open ${step.context.label} before this step.`);
   }, [manifest, onExecuteAction, resolveContextActions, stateRef]);
 
+  /**
+   * Runs a step's prepare actions: the host navigation that puts its anchor
+   * on screen. Repeatable by contract, so every entry runs them again.
+   */
+  const prepareStep = useCallback(async (
+    step: NonNullable<typeof currentStep>,
+    index: number,
+    signal: AbortSignal,
+  ) => {
+    if (!step.prepare?.length) return;
+    if (!onExecuteAction) {
+      throw new Error(`No executor is registered for prepare action "${step.prepare[0].id}".`);
+    }
+    for (const action of step.prepare) {
+      signal.throwIfAborted();
+      const resolvedArgs = action.args
+        ? TutorialValueSchema.parse(resolveTutorialReferences(action.args as TutorialValue, aliases))
+        : undefined;
+      if (resolvedArgs !== undefined && !isRecord(resolvedArgs)) {
+        throw new Error(`Arguments for prepare action "${action.id}" must be an object.`);
+      }
+      await onExecuteAction(
+        { ...action, ...(resolvedArgs ? { args: resolvedArgs } : {}) },
+        { manifest, step, stepIndex: index, signal },
+      );
+    }
+  }, [aliases, manifest, onExecuteAction]);
+
   /** Runs a step's semantic action through the host application. */
   const runStepAction = useCallback(async (
     step: NonNullable<typeof currentStep>,
@@ -713,6 +745,19 @@ function TutorialPlayerRun({
         // replay. An action fired the instant the previous one returned can
         // find its control not drawn yet (the inspector group a new field's
         // selection is still rendering) and give up.
+        // The step's surface comes first here too: its control may live in a
+        // drawer or tab that only its prepare actions open.
+        if (step.prepare?.length && !executedStepsRef.current.has(step.id)) {
+          try {
+            await prepareStep(step, index, controller.signal);
+          } catch (caught) {
+            if (controller.signal.aborted) return;
+            console.warn(`Tutorial catch-up could not prepare step "${step.id}"; starting there instead.`, caught);
+            landing = index;
+            break;
+          }
+          if (controller.signal.aborted || runIdRef.current !== runId) return;
+        }
         if (step.anchor && !executedStepsRef.current.has(step.id)) {
           await waitForTutorialAnchor(document, step.anchor.id, {
             domPolicy: domPolicyRef.current,
@@ -772,7 +817,7 @@ function TutorialPlayerRun({
       setStepIndex(landing);
       setStatus("idle");
     })();
-  }, [aliases, awaitsLearnerAction, domPolicyRef, flatSteps, markStepCompleted, mode, onExecuteAction, replayOnCatchUp, runStepAction, setStatus, stateRef]);
+  }, [aliases, awaitsLearnerAction, domPolicyRef, flatSteps, markStepCompleted, mode, onExecuteAction, prepareStep, replayOnCatchUp, runStepAction, setStatus, stateRef]);
 
   const continueSavedRun = useCallback(() => {
     if (!pendingResume) return;
@@ -871,6 +916,13 @@ function TutorialPlayerRun({
     const enterStep = async () => {
       let failureKind: "anchor" | "step" = "step";
       try {
+        // The step's surface first (a drawer, a tab), in every mode: its
+        // anchor may not exist until the host has navigated there.
+        if (currentStep.prepare?.length) {
+          setStatus("executing");
+          await prepareStep(currentStep, stepIndex, controller.signal);
+          if (controller.signal.aborted || runIdRef.current !== runId) return;
+        }
         if (mode === "autoplay" && currentStep.action) {
           // Recorded before the await, so a second entry (StrictMode invokes
           // this effect twice synchronously, and Previous walks back into a
@@ -953,7 +1005,7 @@ function TutorialPlayerRun({
       }
     };
     void enterStep();
-  }, [cancelSettlingAction, carriedActionForRef, completedSteps, currentStep, domPolicyRef, mode, onStepChange, restoreStepView, runStepAction, setStatus, stateRef, status, stepIndex]);
+  }, [cancelSettlingAction, carriedActionForRef, completedSteps, currentStep, domPolicyRef, mode, onStepChange, prepareStep, restoreStepView, runStepAction, setStatus, stateRef, status, stepIndex]);
 
   const currentPracticeCheckHolds = useCallback(() => {
     if (mode !== "practice" || !currentStep?.check || currentStep.completion === "continue" || revisiting) return true;
@@ -1491,25 +1543,23 @@ function TutorialPlayerRun({
       return (
         <div role="alert" data-testid="tutorial-error" {...TUTORIAL_SURFACE_PROPS} style={{ position: "fixed", right: 16, bottom: 16, zIndex: 8200, width: 340, padding: 16, border: "1px solid var(--tourkit-line-soft)", borderRadius: 12, background: "var(--tourkit-bg)", color: "var(--tourkit-ink)", boxShadow: "0 16px 40px rgba(15, 23, 42, .25)" }}>
           <style>{TUTORIAL_SURFACE_CSS}</style>
-          <strong>Tutorial paused</strong>
+          <strong>{labels.errorTitle}</strong>
           <p style={{ margin: "8px 0 4px", fontSize: 13, color: "var(--tourkit-ink-2)" }}>{error}</p>
           <p style={{ margin: "0 0 12px", fontSize: 12, color: "var(--tourkit-ink-3)" }}>
-            {errorKind === "anchor"
-              ? "Head back to where you were working and it continues by itself — or skip this step. Your progress is kept."
-              : "Retry the step, skip it, or stop. Your progress is kept."}
+            {errorKind === "anchor" ? labels.errorAnchorHelp : labels.errorStepHelp}
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {takeMeBack ? (
               <button type="button" onClick={takeMeBack} data-testid="tutorial-return" style={{ ...pausedButtonStyle, borderColor: "#0284c7", background: "#0284c7", color: "white", fontWeight: 600 }}>
-                Take me back
+                {labels.takeMeBack}
               </button>
             ) : (
               <button type="button" onClick={() => setStatus("idle")} style={{ ...pausedButtonStyle, borderColor: "#0284c7", background: "#0284c7", color: "white", fontWeight: 600 }}>
-                Retry
+                {labels.retry}
               </button>
             )}
-            <button type="button" onClick={next} style={pausedButtonStyle}>Skip step</button>
-            <button type="button" onClick={stop} style={pausedButtonStyle}>Stop tutorial</button>
+            <button type="button" onClick={next} style={pausedButtonStyle}>{labels.skipStep}</button>
+            <button type="button" onClick={stop} style={pausedButtonStyle}>{labels.stopTutorial}</button>
           </div>
         </div>
       );
@@ -1619,6 +1669,9 @@ function TutorialPlayerRun({
       onNarrationComplete={() => setNarrationComplete(true)}
       hintDelayMs={hintDelayMs}
       transitionMs={transitionMs}
+      labels={labels}
+      appearance={appearance}
+      keyboardNavigation={keyboardNavigation}
     />
     </>
   );

@@ -116,6 +116,9 @@ export async function validateTutorialLesson(input: unknown, hostInput: unknown,
 
     for (const step of draft.steps) {
       if (step.action && !actions.has(step.action.id)) findings.push({ severity: "error", code: "action-undeclared", stepId: step.id, message: `Action ${JSON.stringify(step.action.id)} is not declared by this host.` });
+      for (const prepared of step.prepare ?? []) {
+        if (!actions.has(prepared.id)) findings.push({ severity: "error", code: "action-undeclared", stepId: step.id, message: `Prepare action ${JSON.stringify(prepared.id)} is not declared by this host.` });
+      }
       const ambiguous = [...new Set([step.anchor, step.target].filter((id): id is string => Boolean(id) && repeated.has(id!)))];
       if (ambiguous.length && !step.context) findings.push({ severity: "warning", code: "anchor-needs-context", stepId: step.id, message: `The host marks ${ambiguous.map((id) => JSON.stringify(id)).join(", ")} as repeated controls. Supply a pre-action view context or verify an unambiguous host anchor policy.` });
 

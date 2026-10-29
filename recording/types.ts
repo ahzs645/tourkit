@@ -2,6 +2,7 @@ import type {
   TutorialFocusHighlight,
   TutorialCardLayout,
   TutorialCardPlacement,
+  TutorialCardSize,
   TutorialCheck,
   TutorialInteraction,
   TutorialLaunch,
@@ -65,11 +66,12 @@ export interface TutorialRecordingNarrationRange {
 }
 
 export type TutorialAnchorPlacement = "auto" | "top" | "right" | "bottom" | "left" | "center";
+export type TutorialAnchorAlign = "start" | "center" | "end";
 
 /** Step-level card override; unset fields inherit the draft's card layout. */
 export interface TutorialRecordingCardOverride {
   placement?: TutorialCardPlacement;
-  size?: "default" | "large";
+  size?: TutorialCardSize;
   pointer?: boolean;
 }
 
@@ -104,6 +106,7 @@ export interface TutorialRecordingStep {
   chapterId?: string;
   anchor?: string;
   anchorPlacement?: TutorialAnchorPlacement;
+  anchorAlign?: TutorialAnchorAlign;
   anchorWaitMs?: number;
   /** The one control to ring when it differs from the anchor region. */
   target?: string;
@@ -114,6 +117,8 @@ export interface TutorialRecordingStep {
   showProgress?: boolean;
   advanceDelayMs?: number;
   action?: TutorialSemanticAction;
+  /** Repeatable host navigation run before the step's anchor is located. */
+  prepare?: TutorialSemanticAction[];
   /** Outcome the practice gate waits for. Suggested from the recorded action. */
   check?: TutorialCheck;
   narration?: TutorialRecordingNarrationRange;

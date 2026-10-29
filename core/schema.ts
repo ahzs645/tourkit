@@ -138,6 +138,12 @@ export const TutorialAnchorSchema = z.strictObject({
   placement: z
     .enum(["auto", "top", "right", "bottom", "left", "center"])
     .default("auto"),
+  /**
+   * Where the attached card lines up along the side `placement` chose:
+   * `start` with the control's top or left edge, `end` with its bottom or
+   * right edge. Omitted centres the card on the control.
+   */
+  align: z.enum(["start", "center", "end"]).optional(),
   waitMs: z.number().int().min(0).max(60_000).default(5_000),
 });
 export type TutorialAnchor = z.infer<typeof TutorialAnchorSchema>;
@@ -167,9 +173,13 @@ export type TutorialNarrationRange = z.infer<typeof TutorialNarrationRangeSchema
 export const TutorialCardPlacementSchema = z.enum(["attached", "docked", "center"]);
 export type TutorialCardPlacement = z.infer<typeof TutorialCardPlacementSchema>;
 
+/** `compact` suits short product-tour copy; `large` suits screen-recorded lessons. */
+export const TutorialCardSizeSchema = z.enum(["compact", "default", "large"]);
+export type TutorialCardSize = z.infer<typeof TutorialCardSizeSchema>;
+
 export const TutorialCardLayoutSchema = z.strictObject({
   placement: TutorialCardPlacementSchema.default("attached"),
-  size: z.enum(["default", "large"]).default("default"),
+  size: TutorialCardSizeSchema.default("default"),
   pointer: z.boolean().default(true),
 });
 export type TutorialCardLayout = z.infer<typeof TutorialCardLayoutSchema>;
@@ -177,7 +187,7 @@ export type TutorialCardLayout = z.infer<typeof TutorialCardLayoutSchema>;
 /** Step-level override; unset fields inherit the manifest's card layout. */
 export const TutorialCardLayoutOverrideSchema = z.strictObject({
   placement: TutorialCardPlacementSchema.optional(),
-  size: z.enum(["default", "large"]).optional(),
+  size: TutorialCardSizeSchema.optional(),
   pointer: z.boolean().optional(),
 });
 
@@ -238,6 +248,15 @@ export const TutorialStepSchema = z.strictObject({
    */
   target: z.strictObject({ id: TutorialAnchorIdSchema }).optional(),
   action: TutorialSemanticActionSchema.optional(),
+  /**
+   * Host actions that bring this step's surface on screen (open a drawer,
+   * switch a tab) before its anchor is located. They run through the
+   * player's executor in every mode, again each time the step is entered —
+   * Back included — so they must be repeatable navigation, never the
+   * mutation the step teaches. They are not the learner's action and are
+   * never graded.
+   */
+  prepare: z.array(TutorialSemanticActionSchema).max(10).optional(),
   context: TutorialViewContextSchema.optional(),
   completion: TutorialStepCompletionSchema.optional(),
   /**

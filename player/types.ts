@@ -51,7 +51,112 @@ export interface TutorialCompletionAction {
   primary?: boolean;
 }
 
+/**
+ * Words the player shows on its own surfaces. Every key is optional; unset
+ * keys keep Tourkit's English. `{current}`, `{total}` and `{criterion}` are
+ * filled in where they appear.
+ */
+export interface TutorialPlayerLabels {
+  /** Card header in Practice; an empty string leaves only the progress. */
+  practice: string;
+  /** Card header in Watch; an empty string leaves only the progress. */
+  autoplay: string;
+  /** Step counter, for example "{current} of {total}". */
+  progress: string;
+  previous: string;
+  next: string;
+  finish: string;
+  /** Accessible name of the stop (close) icon button. */
+  stop: string;
+  /** Text of the footer button `appearance.showSkip` adds. */
+  skip: string;
+  pause: string;
+  resume: string;
+  /** Practice hint revealed on a gated step, for example "Done when {criterion}". */
+  doneWhen: string;
+  /** Shown after a guided step turned a click away. */
+  blockedHint: string;
+  dialogPaused: string;
+  anchorOutOfView: string;
+  bringIntoView: string;
+  watchPacing: string;
+  watchPreparing: string;
+  errorTitle: string;
+  errorAnchorHelp: string;
+  errorStepHelp: string;
+  retry: string;
+  takeMeBack: string;
+  skipStep: string;
+  stopTutorial: string;
+}
+
+export const DEFAULT_TUTORIAL_PLAYER_LABELS: TutorialPlayerLabels = {
+  practice: "Practice",
+  autoplay: "Watch",
+  progress: "{current} of {total}",
+  previous: "Back",
+  next: "Next",
+  finish: "Finish",
+  stop: "Stop tutorial",
+  skip: "Skip",
+  pause: "Pause",
+  resume: "Resume",
+  doneWhen: "Done when {criterion}",
+  blockedHint: "Only the highlighted control is active during this tour.",
+  dialogPaused: "Tutorial paused while this dialog is open. Close it to continue.",
+  anchorOutOfView: "The highlighted control is out of view. Scroll to it, or select Bring it into view.",
+  bringIntoView: "Bring it into view",
+  watchPacing: "Read at your pace — this continues automatically, or select Next when you are ready.",
+  watchPreparing: "Preparing this step…",
+  errorTitle: "Tutorial paused",
+  errorAnchorHelp: "Head back to where you were working and it continues by itself — or skip this step. Your progress is kept.",
+  errorStepHelp: "Retry the step, skip it, or stop. Your progress is kept.",
+  retry: "Retry",
+  takeMeBack: "Take me back",
+  skipStep: "Skip step",
+  stopTutorial: "Stop tutorial",
+};
+
+/** Fills `{name}` placeholders in a label. */
+export function formatTutorialLabel(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
+}
+
+/**
+ * Presentation of the spotlight and card, for hosts whose tour should look
+ * like the rest of their interface. Colours of the card and ring are CSS
+ * variables instead (see the README's theming section).
+ */
+export interface TutorialPlayerAppearance {
+  /** Backdrop colour around the cutout. Default black. */
+  overlayColor?: string;
+  /**
+   * Backdrop opacity from 0 to 1. Set, it applies in every mode; unset,
+   * Practice and the glow style leave the page undimmed and Watch dims to 0.7.
+   */
+  overlayOpacity?: number;
+  /** Space between the highlighted control and the cutout's edge. Default 6. */
+  stagePadding?: number;
+  /** Corner radius of the cutout. Default 10. */
+  stageRadius?: number;
+  /** Space between an attached card and its control. Default 20. */
+  cardGap?: number;
+  /** Draw the accent ring around the control. Default true; false lets the cutout alone mark it. */
+  ring?: boolean;
+  /** Add a text Skip button to the card footer; it stops the run like the stop icon. */
+  showSkip?: boolean;
+}
+
 export interface TutorialPlayerProps {
+  /** Words on the player's own surfaces, for localisation. Unset keys keep English. */
+  labels?: Partial<TutorialPlayerLabels>;
+  /** Spotlight and card presentation. Unset keeps the authored player appearance. */
+  appearance?: TutorialPlayerAppearance;
+  /**
+   * ArrowRight and ArrowLeft press Next and Back whenever the card offers
+   * them, unless focus is in an editable field. Escape always stops.
+   */
+  keyboardNavigation?: boolean;
   /** Explicit host DOM/snapshot conventions. Defaults preserve legacy integrations. */
   domPolicy?: TutorialDomPolicy;
   /** Optional presentation override; unset retains the authored player appearance. */

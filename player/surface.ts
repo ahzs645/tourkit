@@ -19,7 +19,9 @@ export const TUTORIAL_SURFACE_PROPS = {
 } as const;
 
 export const TUTORIAL_SURFACE_CSS = `
-.tourkit-popover, .${TUTORIAL_SURFACE_CLASS} {
+/* Zero-specificity defaults: a host rule on .tourkit-surface or
+   .tourkit-overlay replaces any of these, whatever its stylesheet order. */
+:where(.tourkit-popover, .${TUTORIAL_SURFACE_CLASS}, .tourkit-overlay) {
   --tourkit-bg: #ffffff;
   --tourkit-ink: #0f172a;
   --tourkit-ink-2: #334155;
@@ -27,8 +29,11 @@ export const TUTORIAL_SURFACE_CSS = `
   --tourkit-line: #cbd5e1;
   --tourkit-line-soft: #e2e8f0;
   --tourkit-track: #e2e8f0;
+  --tourkit-accent: #ca8a04;
+  --tourkit-accent-ink: #ffffff;
+  --tourkit-ring: #facc15;
 }
-.dark .tourkit-popover, .dark .${TUTORIAL_SURFACE_CLASS} {
+:where(.dark) :where(.tourkit-popover, .${TUTORIAL_SURFACE_CLASS}, .tourkit-overlay) {
   --tourkit-bg: #0f172a;
   --tourkit-ink: #e2e8f0;
   --tourkit-ink-2: #cbd5e1;
@@ -38,4 +43,3 @@ export const TUTORIAL_SURFACE_CSS = `
   --tourkit-track: #1e293b;
 }
 `;
-

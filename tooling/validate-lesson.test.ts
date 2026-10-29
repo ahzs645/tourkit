@@ -52,6 +52,17 @@ describe("portable lesson validator", () => {
     ]));
   });
 
+  it("checks a step's prepare actions against the host's declared actions", async () => {
+    const lesson = manifest();
+    lesson.chapters[0].steps[1].prepare = [{ id: "orders.open-detail", match: "subset" }];
+    const report = await validateTutorialLesson(lesson, host, { now });
+    expect(report.findings).toEqual([
+      expect.objectContaining({ code: "action-undeclared", severity: "error", stepId: "approve", message: expect.stringContaining("orders.open-detail") }),
+    ]);
+    const declared = await validateTutorialLesson(lesson, { ...host, actionIds: [...host.actionIds, "orders.open-detail"] }, { now });
+    expect(declared.summary.errors).toBe(0);
+  });
+
   it("reuses outcome semantics, respects delta baselines and identifies the snapshot used", async () => {
     const snapshot = { orders: [{ id: "existing" }], order: { approved: true } };
     const report = await validateTutorialLesson(manifest(), { ...host, initialSnapshot: snapshot }, { now });

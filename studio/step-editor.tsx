@@ -19,6 +19,7 @@ import { isTutorialGuideBlock, TUTORIAL_CONTENT_KINDS } from "../recording/conte
 import {
   TutorialCheckSchema,
   TutorialSemanticActionSchema,
+  type TutorialCardSize,
   type TutorialCheck,
   type TutorialCheckClause,
   type TutorialSemanticAction,
@@ -40,6 +41,7 @@ export const CARD_PLACEMENTS = [
   { value: "center", label: "Centered" }
 ];
 export const CARD_SIZES = [
+  { value: "compact", label: "Compact" },
   { value: "default", label: "Default" },
   { value: "large", label: "Large" }
 ];
@@ -47,6 +49,11 @@ const ANCHOR_PLACEMENTS = ["auto", "top", "right", "bottom", "left", "center"].m
   value,
   label: value[0].toUpperCase() + value.slice(1)
 }));
+const ANCHOR_ALIGNMENTS = [
+  { value: "center", label: "Centred on the control" },
+  { value: "start", label: "Start edge" },
+  { value: "end", label: "End edge" }
+];
 
 function withInherit(options: ReadonlyArray<{ value: string; label: string }>) {
   return [{ value: INHERIT, label: "Inherit" }, ...options];
@@ -217,6 +224,15 @@ export function StepEditor({
                 options={ANCHOR_PLACEMENTS}
               />
             </Field>
+            <Field label="Card alignment">
+              <BuilderSelect
+                aria-label={`Step ${index + 1} card alignment`}
+                value={step.anchorAlign ?? "center"}
+                onChange={(nextValue) => onChange({ anchorAlign: nextValue === "center" ? undefined : (nextValue as TutorialRecordingStep["anchorAlign"]) })}
+                controlClassName="h-8 text-xs"
+                options={ANCHOR_ALIGNMENTS}
+              />
+            </Field>
             <Field label="Wait for anchor (ms)">
               <Input
                 aria-label={`Step ${index + 1} anchor wait`}
@@ -276,7 +292,7 @@ export function StepEditor({
               <BuilderSelect
                 aria-label={`Step ${index + 1} card size`}
                 value={card.size ?? INHERIT}
-                onChange={(nextValue) => setCard({ size: nextValue ? (nextValue as "default" | "large") : undefined })}
+                onChange={(nextValue) => setCard({ size: nextValue ? (nextValue as TutorialCardSize) : undefined })}
                 controlClassName="h-8 text-xs"
                 options={withInherit(CARD_SIZES)}
               />

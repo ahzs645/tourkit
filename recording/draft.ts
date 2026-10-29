@@ -517,11 +517,17 @@ export function tutorialRecordingDraftToManifest(
     interaction: step.interaction,
     card: step.card && Object.values(step.card).some((value) => value !== undefined) ? step.card : undefined,
     anchor: step.anchor
-      ? { id: step.anchor, placement: step.anchorPlacement ?? "auto", waitMs: step.anchorWaitMs ?? 5_000 }
+      ? {
+          id: step.anchor,
+          placement: step.anchorPlacement ?? "auto",
+          ...(step.anchorAlign ? { align: step.anchorAlign } : {}),
+          waitMs: step.anchorWaitMs ?? 5_000
+        }
       : undefined,
     target: step.target ? { id: step.target } : undefined,
     highlights: step.highlights,
     action: step.action,
+    prepare: step.prepare?.length ? step.prepare : undefined,
     check: step.check,
     overlay: {
       title: step.title || "Tutorial step",
@@ -646,6 +652,7 @@ function manifestStepToDraft(
     chapterId,
     anchor: step.anchor?.id,
     anchorPlacement: step.anchor?.placement,
+    anchorAlign: step.anchor?.align,
     anchorWaitMs: step.anchor?.waitMs,
     target: step.target?.id,
     highlights: step.highlights,
@@ -656,6 +663,7 @@ function manifestStepToDraft(
     showProgress: step.overlay.showProgress,
     advanceDelayMs: step.advanceDelayMs,
     action: step.action,
+    prepare: step.prepare,
     check: step.check,
     narration: step.narration
       ? { startMs: step.narration.startMs, endMs: step.narration.endMs, transcript: step.narration.transcript }

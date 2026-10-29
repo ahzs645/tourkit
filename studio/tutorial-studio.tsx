@@ -66,7 +66,7 @@ import {
   createTutorialIframeController,
   type TutorialIframeController
 } from "../player";
-import { buildTutorialLaunchUrl, type TutorialManifest, type TutorialMode } from "../core/schema";
+import { buildTutorialLaunchUrl, type TutorialCardSize, type TutorialManifest, type TutorialMode } from "../core/schema";
 
 import {
   readTutorialNarrationMode,
@@ -2110,7 +2110,7 @@ export function TutorialStudio({
                   <BuilderSelect
                     aria-label="Card size"
                     value={draft.card.size}
-                    onChange={(nextValue) => updateMetadata({ card: { ...draft.card, size: nextValue as "default" | "large" } })}
+                    onChange={(nextValue) => updateMetadata({ card: { ...draft.card, size: nextValue as TutorialCardSize } })}
                     controlClassName="h-8 text-xs"
                     options={CARD_SIZES}
                   />

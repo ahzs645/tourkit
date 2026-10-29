@@ -152,6 +152,80 @@ uses `DEFAULT_TUTORIAL_DOM_POLICY`, a legacy policy kept for an existing
 consumer (see [RUNTIME_SUPPORT.md](RUNTIME_SUPPORT.md#current-limitations)).
 Supply the same policy to playback and capture.
 
+### Product tours
+
+A tour that explains an interface, rather than teaching a task, is a lesson of
+`completion: "continue"` steps. Steps advance on Next, nothing is graded, and
+`interaction: "guided"` keeps stray clicks from opening other surfaces
+mid-tour. The player options below give such a tour the look and wording of
+the host's own interface:
+
+```tsx
+const tour = parseTutorialManifest({
+  schemaVersion: 1, id: "welcome", title: "Welcome", launch: { fixture: "app" },
+  interaction: "guided", card: { size: "compact", pointer: false },
+  chapters: [{ id: "tour", title: "Tour", steps: [
+    { id: "files", completion: "continue",
+      anchor: { id: "files.list", placement: "right", align: "start" },
+      prepare: [{ id: "sidebar.open" }],
+      overlay: { title: "Your files", body: "Everything you saved is here." } },
+  ] }],
+});
+
+<TutorialPlayer
+  manifest={tour}
+  mode="practice"
+  domPolicy={NEUTRAL_TUTORIAL_DOM_POLICY}
+  onExecuteAction={runTourAction}
+  persistProgress={false}
+  keyboardNavigation
+  labels={{ practice: "", progress: "{current} of {total}", next: "Next", finish: "Done", skip: "Skip tour" }}
+  appearance={{ overlayOpacity: 0.7, stagePadding: 8, stageRadius: 8, cardGap: 12, ring: false, showSkip: true }}
+  onStepChange={(step, index) => track("tour_step", { step: step.id, index })}
+  onComplete={markTourDone}
+  onStop={markTourSkipped}
+/>
+```
+
+- `step.prepare` lists host actions run through `onExecuteAction` before the
+  step's anchor is located, in every mode and on every entry (Back included):
+  opening a drawer, switching a tab or a mobile pane. They must be repeatable
+  navigation; they are not the learner's action and are never graded. An
+  executor may return a promise to wait for an animation to settle.
+- `anchor.align` (`start`, `center`, `end`) lines the attached card up with
+  one edge of the control along the side `placement` chose.
+- `card.size: "compact"` is a narrower card with smaller type for short copy.
+- `labels` replaces every word on the player's own surfaces; `{current}`,
+  `{total}` and `{criterion}` are filled in. `DEFAULT_TUTORIAL_PLAYER_LABELS`
+  lists the keys.
+- `appearance` sets the backdrop colour and opacity (an explicit opacity
+  dims Practice too), the cutout's padding and radius, the card's gap, whether
+  the accent ring is drawn, and a text Skip button that stops the run.
+- `keyboardNavigation` lets ArrowRight and ArrowLeft press Next and Back
+  while the card offers them, except in editable fields and open application
+  dialogs. Escape always stops.
+- `onComplete` fires on Finish and `onStop` on the stop icon, Skip or Escape,
+  so a host can tell a finished tour from a skipped one.
+
+Theme the card and ring with CSS variables on `.tourkit-surface` and
+`.tourkit-overlay`. Tourkit's defaults have zero specificity, so a host rule
+wins in any stylesheet order:
+
+```css
+.tourkit-surface, .tourkit-overlay {
+  --tourkit-bg: var(--card);
+  --tourkit-ink: var(--card-foreground);
+  --tourkit-ink-2: var(--muted-foreground);
+  --tourkit-accent: var(--primary);
+  --tourkit-accent-ink: var(--primary-foreground);
+  --tourkit-ring: var(--primary);
+  --tourkit-font: inherit;
+}
+```
+
+The other variables are `--tourkit-ink-3`, `--tourkit-line`,
+`--tourkit-line-soft` and `--tourkit-track`.
+
 ## Published lesson library
 
 The learner library takes plain ordered sections and status records. Section

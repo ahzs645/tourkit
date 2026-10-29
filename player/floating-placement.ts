@@ -12,6 +12,7 @@ export async function positionTutorialCard(
   preferred: CardSide | null,
   current: CardPosition | null,
   gap: number,
+  align: "start" | "end" | null = null,
 ) {
   const focus = target.getBoundingClientRect();
   const context = tutorialPlacementRegion(target);
@@ -25,9 +26,11 @@ export async function positionTutorialCard(
   const placement = current && !isCardCorner(current) ? current : preferred ?? "right";
   const sides: CardSide[] = ["right", "left", "bottom", "top"];
   const fallbacks = [...new Set([preferred, ...sides])].filter((side): side is CardSide => Boolean(side) && side !== placement);
+  // Alignment rides along on whichever side wins, flips included.
+  const aligned = <Side extends CardSide>(side: Side) => (align ? `${side}-${align}` as const : side);
   const result = await computePosition(target, card, {
     strategy: "fixed",
-    placement,
+    placement: aligned(placement),
     middleware: [
       offset(({ placement: side }) => gap + ({
         right: avoid.right - focus.right,
@@ -35,7 +38,7 @@ export async function positionTutorialCard(
         bottom: avoid.bottom - focus.bottom,
         top: focus.top - avoid.top,
       }[side.split("-")[0] as CardSide])),
-      flip({ padding: 12, crossAxis: false, fallbackPlacements: fallbacks }),
+      flip({ padding: 12, crossAxis: false, fallbackPlacements: fallbacks.map(aligned) }),
       shift({ padding: 12 }),
       hide({ strategy: "referenceHidden" }),
     ],
@@ -48,7 +51,7 @@ export async function positionTutorialCard(
     && !(result.x < avoid.right && result.x + card.offsetWidth > avoid.left
       && result.y < avoid.bottom && result.y + card.offsetHeight > avoid.top);
   const position = fits
-    ? { left: result.x, top: result.y, position: result.placement as CardSide }
+    ? { left: result.x, top: result.y, position: result.placement.split("-")[0] as CardSide }
     : pickCardPlacement({ avoid, focus, card: { width: card.offsetWidth, height: card.offsetHeight }, viewport, preferred, current, gap });
   return { ...position, referenceHidden: Boolean(result.middlewareData.hide?.referenceHidden) };
 }

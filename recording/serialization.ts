@@ -35,6 +35,7 @@ const recordingStepSchema = z.object({
   chapterId: z.string().optional(),
   anchor: z.string().optional(),
   anchorPlacement: z.enum(["auto", "top", "right", "bottom", "left", "center"]).optional(),
+  anchorAlign: z.enum(["start", "center", "end"]).optional(),
   anchorWaitMs: z.number().int().nonnegative().optional(),
   target: z.string().optional(),
   mode: z.enum(["autoplay", "practice"]),
@@ -44,6 +45,7 @@ const recordingStepSchema = z.object({
   showProgress: z.boolean().optional(),
   advanceDelayMs: z.number().int().nonnegative().optional(),
   action: TutorialSemanticActionSchema.optional(),
+  prepare: z.array(TutorialSemanticActionSchema).optional(),
   check: TutorialCheckSchema.optional(),
   narration: z
     .object({

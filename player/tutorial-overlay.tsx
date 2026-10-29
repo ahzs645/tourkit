@@ -21,12 +21,16 @@ import { TUTORIAL_SURFACE_CSS, TUTORIAL_SURFACE_PROPS } from "./surface";
 import { useLatestRef } from "../shared/use-latest-ref";
 import { isTutorialAnchorFullyVisible, visibleClientRect } from "./visibility";
 import type { TutorialCardLayout } from "../core/schema";
-import type {
-  TutorialInteraction,
-  TutorialMode,
-  TutorialPlayerStatus,
-  TutorialSpotlightStyle,
-  TutorialStep,
+import {
+  DEFAULT_TUTORIAL_PLAYER_LABELS,
+  formatTutorialLabel,
+  type TutorialInteraction,
+  type TutorialMode,
+  type TutorialPlayerAppearance,
+  type TutorialPlayerLabels,
+  type TutorialPlayerStatus,
+  type TutorialSpotlightStyle,
+  type TutorialStep,
 } from "./types";
 
 interface TutorialOverlayProps {
@@ -73,6 +77,11 @@ interface TutorialOverlayProps {
   onTogglePause: () => void;
   onStop: () => void;
   onNarrationComplete: () => void;
+  /** Resolved card wording; defaults to Tourkit's English. */
+  labels?: TutorialPlayerLabels;
+  appearance?: TutorialPlayerAppearance;
+  /** ArrowRight / ArrowLeft press the card's Next / Back while it offers them. */
+  keyboardNavigation?: boolean;
 }
 
 /**
@@ -112,8 +121,8 @@ const OVERLAY_CSS = `
 
 
 @keyframes tourkit-glow {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(250, 204, 21, .3), 0 0 18px rgba(250, 204, 21, .55); }
-  50% { box-shadow: 0 0 0 8px rgba(250, 204, 21, .16), 0 0 34px rgba(250, 204, 21, .8); }
+  0%, 100% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--tourkit-ring) 30%, transparent), 0 0 18px color-mix(in srgb, var(--tourkit-ring) 55%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--tourkit-ring) 16%, transparent), 0 0 34px color-mix(in srgb, var(--tourkit-ring) 80%, transparent); }
 }
 @keyframes tourkit-read-progress { from { width: 0%; } to { width: 100%; } }
 
@@ -122,6 +131,13 @@ const OVERLAY_CSS = `
   .tourkit-surface, .tourkit-surface * { animation-iteration-count: 1 !important; transition: none !important; }
 }
 `;
+
+/** Card dimensions per authored size. Widths cap at the viewport minus a margin. */
+const CARD_METRICS = {
+  compact: { centeredWidth: 360, width: 300, padding: 14, title: 16, titleMargin: "6px 0 0", body: 14, bodyMargin: "6px 0 0" },
+  default: { centeredWidth: 440, width: 360, padding: 18, title: 22, titleMargin: "10px 0 0", body: 15, bodyMargin: "9px 0 0" },
+  large: { centeredWidth: 600, width: 480, padding: 24, title: 29, titleMargin: "14px 0 0", body: 18, bodyMargin: "12px 0 0" },
+} as const;
 
 const buttonStyle: CSSProperties = {
   display: "inline-flex",
@@ -204,6 +220,16 @@ const HINT_DELAY_MS = 12_000;
 /** driver.js pads its cutout by this much; the extra holes match it. */
 const STAGE_PADDING = 6;
 const STAGE_RADIUS = 10;
+/** Space between an attached card and its control (and room for the export arrow). */
+const CARD_GAP = 20;
+const CARD_GAP_WITH_EXPORT_ARROW = 72;
+
+/** Focus is somewhere typing goes; arrow keys there move the caret, not the tour. */
+function isEditableTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  if (target.closest('input, textarea, select, [contenteditable=""], [contenteditable="true"], [role="textbox"], [role="combobox"], [role="slider"], [role="spinbutton"]')) return true;
+  return target instanceof HTMLElement && target.isContentEditable;
+}
 
 /**
  * driver.refresh(), minus the two cases where re-measuring moves the box to
@@ -295,7 +321,12 @@ export function TutorialOverlay({
   readyToFinish = false,
   hintDelayMs = HINT_DELAY_MS,
   transitionMs = 0,
+  labels = DEFAULT_TUTORIAL_PLAYER_LABELS,
+  appearance,
+  keyboardNavigation = false,
 }: TutorialOverlayProps) {
+  const stagePadding = appearance?.stagePadding ?? STAGE_PADDING;
+  const stageRadius = appearance?.stageRadius ?? STAGE_RADIUS;
   const domPolicyRef = useLatestRef(domPolicy);
   const onStopRef = useLatestRef(onStop);
   const driverRef = useRef<Driver | null>(null);
@@ -307,6 +338,12 @@ export function TutorialOverlay({
   const statusId = useId();
   const arrowId = useId();
   const glow = spotlightStyle === "glow";
+  // Try it always leaves the interface visible, including imported lessons
+  // with authored dim steps. Watch retains the authored spotlight style. A
+  // host's explicit opacity wins in every mode.
+  const overlayOpacity = appearance?.overlayOpacity ?? (mode === "practice" || glow ? 0 : 0.7);
+  const overlayColor = appearance?.overlayColor ?? "black";
+  const dimmed = appearance?.overlayOpacity !== undefined ? overlayOpacity > 0 : !glow;
   const dialogSuspended = suspensionReason === "dialog";
   // The outcome criterion is the card's only stuck-help: hidden while the
   // learner is moving, revealed after they linger on a gated step.
@@ -402,12 +439,10 @@ export function TutorialOverlay({
       allowClose: false,
       allowKeyboardControl: false,
       disableActiveInteraction: false,
-      // Try it always leaves the interface visible, including imported lessons
-      // with authored dim steps. Watch retains the authored spotlight style.
-      overlayColor: "black",
-      overlayOpacity: mode === "practice" || glow ? 0 : 0.7,
-      stagePadding: STAGE_PADDING,
-      stageRadius: STAGE_RADIUS,
+      overlayColor,
+      overlayOpacity,
+      stagePadding,
+      stageRadius,
       showButtons: [],
     });
     driverRef.current = instance;
@@ -415,7 +450,7 @@ export function TutorialOverlay({
       driverRef.current = null;
       instance.destroy();
     };
-  }, [glow, mode, transitionMs]);
+  }, [overlayColor, overlayOpacity, stagePadding, stageRadius, transitionMs]);
 
   // An anchorless step taken inside a modal (a recorded step with no control
   // to ring, or a card that explains the dialog) lights the dialog itself:
@@ -535,7 +570,7 @@ export function TutorialOverlay({
     // skips a detached element.
     if (events?.onScroll) window.removeEventListener("scroll", events.onScroll);
     if (events?.onResize) window.removeEventListener("resize", events.onResize);
-  }, [anchor, anchorlessDialog, dialogSuspended, glow, openList, step.id]);
+  }, [anchor, anchorlessDialog, dialogSuspended, overlayColor, overlayOpacity, openList, stagePadding, stageRadius, step.id, transitionMs]);
 
   // driver cuts one hole, around the anchor region. A step whose ring is on a
   // target outside that region (the Content Area step rings Measures in the
@@ -560,7 +595,7 @@ export function TutorialOverlay({
 
   const lastGoodStageRef = useRef<StageRect | null>(null);
   useEffect(() => {
-    if (glow || dialogSuspended) return;
+    if (!dimmed || dialogSuspended) return;
     const document = anchor.ownerDocument;
     let written: string | null = null;
     let base = "";
@@ -594,7 +629,7 @@ export function TutorialOverlay({
           // here would pin every frame to the old box.
           Object.assign(stage, lastGoodStageRef.current);
           lit = { ...lastGoodStageRef.current };
-          prefix = stageOverlayPath(lit, STAGE_PADDING, STAGE_RADIUS, { width: window.innerWidth, height: window.innerHeight });
+          prefix = stageOverlayPath(lit, stagePadding, stageRadius, { width: window.innerWidth, height: window.innerHeight });
         }
       }
       if (lit && litElement?.isConnected && !instance.getState("__transitionCallback")) {
@@ -602,17 +637,17 @@ export function TutorialOverlay({
         const shown = visibleClientRect(litElement);
         if (shown.width < whole.width - 0.5 || shown.height < whole.height - 0.5) {
           lit = { x: shown.x, y: shown.y, width: shown.width, height: shown.height };
-          prefix = stageOverlayPath(lit, STAGE_PADDING, STAGE_RADIUS, { width: window.innerWidth, height: window.innerHeight });
+          prefix = stageOverlayPath(lit, stagePadding, stageRadius, { width: window.innerWidth, height: window.innerHeight });
         }
       }
       let holes: ReturnType<typeof boxMinus> = [];
       const rect = visibleClientRect(ring);
       if (ring !== anchor && ring !== document.body && ring.isConnected && rect.width >= 1 && rect.height >= 1) {
-        const ringBox = paddedBox(rect, STAGE_PADDING);
-        holes = lit ? boxMinus(ringBox, paddedBox(lit, STAGE_PADDING)) : [ringBox];
+        const ringBox = paddedBox(rect, stagePadding);
+        holes = lit ? boxMinus(ringBox, paddedBox(lit, stagePadding)) : [ringBox];
       }
-      const occupied = [...(lit ? [paddedBox(lit, STAGE_PADDING)] : []), ...holes];
-      holes.push(...additionalFocusCutouts(resolveFocusHighlights(document, step.highlights, domPolicy).map((item) => item.rect), occupied, STAGE_PADDING));
+      const occupied = [...(lit ? [paddedBox(lit, stagePadding)] : []), ...holes];
+      holes.push(...additionalFocusCutouts(resolveFocusHighlights(document, step.highlights, domPolicy).map((item) => item.rect), occupied, stagePadding));
       const next = holes.length ? `${prefix}\n    ${cutoutPath(holes)}` : prefix;
       written = next;
       if (next !== current) path.setAttribute("d", next);
@@ -632,7 +667,7 @@ export function TutorialOverlay({
       onPath.disconnect();
       onOverlay.disconnect();
     };
-  }, [anchor, domPolicy, targetId, glow, dialogSuspended, openList, step.id, step.highlights]);
+  }, [anchor, domPolicy, targetId, dimmed, dialogSuspended, openList, stagePadding, stageRadius, step.id, step.highlights]);
 
   // The accent ring floats above the page instead of styling the anchor
   // itself: a box-shadow on the element paints below its later siblings and
@@ -649,13 +684,15 @@ export function TutorialOverlay({
   // modal that closes on its own action) dock the card instead.
   const attached = cardLayout.placement === "attached" && !anchorIsBody;
   const docked = !centered && !attached;
-  const showBox = highlightStyle !== "arrow";
+  const showBox = highlightStyle !== "arrow" && appearance?.ring !== false;
   const showPointer = !anchorIsBody && (highlightStyle ? highlightStyle !== "box" : cardLayout.pointer && !docked);
   const preferredSide: CardSide | null = step.anchor
     && step.anchor.placement !== "auto"
     && step.anchor.placement !== "center"
     ? step.anchor.placement
     : null;
+  const cardAlign = step.anchor?.align === "start" || step.anchor?.align === "end" ? step.anchor.align : null;
+  const cardGap = showPointer && highlightStyle ? Math.max(CARD_GAP_WITH_EXPORT_ARROW, appearance?.cardGap ?? 0) : appearance?.cardGap ?? CARD_GAP;
   useEffect(() => {
     cardPositionRef.current = null;
     // A centered card that moved aside for the last step's control starts
@@ -745,7 +782,7 @@ export function TutorialOverlay({
         const measurable = rect.width > 0 && rect.height > 0;
         if (measurable) {
           const placement = await positionTutorialCard(anchorBox, ringElement, card,
-            preferredSide, cardPositionRef.current, showPointer && highlightStyle ? 72 : 20);
+            preferredSide, cardPositionRef.current, cardGap, cardAlign);
           if (disposed || request !== revision) return;
           referenceHidden = placement.referenceHidden;
           cardPositionRef.current = placement.position;
@@ -881,7 +918,7 @@ export function TutorialOverlay({
       cleanupTarget();
       cleanupAnchor();
     };
-  }, [anchor, anchorIsBody, anchorlessDialog, attached, centered, domPolicy, preferredSide, suspended, targetId, highlightStyle, showPointer, step.id, step.highlights, dialogSuspended]);
+  }, [anchor, anchorIsBody, anchorlessDialog, attached, cardAlign, cardGap, centered, domPolicy, preferredSide, suspended, targetId, highlightStyle, showPointer, step.id, step.highlights, dialogSuspended]);
 
   // Bring a control that starts outside its scroll pane into view when the
   // step opens, instead of asking the learner to find it. Only once per step:
@@ -959,11 +996,11 @@ export function TutorialOverlay({
   const statusMessage = suspensionReason === "context"
     ? `This step belongs to ${step.context?.label ?? "another view"}. Return there to continue.`
     : suspensionReason === "dialog"
-    ? "Tutorial paused while this dialog is open. Close it to continue."
+    ? labels.dialogPaused
     : suspensionReason === "anchor-out-of-view"
-      ? "The highlighted control is out of view. Scroll to it, or select Bring it into view."
+      ? labels.anchorOutOfView
       : mode === "autoplay"
-        ? (busy ? "Preparing this step…" : "Read at your pace — this continues automatically, or select Next when you are ready.")
+        ? (busy ? labels.watchPreparing : labels.watchPacing)
         : null;
 
   useEffect(() => {
@@ -990,10 +1027,64 @@ export function TutorialOverlay({
     narrationCompletedRef.current = true;
     onNarrationComplete();
   }, [onNarrationComplete]);
+
+  const cardHeading = [
+    mode === "practice" ? labels.practice : labels.autoplay,
+    step.overlay.showProgress ? formatTutorialLabel(labels.progress, { current: stepIndex + 1, total: stepCount }) : "",
+  ].filter(Boolean).join(" · ");
+  // Practice offers Next only where nothing is left to grade: reading steps,
+  // revisits and outcomes present at entry. The final step offers Finish.
+  const practiceOffersNext = revisiting || alreadyDone || step.completion === "continue";
+  const practiceOffersFinish = readyToFinish || (stepIndex === stepCount - 1 && practiceOffersNext);
+  const showSkip = appearance?.showSkip === true;
+  const practiceFooter = stepIndex > 0 || practiceOffersNext || readyToFinish || showSkip;
+  const nextAvailable = !suspended && !busy
+    && (mode === "autoplay" || practiceOffersNext || practiceOffersFinish);
+  const previousAvailable = !suspended && !busy && stepIndex > 0
+    && (mode === "autoplay" || practiceFooter);
+  const keyboardRef = useLatestRef({
+    next: nextAvailable ? onNext : null,
+    previous: previousAvailable ? onPrevious : null,
+  });
+  useEffect(() => {
+    if (!keyboardNavigation) return;
+    const document = anchor.ownerDocument;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      // Arrow keys in a field move the caret; an open application dialog
+      // owns the keyboard while it is up.
+      if (isEditableTarget(event.target)
+        || topmostApplicationDialog(document, { includeFloatingWindows: false, domPolicy: domPolicyRef.current })) return;
+      const press = event.key === "ArrowRight" ? keyboardRef.current.next : keyboardRef.current.previous;
+      if (!press) return;
+      event.preventDefault();
+      press();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [anchor.ownerDocument, domPolicyRef, keyboardNavigation, keyboardRef]);
+
+  // Accessible names keep their fuller English wording ("Next tutorial
+  // step") until a host localises the visible label, which then names it.
+  const spoken = (key: keyof TutorialPlayerLabels, english: string) =>
+    labels[key] === DEFAULT_TUTORIAL_PLAYER_LABELS[key] ? english : labels[key];
+
+  const skipButton = showSkip ? (
+    <button
+      type="button"
+      onClick={onStop}
+      data-testid="tutorial-skip"
+      style={{ ...buttonStyle, minWidth: 0, border: "none", background: "transparent", padding: "0 4px", fontSize: 12, color: "var(--tourkit-ink-3)", textDecoration: "underline", textUnderlineOffset: 2, whiteSpace: "nowrap" }}
+    >
+      {labels.skip}
+    </button>
+  ) : null;
   // Export presentation can choose a yellow box, red pointer, or both.
   // An unconfigured application player retains its authored blue pointer.
-  const accent = "#ca8a04";
-  const accentBorder = "#facc15";
+  const accent = "var(--tourkit-accent)";
+  const accentInk = "var(--tourkit-accent-ink)";
+  const accentBorder = "var(--tourkit-ring)";
   const pointerColor = highlightStyle ? "#dc2626" : "#38bdf8";
 
   if (typeof document === "undefined") return null;
@@ -1014,8 +1105,8 @@ export function TutorialOverlay({
         opacity: 0,
         border: `3px solid ${accentBorder}`,
         borderRadius: 10,
-        background: mode === "autoplay" && glow ? "rgba(254, 240, 138, 0.12)" : "transparent",
-        boxShadow: "0 0 0 4px rgba(250, 204, 21, .3), 0 0 24px rgba(250, 204, 21, .7)",
+        background: mode === "autoplay" && glow ? "color-mix(in srgb, var(--tourkit-ring) 12%, transparent)" : "transparent",
+        boxShadow: "0 0 0 4px color-mix(in srgb, var(--tourkit-ring) 30%, transparent), 0 0 24px color-mix(in srgb, var(--tourkit-ring) 70%, transparent)",
         animation: "tourkit-glow 1.4s ease-in-out infinite",
         pointerEvents: "none",
         transition: "opacity 180ms ease",
@@ -1023,13 +1114,13 @@ export function TutorialOverlay({
     />
   );
 
-  const large = cardLayout.size === "large";
+  const metrics = CARD_METRICS[cardLayout.size] ?? CARD_METRICS.default;
   const cardPlacementStyle: CSSProperties = centered
     ? {
         left: "50%",
         top: "50%",
         transform: "translate(-50%, -50%)",
-        width: large ? "min(600px, calc(100vw - 48px))" : "min(440px, calc(100vw - 48px))",
+        width: `min(${metrics.centeredWidth}px, calc(100vw - 48px))`,
       }
     : attached
       ? {
@@ -1038,13 +1129,13 @@ export function TutorialOverlay({
           left: 0,
           top: 0,
           opacity: 0,
-          width: large ? "min(480px, calc(100vw - 32px))" : "min(360px, calc(100vw - 32px))",
+          width: `min(${metrics.width}px, calc(100vw - 32px))`,
           transition: "opacity 120ms ease",
         }
       : {
           right: 16,
           bottom: 16,
-          width: large ? "min(480px, calc(100vw - 32px))" : "min(360px, calc(100vw - 32px))",
+          width: `min(${metrics.width}px, calc(100vw - 32px))`,
         };
   const regionOutline = (
     <div
@@ -1085,6 +1176,7 @@ export function TutorialOverlay({
 
   return createPortal(
     <div
+      className="tourkit-overlay"
       data-testid="tutorial-overlay"
       data-spotlight-style={spotlightStyle}
       data-card-placement={cardLayout.placement}
@@ -1116,27 +1208,26 @@ export function TutorialOverlay({
           maxHeight: "calc(100vh - 32px)",
           overflowY: "auto",
           overflowX: "hidden",
-          padding: large ? 24 : 18,
+          padding: metrics.padding,
           border: "1px solid var(--tourkit-line-soft)",
           borderRadius: 14,
           background: "var(--tourkit-bg)",
           color: "var(--tourkit-ink)",
           boxShadow: "0 20px 55px rgba(15, 23, 42, 0.32)",
-          fontFamily: "ui-sans-serif, system-ui, sans-serif",
+          fontFamily: "var(--tourkit-font, ui-sans-serif, system-ui, sans-serif)",
           outline: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: accent, letterSpacing: ".03em", textTransform: "uppercase" }}>
-            {mode === "practice" ? "Practice" : "Watch"}
-            {step.overlay.showProgress ? ` · ${stepIndex + 1} of ${stepCount}` : ""}
+          <span data-testid="tutorial-card-heading" style={{ fontSize: 12, fontWeight: 700, color: accent, letterSpacing: ".03em", textTransform: "uppercase" }}>
+            {cardHeading}
           </span>
-          <button type="button" onClick={onStop} aria-label="Stop tutorial" title="Stop tutorial" style={buttonStyle}>
+          <button type="button" onClick={onStop} aria-label={labels.stop} title={labels.stop} style={buttonStyle}>
             <Square size={14} fill="currentColor" />
           </button>
         </div>
-        <h2 style={{ display: suspended ? "none" : undefined, margin: large ? "14px 0 0" : "10px 0 0", fontSize: large ? 29 : 22, lineHeight: 1.25, letterSpacing: "-.01em" }}>{step.overlay.title}</h2>
-        <p id={descriptionId} style={{ display: suspended ? "none" : undefined, margin: large ? "12px 0 0" : "9px 0 0", color: "var(--tourkit-ink-2)", fontSize: large ? 18 : 15, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{step.overlay.body}</p>
+        <h2 style={{ display: suspended ? "none" : undefined, margin: metrics.titleMargin, fontSize: metrics.title, lineHeight: 1.25, letterSpacing: "-.01em" }}>{step.overlay.title}</h2>
+        <p id={descriptionId} style={{ display: suspended ? "none" : undefined, margin: metrics.bodyMargin, color: "var(--tourkit-ink-2)", fontSize: metrics.body, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{step.overlay.body}</p>
         {!suspended && step.narration ? (
           <audio
             key={`${step.id}:${step.narration.src}:${step.narration.startMs}`}
@@ -1178,7 +1269,7 @@ export function TutorialOverlay({
             style={{ ...buttonStyle, marginTop: 10, padding: "0 12px", gap: 6, fontSize: 13, fontWeight: 600 }}
           >
             <ArrowDownToLine size={15} />
-            Bring it into view
+            {labels.bringIntoView}
           </button>
         ) : null}
         {!suspended && gateAdvance && hintOffered && step.check?.description ? (
@@ -1186,7 +1277,7 @@ export function TutorialOverlay({
             data-testid="tutorial-check-hint"
             style={{ margin: "14px 0 0", color: "var(--tourkit-ink)", fontSize: 12, fontWeight: 600, lineHeight: 1.45 }}
           >
-            Done when {step.check.description}
+            {formatTutorialLabel(labels.doneWhen, { criterion: step.check.description })}
           </p>
         ) : null}
         {!suspended && guided && blockedNonce > 0 ? (
@@ -1195,7 +1286,7 @@ export function TutorialOverlay({
             role="status"
             style={{ margin: "14px 0 0", color: accent, fontSize: 12, fontWeight: 600, lineHeight: 1.45 }}
           >
-            Only the highlighted control is active during this tour.
+            {labels.blockedHint}
           </p>
         ) : null}
         {!suspended && mode === "autoplay" && autoplayDurationMs && autoplayProgressActive ? (
@@ -1234,54 +1325,58 @@ export function TutorialOverlay({
           // the workspace already holds its outcome, so it is not graded again
           // and Next carries on. The final step waits for Finish so the
           // learner can look at the result before the celebration.
-          (stepIndex > 0 || revisiting || alreadyDone || step.completion === "continue" || readyToFinish) ? (
+          practiceFooter ? (
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 12 }}>
+              {skipButton}
+              <div style={{ display: "flex", flex: 1, alignItems: "center", justifyContent: showSkip ? "flex-end" : "space-between", gap: 8 }}>
               <button
                 type="button"
                 onClick={onPrevious}
                 disabled={stepIndex === 0 || busy}
-                aria-label="Previous tutorial step"
+                aria-label={spoken("previous", "Previous tutorial step")}
                 style={{ ...buttonStyle, padding: "0 10px", gap: 4, fontSize: 13, opacity: stepIndex === 0 || busy ? 0.45 : 1 }}
               >
                 <ChevronLeft size={16} />
-                Back
+                {labels.previous}
               </button>
-              {(readyToFinish || (stepIndex === stepCount - 1 && (revisiting || alreadyDone || step.completion === "continue"))) ? (
+              {practiceOffersFinish ? (
                 <button
                   type="button"
                   onClick={onNext}
-                  aria-label="Finish tutorial"
+                  aria-label={spoken("finish", "Finish tutorial")}
                   data-testid="tutorial-finish"
                   disabled={busy}
-                  style={{ ...buttonStyle, minWidth: 96, padding: "0 14px", gap: 4, fontSize: 13, fontWeight: 600, borderColor: accent, background: accent, color: "white" }}
+                  style={{ ...buttonStyle, minWidth: 96, padding: "0 14px", gap: 4, fontSize: 13, fontWeight: 600, borderColor: accent, background: accent, color: accentInk }}
                 >
-                  Finish
+                  {labels.finish}
                 </button>
-              ) : revisiting || alreadyDone || step.completion === "continue" ? (
+              ) : practiceOffersNext ? (
                 <button
                   type="button"
                   onClick={onNext}
-                  aria-label="Next tutorial step"
+                  aria-label={spoken("next", "Next tutorial step")}
                   disabled={busy}
-                  style={{ ...buttonStyle, minWidth: 76, padding: "0 12px", gap: 4, fontSize: 13, fontWeight: 600, borderColor: accent, background: accent, color: "white" }}
+                  style={{ ...buttonStyle, minWidth: 76, padding: "0 12px", gap: 4, fontSize: 13, fontWeight: 600, borderColor: accent, background: accent, color: accentInk }}
                 >
-                  Next
+                  {labels.next}
                   <ChevronRight size={16} />
                 </button>
               ) : null}
+              </div>
             </div>
           ) : null
         ) : (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 10 }}>
-            <button type="button" onClick={onPrevious} disabled={stepIndex === 0 || busy || suspended} aria-label="Previous tutorial step" style={{ ...buttonStyle, opacity: stepIndex === 0 || busy || suspended ? 0.45 : 1 }}>
+            {skipButton}
+            <button type="button" onClick={onPrevious} disabled={stepIndex === 0 || busy || suspended} aria-label={spoken("previous", "Previous tutorial step")} style={{ ...buttonStyle, opacity: stepIndex === 0 || busy || suspended ? 0.45 : 1 }}>
               <ChevronLeft size={18} />
             </button>
-            <button type="button" onClick={onTogglePause} disabled={busy || suspended || Boolean(error)} aria-label={paused ? "Resume tutorial" : "Pause tutorial"} style={{ ...buttonStyle, minWidth: 92, gap: 6, opacity: busy || suspended || error ? 0.45 : 1 }}>
+            <button type="button" onClick={onTogglePause} disabled={busy || suspended || Boolean(error)} aria-label={paused ? spoken("resume", "Resume tutorial") : spoken("pause", "Pause tutorial")} style={{ ...buttonStyle, minWidth: 92, gap: 6, opacity: busy || suspended || error ? 0.45 : 1 }}>
               {paused ? <Play size={16} fill="currentColor" /> : <Pause size={16} fill="currentColor" />}
-              {paused ? "Resume" : "Pause"}
+              {paused ? labels.resume : labels.pause}
             </button>
-            <button type="button" onClick={onNext} disabled={busy || suspended} aria-label={stepIndex === stepCount - 1 ? "Finish tutorial" : "Next tutorial step"} style={{ ...buttonStyle, minWidth: 76, gap: 4, borderColor: accent, background: accent, color: "white", opacity: busy || suspended ? 0.45 : 1 }}>
-              {stepIndex === stepCount - 1 ? "Finish" : "Next"}
+            <button type="button" onClick={onNext} disabled={busy || suspended} aria-label={stepIndex === stepCount - 1 ? spoken("finish", "Finish tutorial") : spoken("next", "Next tutorial step")} style={{ ...buttonStyle, minWidth: 76, gap: 4, borderColor: accent, background: accent, color: accentInk, opacity: busy || suspended ? 0.45 : 1 }}>
+              {stepIndex === stepCount - 1 ? labels.finish : labels.next}
               {stepIndex < stepCount - 1 ? <ChevronRight size={18} /> : null}
             </button>
           </div>

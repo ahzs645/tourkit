@@ -21,12 +21,14 @@ export type {
   TutorialMode,
   TutorialObservedAction,
   TutorialPlayerActionExecutor,
+  TutorialPlayerAppearance,
+  TutorialPlayerLabels,
   TutorialPlayerProps,
   TutorialPlayerStatus,
   TutorialSemanticAction,
   TutorialStep,
 } from "./types";
-export { flattenTutorialSteps } from "./types";
+export { DEFAULT_TUTORIAL_PLAYER_LABELS, flattenTutorialSteps, formatTutorialLabel } from "./types";
 
 
 
