@@ -180,7 +180,7 @@ const tour = parseTutorialManifest({
   persistProgress={false}
   keyboardNavigation
   labels={{ practice: "", progress: "{current} of {total}", next: "Next", finish: "Done", skip: "Skip tour" }}
-  appearance={{ overlayOpacity: 0.7, stagePadding: 8, stageRadius: 8, cardGap: 12, ring: false, showSkip: true }}
+  appearance={{ overlayOpacity: 0.7, stagePadding: 8, stageRadius: 8, cardGap: 12, ring: false, showSkip: true, closeIcon: "close" }}
   onStepChange={(step, index) => track("tour_step", { step: step.id, index })}
   onComplete={markTourDone}
   onStop={markTourSkipped}
@@ -200,7 +200,8 @@ const tour = parseTutorialManifest({
   lists the keys.
 - `appearance` sets the backdrop colour and opacity (an explicit opacity
   dims Practice too), the cutout's padding and radius, the card's gap, whether
-  the accent ring is drawn, and a text Skip button that stops the run.
+  the accent ring is drawn, a text Skip button that stops the run, and a
+  close cross in place of the stop square.
 - `keyboardNavigation` lets ArrowRight and ArrowLeft press Next and Back
   while the card offers them, except in editable fields and open application
   dialogs. Escape always stops.

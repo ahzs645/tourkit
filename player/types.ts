@@ -145,6 +145,8 @@ export interface TutorialPlayerAppearance {
   ring?: boolean;
   /** Add a text Skip button to the card footer; it stops the run like the stop icon. */
   showSkip?: boolean;
+  /** The card's stop control: a stop square (default) or a close cross, as tours often use. */
+  closeIcon?: "stop" | "close";
 }
 
 export interface TutorialPlayerProps {

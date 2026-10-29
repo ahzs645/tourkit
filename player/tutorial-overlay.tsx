@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { driver, type Driver } from "driver.js";
 import { autoUpdate } from "@floating-ui/dom";
 import "driver.js/dist/driver.css";
-import { ArrowDownToLine, ChevronLeft, ChevronRight, Pause, Play, Square } from "lucide-react";
+import { ArrowDownToLine, ChevronLeft, ChevronRight, Pause, Play, Square, X } from "lucide-react";
 
 import { findTutorialAnchor, openListOf, resolveRingElement, topmostApplicationDialog, visibleBoxOf } from "./anchor";
 import { DEFAULT_TUTORIAL_DOM_POLICY, type TutorialDomPolicy } from "./dom-policy";
@@ -1223,7 +1223,7 @@ export function TutorialOverlay({
             {cardHeading}
           </span>
           <button type="button" onClick={onStop} aria-label={labels.stop} title={labels.stop} style={buttonStyle}>
-            <Square size={14} fill="currentColor" />
+            {appearance?.closeIcon === "close" ? <X size={16} /> : <Square size={14} fill="currentColor" />}
           </button>
         </div>
         <h2 style={{ display: suspended ? "none" : undefined, margin: metrics.titleMargin, fontSize: metrics.title, lineHeight: 1.25, letterSpacing: "-.01em" }}>{step.overlay.title}</h2>

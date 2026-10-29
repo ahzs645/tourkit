@@ -83,11 +83,11 @@ it("localises the card and offers a Skip button that stops the run", async () =>
   await mount({
     onStop,
     labels: { practice: "", progress: "{current}/{total}", next: "Weiter", previous: "Zurück", skip: "Überspringen", stop: "Tour schließen" },
-    appearance: { showSkip: true, ring: false, overlayOpacity: 0.7 },
+    appearance: { showSkip: true, ring: false, overlayOpacity: 0.7, closeIcon: "close" },
   });
   expect(document.querySelector('[data-testid="tutorial-card-heading"]')?.textContent).toBe("1/2");
   expect(button("Weiter")?.getAttribute("aria-label")).toBe("Weiter");
-  expect(document.querySelector('[aria-label="Tour schließen"]')).not.toBeNull();
+  expect(document.querySelector('[aria-label="Tour schließen"] svg.lucide-x')).not.toBeNull();
   expect(document.querySelector('[data-testid="tutorial-spotlight"]')).toBeNull();
 
   await act(async () => document.querySelector<HTMLButtonElement>('[data-testid="tutorial-skip"]')!.click());
