@@ -6,13 +6,15 @@ capture of the host, and validation evidence. Use [README.md](README.md) for
 the APIs, [RUNTIME_SUPPORT.md](RUNTIME_SUPPORT.md) for runtime policy and
 [VERIFICATION.md](VERIFICATION.md) for the recorded verification. The
 [integration skill](guidance/integrate-tourkit/SKILL.md) turns this into a
-step-by-step procedure with acceptance checks.
+step-by-step procedure with acceptance checks. A host replacing a driver.js
+tour should also read [MIGRATING_FROM_DRIVER_JS.md](MIGRATING_FROM_DRIVER_JS.md).
 
 ## Choose a consumption mode
 
 | Mode | What you import | Who installs dependencies |
 | --- | --- | --- |
 | `npm install github:ahzs645/tourkit` | Built subpaths such as `tourkit/player` and `tourkit/styles.css` | npm, from Tourkit's `package.json`; `prepare` builds `dist/` on install |
+| `pnpm add github:ahzs645/tourkit#<sha>` | The same built subpaths | pnpm, once `tourkit` is listed in `onlyBuiltDependencies` |
 | Git submodule, compiled from source | Source directories such as `modules/tourkit/player` | The host, which lists Tourkit's runtime dependencies in its own `package.json` |
 
 With the built package, `npm run build` has already checked the source and the

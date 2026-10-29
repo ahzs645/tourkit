@@ -190,6 +190,14 @@ known, and are candidates for a versioned change:
   `LEGACY_TUTORIAL_DOM_POLICY`, which recognises `.pb-window` floating windows
   and treats `surfaces.*` checks as dialog-opening. Pass
   `NEUTRAL_TUTORIAL_DOM_POLICY` (or your own policy) explicitly.
+- **Host-drawn cards.** With `renderCard`, Tourkit leaves the card element
+  unstyled apart from its position, and does not scroll or clip it. A card
+  taller than the space beside its control is the host's to constrain.
+  `--tourkit-arrow-offset` is set only for an attached card on one side of its
+  control, not for docked, centred or corner-placed cards.
+- **Prepare actions.** `step.prepare` must be repeatable navigation. The player
+  runs it on every entry, so a host executor guards anything that must
+  happen once.
 - **Review anchors and kinds.** `REVIEW_ANCHOR_ATTRIBUTES` lists
   `data-field-id` together with a few renderer-specific `data-*` attributes
   from the first host; surfaces can anchor to any `data-*` attribute. The

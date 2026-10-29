@@ -59,6 +59,20 @@ Runtime dependencies stay external to the ESM build; your bundler resolves
 them from the installed package's dependencies. All files under `dist` travel
 together, including shared chunks.
 
+### From GitHub with pnpm
+
+pnpm 10 runs a git-hosted package's build only when it is allowed, so list
+Tourkit in `pnpm-workspace.yaml` and pin a commit on `main`:
+
+```yaml
+onlyBuiltDependencies:
+  - tourkit
+```
+
+```sh
+pnpm add github:ahzs645/tourkit#<commit sha>
+```
+
 ### As a Git submodule, compiled from source
 
 ```sh
@@ -154,7 +168,8 @@ Supply the same policy to playback and capture.
 
 ### Product tours
 
-A tour that explains an interface, rather than teaching a task, is a lesson of
+Moving an existing driver.js tour? [MIGRATING_FROM_DRIVER_JS.md](MIGRATING_FROM_DRIVER_JS.md)
+maps its options one by one. A tour that explains an interface, rather than teaching a task, is a lesson of
 `completion: "continue"` steps. Steps advance on Next, nothing is graded, and
 `interaction: "guided"` keeps stray clicks from opening other surfaces
 mid-tour. The player options below give such a tour the look and wording of
@@ -494,6 +509,9 @@ example builds and browser tests on Node 22.
 - [RUNTIME_SUPPORT.md](RUNTIME_SUPPORT.md): supported runtime boundaries,
   storage and wire identifiers, current limitations.
 - [DESIGN.md](DESIGN.md): design decisions.
+- [MIGRATING_FROM_DRIVER_JS.md](MIGRATING_FROM_DRIVER_JS.md): moving a
+  driver.js tour onto Tourkit, with RenderCV as the worked example.
+- [CHANGELOG.md](CHANGELOG.md): what changed since 0.1.0.
 - [VERIFICATION.md](VERIFICATION.md): recorded verification and its limits.
 - [library/README.md](library/README.md), [review/README.md](review/README.md),
   [examples/studio/README.md](examples/studio/README.md).

@@ -4,6 +4,41 @@ This is a dated record of what was verified, how, and with what limits. Newest
 entries first. It covers Tourkit and its examples; it does not certify any host
 application's lessons or workflows. A host records its own evidence.
 
+## 2026-10-29: product-tour options and the RenderCV migration
+
+Verified on Linux with Node 22 in a fresh checkout, then in RenderCV
+(`ahzs645/rendercv-app`), whose driver.js onboarding tour was moved onto
+Tourkit's player with a host-drawn card. Chromium came from the environment's
+Playwright install (`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`).
+
+| Command | Result |
+| --- | --- |
+| `npm run check` | Passed |
+| `npm test` | Passed: 9 Node tooling tests and 321 Vitest tests, including the new `player/tour-presentation.test.tsx` |
+| `npm run build` | Passed |
+| `npm run build:examples` and `npm run test:browser` | 7 browser acceptance tests passed (run before `renderCard` and the alignment changes, which do not touch the examples' default card) |
+
+The new tests cover prepare actions on entry and on Back, localised labels,
+the Skip button, keyboard navigation inside and outside fields, a host-drawn
+card, the Studio draft round trip of `prepare` and `align`, the validator's
+check of prepare action IDs, and a control that slides into view on a
+transform. That last test fails without the player's transition re-check.
+
+In RenderCV, at desktop (1280 × 800 and 1440 × 900) and phone (390 × 844)
+sizes, every step was played with Next, the arrow keys, Back, Skip, the close
+control, Escape and a restart from the sidebar. Completion and skip each
+recorded the onboarding preference; there were no page errors.
+The old and new tours ran side by side from the same commit's worktree. The
+card's bounding boxes and computed type matched to within 1 px on every part,
+and the arrow to within 4 px. RenderCV's typecheck, 159 tests and production
+build passed. The bundle contains none of Tourkit's export libraries.
+
+**Limits.** One existing test, *portable validator CLI › writes JSON/Markdown
+reports…*, intermittently passes its 5 s timeout when the whole suite runs
+on a loaded machine. It fails the same way on the 0.1.0 commit, and passes when
+run alone. Only English and Korean labels were exercised in RenderCV. Dark
+mode was not compared against the original.
+
 ## 2026-10-28: standalone Tourkit checkout
 
 Verified in a fresh checkout of the Tourkit repository, outside any host

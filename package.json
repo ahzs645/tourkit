@@ -142,6 +142,8 @@
     "DESIGN.md",
     "RUNTIME_SUPPORT.md",
     "VERIFICATION.md",
+    "CHANGELOG.md",
+    "MIGRATING_FROM_DRIVER_JS.md",
     "guidance"
   ]
 }
