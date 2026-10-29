@@ -498,6 +498,10 @@ function TutorialPlayerRun({
     };
     update();
     anchor.ownerDocument.addEventListener("scroll", scheduleUpdate, true);
+    // A drawer sliding in on a transform moves the control without a scroll
+    // or a resize; measured mid-slide it read as out of view for good.
+    anchor.ownerDocument.addEventListener("transitionend", scheduleUpdate, true);
+    anchor.ownerDocument.addEventListener("animationend", scheduleUpdate, true);
     window.addEventListener("resize", scheduleUpdate);
     const resizeObserver = typeof ResizeObserver === "undefined"
       ? null
@@ -511,6 +515,8 @@ function TutorialPlayerRun({
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
       anchor.ownerDocument.removeEventListener("scroll", scheduleUpdate, true);
+      anchor.ownerDocument.removeEventListener("transitionend", scheduleUpdate, true);
+      anchor.ownerDocument.removeEventListener("animationend", scheduleUpdate, true);
       window.removeEventListener("resize", scheduleUpdate);
       resizeObserver?.disconnect();
     };

@@ -158,6 +158,27 @@ it("lets the host draw the card while Tourkit keeps navigation and recovery", as
   expect(onComplete).toHaveBeenCalledTimes(1);
 });
 
+it("notices a control that slid into view on a transform once its transition ends", async () => {
+  // The toolbar starts off screen, as a drawer's contents do mid-slide.
+  let left = -400;
+  const original = HTMLElement.prototype.getBoundingClientRect;
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+    if (this.dataset.tutorialId !== "app.toolbar") return original.call(this);
+    return { x: left, y: 20, left, top: 20, right: left + 200, bottom: 60, width: 200, height: 40, toJSON: () => ({}) } as DOMRect;
+  });
+  vi.spyOn(HTMLElement.prototype, "getClientRects").mockImplementation(() => [{}] as unknown as DOMRectList);
+  await mount();
+  const overlay = () => document.querySelector<HTMLElement>('[data-testid="tutorial-overlay"]');
+  expect(overlay()?.dataset.suspensionReason).toBe("anchor-out-of-view");
+
+  left = 20;
+  await act(async () => {
+    container.querySelector('[data-tutorial-id="app.toolbar"]')!.dispatchEvent(new Event("transitionend", { bubbles: true }));
+  });
+  await flush();
+  expect(overlay()?.dataset.suspensionReason).toBe("");
+});
+
 it("keeps prepare actions and card alignment through a Studio draft", () => {
   const draft = tutorialManifestToRecordingDraft(tour, new Date("2026-01-01T00:00:00.000Z"));
   expect(draft.steps[0].anchorAlign).toBe("start");
