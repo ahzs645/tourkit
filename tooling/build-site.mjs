@@ -1,11 +1,14 @@
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { buildTutorialExample } from "./build-example.mjs";
+import { buildCaptureStudio } from "./build-capture-studio.mjs";
 
 // The GitHub Pages site: every example built into its own folder under one
 // landing page. Example pages use relative URLs, so the site works from any
 // base path (https://<owner>.github.io/tourkit/ included).
 const EXAMPLES = [
+  { id: "capture-studio", title: "Capture Studio", text: "Import a recorded website, edit instructions and real element targets, then export an offline interactive walkthrough. Includes a sample to try." },
+  { id: "simulated-backend", title: "Simulated backend", text: "Create, save, reopen and edit projects through a stateful local service. Use it to try the recorder without a server or account." },
   { id: "task-list", title: "Task list", text: "The smallest host: one lesson creates and finishes a task through the list's own actions and state." },
   { id: "dialog-workflow", title: "Dialog workflow", text: "Practice and Watch through a modal create-project flow, with the dialog as part of the lesson." },
   { id: "studio", title: "Studio", text: "The full authoring workspace: record a lesson against a live stage, edit steps, capture screenshots and export." },
@@ -16,7 +19,10 @@ const EXAMPLES = [
 const output = path.resolve(process.argv[2] ?? "site");
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
-for (const example of EXAMPLES) await buildTutorialExample(example.id, path.join(output, example.id));
+for (const example of EXAMPLES) {
+  if (example.id === "capture-studio") await buildCaptureStudio(path.join(output, example.id));
+  else await buildTutorialExample(example.id, path.join(output, example.id));
+}
 
 const escape = (value) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const cards = EXAMPLES.map((example) => `<li><a href="./${example.id}/"><h2>${escape(example.title)}</h2><p>${escape(example.text)}</p></a></li>`).join("\n");
@@ -41,7 +47,7 @@ footer a { color: var(--accent); text-decoration: underline; }
 </style></head>
 <body><main>
 <h1>Tourkit</h1>
-<p class="lede">Guided tours for React apps. A lesson names your app's own actions and the state they should produce; Tourkit plays it as hands-on Practice or a Watch demo, records new lessons, captures screenshots and exports guides. Each example below is a different, unrelated host.</p>
+<p class="lede">Record and edit interactive tutorials. Capture Studio turns recorded website elements and interface states into portable walkthroughs. The application examples use your app's own actions and state for Practice, Watch, semantic recording and document exports.</p>
 <ul>
 ${cards}
 </ul>

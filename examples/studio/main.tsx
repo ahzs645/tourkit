@@ -5,10 +5,12 @@ import { createRoot } from "react-dom/client";
 import { buildTutorialLaunchUrl } from "../../core/schema";
 import type { TutorialRecordingDraft } from "../../recording";
 import { TutorialStudioEnvironmentProvider, TutorialWorkspace } from "../../studio";
+import { createDefaultBrowserCaptureInteractiveExporter } from "../../browser-capture-export";
 import { Button } from "../../ui";
 import { createProjectStudioEnvironment } from "./environment";
 
 const environment = createProjectStudioEnvironment(window.location.href);
+const exportCapturedInteractive = createDefaultBrowserCaptureInteractiveExporter(new URL("./player-runtime.json", window.location.href));
 const subscribe = (notify: () => void) => { window.addEventListener("popstate", notify); return () => window.removeEventListener("popstate", notify); };
 const readOpenId = () => new URLSearchParams(window.location.search).get("open");
 function navigate(id: string | null) {
@@ -30,6 +32,7 @@ export function ProjectStudio() {
   const openDraft = useCallback((id: string) => navigate(id), []);
   return <TutorialStudioEnvironmentProvider environment={environment}>
     <TutorialWorkspace openDraftId={openId} onOpenDraft={openDraft} onDraftChange={syncDraft}
+      exportCapturedInteractive={exportCapturedInteractive}
       sourceUrl={(draft) => buildTutorialLaunchUrl(draft.launch)}
       toolbarStart={<Button variant="ghost" onClick={() => navigate(null)}>My tutorials</Button>}
       header={<header className="border-b border-slate-200 bg-white px-5 py-4 dark:border-slate-800 dark:bg-slate-900">

@@ -3,3 +3,8 @@ dist/
 .tmp-*/
 site/
 output/
+
+dist-extension/
+dist-extension-advanced/
+dist-capture-studio/
+.artifacts/

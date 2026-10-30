@@ -12,7 +12,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -25,6 +25,8 @@ jobs:
           npm run check
           npm test
           npm run build:examples
+          npm run build:capture-studio
+          npm run package:extension
       # pnpm builds a git-hosted Tourkit inside its store, which can sit under
       # a node_modules directory (pnpm/action-setup's does). Declaration emit
       # then treats Tourkit's own files as a dependency's, and an exported
@@ -45,6 +47,12 @@ jobs:
           TUTORIAL_REVIEW_SCREENSHOTS: ${{ runner.temp }}/evidence/review
           TUTORIAL_NATIVE_ARTIFACT_DIR: ${{ runner.temp }}/evidence/native
         run: npm run test:browser
+      - name: Verify captured DOM, Studio exchange and the real MV3 recorder
+        env:
+          TOURKIT_EXTENSION_ARTIFACT_DIR: ${{ runner.temp }}/evidence/extension
+        run: |
+          npm run test:capture:browser
+          npm run test:extension:browser
       - name: Audit dependencies
         run: npm audit --audit-level=high
       - name: Keep browser evidence
@@ -52,6 +60,19 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: browser-evidence
-          path: ${{ runner.temp }}/evidence
+          path: |
+            ${{ runner.temp }}/evidence
+            .tmp-tourkit-capture-ui-test/evidence
           if-no-files-found: ignore
           retention-days: 7
+      - name: Keep installable recorder and standalone Studio
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: tourkit-recorder-and-studio
+          path: |
+            .artifacts/tourkit-recorder-*.zip
+            dist-capture-studio/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30

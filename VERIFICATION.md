@@ -4,6 +4,66 @@ This is a dated record of what was verified, how, and with what limits. Newest
 entries first. It covers Tourkit and its examples; it does not certify any host
 application's lessons or workflows. A host records its own evidence.
 
+## 2026-10-30: Chrome recorder and captured-website authoring
+
+Verified on Linux with Node 24.22.1 and official Chrome for Testing
+153.0.8010.0. The implementation is based on repository commit
+`37496441f28052737ccac7f110fbd8932ff42f93`, with rrweb record/replay 2.2.0 pinned
+in the lockfile.
+
+| Check | Result |
+| --- | --- |
+| `npm run check` | Passed: source boundaries, pinned codec and full TypeScript |
+| `npm test` | Passed: 9 Node tooling tests and 358 Vitest tests across 67 files |
+| `npm run build` | Passed: 16 public entries, declarations and styles |
+| Build from a copied `node_modules/tourkit` path | Passed; retains the pnpm declaration regression gate |
+| `npm run build:examples` | Passed: six application examples |
+| `npm run build:site` | Passed: seven destinations including Capture Studio |
+| Standalone Studio and extension builds | Passed; recorder ZIP generated from the tested build |
+| `npm run test:browser` | All 7 existing browser acceptance tests passed |
+| `npm run test:capture:browser` | Both new DOM/runtime and Studio acceptance tests passed |
+| `npm run test:extension:browser` | Real Manifest V3 extension acceptance passed |
+| `npm audit --audit-level=high` | Zero vulnerabilities reported |
+
+### What the new browser checks prove
+
+- The actual extension records a local simulated-service workflow: create,
+  save, reopen and edit a project, then pause/resume and reload into a new
+  document segment. Its native screenshot contains the expected solid private
+  mask pixels; private form values, private image bytes and query secrets do not
+  appear in the exported capture. The service demo sends no `/api/` HTTP requests.
+- Terminating the extension service worker does not lose acknowledged events.
+  The dashboard opens the recording in its bundled Studio, which reconstructs
+  real DOM. Computed background and font values match the source stylesheet.
+  Edited metadata survives package export.
+- Studio edits instructions, reorders/deletes steps, repairs a target, changes
+  captured text, replaces/reviews a screenshot, recovers saved edits after reload
+  and reimports the resulting `.tourkit` package. The existing application Studio
+  exercises the same import and interactive-export path under a nested URL.
+- Standalone HTML opens through `file://`, makes no HTTP requests, accepts click
+  and input interactions, preserves learner input across checkpoints and the
+  final result, and resets successfully. Desktop and phone editor layouts were
+  visually inspected; the 390-pixel layout has no horizontal page overflow.
+- Adversarial HTML, frame content, inline handlers, CSS escape sequences and
+  style mutations neither execute source scripts nor issue source-origin
+  request events. Runtime checks also cover target picking, scaled geometry,
+  stale document targets and final-action completion.
+
+Visual inspection caught a real fidelity issue: rrweb can store an inline
+stylesheet in a link's `_cssText` attribute without `href` or `rel`. The importer
+now preserves that as sanitized style content, and both unit and browser tests
+assert this behavior. Privacy review also added pre-persistence removal of raw
+`srcdoc`, token-aware CSS URL handling and private-resource pruning.
+
+**Limits.** Extension automation uses a disposable manifest with screenshot
+permission because Playwright cannot activate Chrome's toolbar `activeTab`
+grant. The test separately asserts the shipped manifest has only `activeTab`,
+`scripting`, `storage` and `downloads`, with no required host grants. Manual
+toolbar interaction, store review and broad representative-site compatibility
+were not tested. These checks establish a captured-state tutorial workflow and
+an explicit demo service adapter, not a universal clone of arbitrary JavaScript,
+backend logic, opaque frames or WebGL applications.
+
 ## 2026-10-29: product-tour options and the RenderCV migration
 
 Verified on Linux with Node 22 in a fresh checkout, then in RenderCV
