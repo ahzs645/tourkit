@@ -18,7 +18,8 @@
     "types": [
       "node",
       "react",
-      "react-dom"
+      "react-dom",
+      "chrome"
     ]
   },
   "include": [
@@ -27,6 +28,11 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "dist-capture-studio",
+    "dist-extension",
+    "dist-extension-advanced",
+    "site",
+    ".artifacts"
   ]
 }

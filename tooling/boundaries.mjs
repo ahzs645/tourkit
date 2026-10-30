@@ -6,7 +6,7 @@ import ts from "typescript";
 // cannot silently couple the kit to a host application. Keep it in step with
 // package.json.
 const EXTERNAL_PACKAGES = new Set([
-  "@floating-ui/dom", "@radix-ui/react-tooltip",
+  "@floating-ui/dom", "@radix-ui/react-tooltip", "@rrweb/record", "@rrweb/replay",
   "clsx", "docx", "driver.js", "gifenc", "html2canvas-pro", "jszip",
   "lucide-react", "pdfmake", "pptxgenjs", "react", "react-dom",
   "tailwind-merge", "zod",
@@ -21,7 +21,7 @@ async function filesIn(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const file = path.join(directory, entry.name);
-    if (entry.isDirectory() && !["node_modules", "dist"].includes(entry.name) && !entry.name.startsWith(".tmp-")) files.push(...await filesIn(file));
+    if (entry.isDirectory() && !["node_modules", "dist", ".git", "dist-capture-studio", "dist-extension", "dist-extension-advanced", "site", ".artifacts"].includes(entry.name) && !entry.name.startsWith(".tmp-")) files.push(...await filesIn(file));
     else if (entry.isFile() && /(?:\.[cm]?[jt]sx?|\.css)$/.test(entry.name)) files.push(file);
   }
   return files;

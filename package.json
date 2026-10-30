@@ -1,7 +1,7 @@
 {
   "name": "tourkit",
   "version": "0.1.0",
-  "description": "Guided tours for React apps: Practice and Watch playback, semantic recording, an authoring Studio, a lesson library, screenshot capture, document exports, share links and an optional review layer.",
+  "description": "Interactive tutorials for React apps and captured websites: Chrome recording, DOM replay, editable Studio, offline walkthroughs, simulated services and document exports.",
   "license": "MIT",
   "author": "Ahmad Jalil",
   "homepage": "https://ahzs645.github.io/tourkit/",
@@ -73,6 +73,22 @@
     "./validation": {
       "types": "./dist/types/tooling/validate-lesson.d.ts",
       "import": "./dist/validation.js"
+    },
+    "./browser-capture": {
+      "types": "./dist/types/browser-capture/index.d.ts",
+      "import": "./dist/browser-capture.js"
+    },
+    "./browser-capture-studio": {
+      "types": "./dist/types/browser-capture-studio/index.d.ts",
+      "import": "./dist/browser-capture-studio.js"
+    },
+    "./browser-capture-export": {
+      "types": "./dist/types/browser-capture-export/index.d.ts",
+      "import": "./dist/browser-capture-export.js"
+    },
+    "./simulation": {
+      "types": "./dist/types/simulation/index.d.ts",
+      "import": "./dist/simulation.js"
     }
   },
   "sideEffects": [
@@ -82,12 +98,17 @@
     "check": "node tooling/check.mjs && tsc -p tsconfig.json",
     "test": "node --test tooling/boundaries.test.mjs tooling/build-share-codec.test.mjs && vitest run --config vitest.config.ts",
     "build": "node tooling/build.mjs",
-    "build:examples": "node tooling/build-example.mjs task-list && node tooling/build-example.mjs dialog-workflow && node tooling/build-example.mjs studio && node tooling/build-example.mjs library && node tooling/build-example.mjs review",
+    "build:examples": "node tooling/build-example.mjs task-list && node tooling/build-example.mjs dialog-workflow && node tooling/build-example.mjs studio && node tooling/build-example.mjs library && node tooling/build-example.mjs review && node tooling/build-example.mjs simulated-backend",
     "test:browser": "node --test tooling/studio-browser.test.mjs tooling/library-browser.test.mjs tooling/review-browser.test.mjs tooling/native-capture.test.mjs",
     "capture": "node tooling/capture-native.mjs",
     "validate:lesson": "node tooling/validate-lesson.mjs",
     "prepare": "node tooling/build.mjs",
-    "build:site": "node tooling/build-site.mjs"
+    "build:site": "node tooling/build-site.mjs",
+    "build:extension": "node tooling/build-extension.mjs",
+    "package:extension": "npm run build:extension && node tooling/package-extension.mjs",
+    "build:capture-studio": "node tooling/build-capture-studio.mjs",
+    "test:capture:browser": "node --test tooling/capture-browser.test.mjs tooling/capture-runtime-browser.test.mjs",
+    "test:extension:browser": "node --test tooling/extension-browser.test.mjs"
   },
   "peerDependencies": {
     "react": "^19.3.0",
@@ -96,6 +117,8 @@
   "dependencies": {
     "@floating-ui/dom": "1.8.0",
     "@radix-ui/react-tooltip": "1.4.1",
+    "@rrweb/record": "2.2.0",
+    "@rrweb/replay": "2.2.0",
     "clsx": "2.1.1",
     "docx": "9.7.2",
     "driver.js": "1.10.2",
@@ -113,6 +136,7 @@
     "@playwright/test": "1.63.0",
     "@tailwindcss/node": "4.3.3",
     "@tailwindcss/oxide": "4.3.3",
+    "@types/chrome": "0.3.7",
     "@types/node": "26.6.5",
     "@types/pdfmake": "0.3.3",
     "@types/react": "19.3.0",
@@ -143,6 +167,9 @@
     "RUNTIME_SUPPORT.md",
     "VERIFICATION.md",
     "CHANGELOG.md",
+    "CHROME_RECORDER.md",
+    "browser-capture/README.md",
+    "apps/recorder-extension/README.md",
     "MIGRATING_FROM_DRIVER_JS.md",
     "guidance"
   ]

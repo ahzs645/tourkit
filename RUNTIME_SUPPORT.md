@@ -14,6 +14,10 @@ See [VERIFICATION.md](VERIFICATION.md) for measured browser/build evidence and
 | Player | One active player per document, with real DOM anchors and immutable observable host snapshots |
 | Studio | Same-origin parent workspace and instrumented stage iframe, with shared draft-store conventions |
 | Capture | Same-origin stage replay; DOM capture in Studio or Chromium-native capture through the portable CLI |
+| Browser recorder | Chrome 120+ Manifest V3; top-level HTTP(S) site access through activeTab, optional asset origins, durable local rrweb chunks |
+| Captured website Studio | Versioned capture import, real DOM target editing, local autosave, package exchange and standalone interactive HTML |
+| Captured website replay | Script-disabled nested iframe, sanitized DOM/CSS, bundled supported assets, recorded-state transitions and local input state |
+| Simulated service | Explicit frontend API-client adapter; in-memory JSON fixtures/collections, deterministic reset, no network fallback |
 | Draft persistence | Named IndexedDB database/store; memory implementation when IndexedDB is absent |
 | Library | Arbitrary ordered section IDs; status records/adapters scoped to the intended app/user |
 | Review | Optional environment/surface composition, local storage/in-memory fallback and portable file exchange |
@@ -52,7 +56,10 @@ The following are **not guaranteed** by the current implementation:
 - Correct overlay stacking/input behavior above native top-layer dialogs and
   popovers. Recognizing an open `<dialog>` does not prove top-layer integration.
 - Cross-origin Studio, seeking, screenshot capture or shared draft access.
-- An offline interactive bundle for an arbitrary application.
+- A runnable clone of an arbitrary application's original JavaScript and services.
+  The captured-website player separately supports offline **recorded interface
+  states**; its safe DOM reconstruction does not restore the source application's
+  business logic.
 
 Use the existing dialog/surface markers and browser checks for supported modal,
 portaled dropdown, nested scrolling and keyboard behavior. Extending a selector
@@ -95,6 +102,8 @@ namespace URI-encoded first.
 | Narration recording mode | Local storage, `tourkit:narration` | None |
 | Studio layout (panel width/visibility, timeline, stage zoom, overlay, follow-step view) | Local storage, `tourkit:studio-*` | None |
 | Editable drafts | IndexedDB, database `tourkit-studio`, store `drafts` | `createDefaultTutorialDraftStore` |
+| Captured website edits | IndexedDB, database `tourkit-capture-studio`, stores `drafts` and `metadata` | Capture Studio autosave on its current origin |
+| Recorder sessions | Extension IndexedDB, database `tourkit-browser-recorder-v1`, stores `sessions`, `chunks` and `assets` | Recorder extension storage adapter |
 | Reviewer identity, reviews and inbox | Local storage under the `tourkit-review` namespace | `createReviewStorage`, `createReviewInboxStore`, `createReviewEnvironment` |
 
 A host can supply a lazy storage provider instead of the browser default.
@@ -122,6 +131,8 @@ Other identifiers on the wire or in the DOM:
 | --- | --- |
 | Studio/stage iframe protocol | `tourkit-v1` |
 | Capture handshake protocol | `tourkit-capture-v1` |
+| Browser capture file format | `tourkit-browser-capture`, version `1` |
+| Recorder extension messages | `tourkit-recorder-v1` |
 | Overlay CSS classes | `tourkit-ring`, `tourkit-pointer`, `tourkit-surface`, `tourkit-popover` |
 | Overlay CSS variables | `--tourkit-*` |
 | Studio stage overlay element id | `tourkit-stage-overlay` |
@@ -166,6 +177,15 @@ provider is configured. Shared lesson links need the recipient's compatible host
 application. They omit screenshots and recorded narration, while permitted
 same-site narration references still need their served assets. Local draft storage
 does not itself make that host application available offline.
+
+Captured websites have a separate format and runtime. The bundled Capture Studio
+and Chrome extension provide their own prebuilt interactive player, so those
+exports need no original application host. Replay uses captured DOM states and
+embedded assets; it blocks source scripts, navigation, forms and remote resource
+loading. Unsupported or missing assets remain capture notes. A privacy label
+does not certify anonymity, and changing a text node does not remove its copies
+from every screenshot or state. See [CHROME_RECORDER.md](CHROME_RECORDER.md) and
+[browser-capture/README.md](browser-capture/README.md).
 
 Static validation and screenshot fingerprints report declared contracts and
 changes. A current fingerprint is not proof of correctness or authenticity.

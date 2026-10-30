@@ -20,7 +20,11 @@
     "review/**/*",
     "share.ts",
     "types/**/*.d.ts",
-    "tooling/validate-lesson.ts"
+    "tooling/validate-lesson.ts",
+    "browser-capture/**/*",
+    "browser-capture-studio/**/*",
+    "browser-capture-export/**/*",
+    "simulation/**/*"
   ],
   "exclude": [
     "node_modules",

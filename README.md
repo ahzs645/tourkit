@@ -10,11 +10,24 @@ state stores; the host supplies them through adapters.
 
 Tourkit was extracted from, and is used by, the Webforms form builder.
 
-**Live examples:** <https://ahzs645.github.io/tourkit/> — five unrelated hosts
-built from [`examples/`](examples).
+The **Chrome recorder and Capture Studio** also support websites without a
+Tourkit integration. Record rendered DOM, CSS, supported assets, actions and
+native screenshots, edit the captured interface and tutorial steps, then export
+an offline interactive walkthrough. [Build and use the recorder](CHROME_RECORDER.md).
+
+**Live examples:** <https://ahzs645.github.io/tourkit/> — application integrations,
+a simulated service and Capture Studio. The Pages site reflects the deployed
+branch; build locally to try changes that have not been deployed.
 
 ## Features
 
+- **Chrome recorder**: Manifest V3 extension, real DOM checkpoints and element
+  targets, asset collection, masked native screenshots and durable local sessions.
+- **Capture Studio**: import `.tourkit`/ZIP/JSON recordings, edit instructions,
+  reorder steps, repair targets, replace captured text, review screenshots and
+  export a self-contained interactive HTML file.
+- **Simulated services**: explicit request fixtures and stateful local CRUD
+  collections for a demo frontend, with deterministic reset and no network fallback.
 - **Practice and Watch playback** of one lesson. Practice grades the outcome in
   the host's state, so any valid route counts; Watch runs the same domain
   operations through an executor.
@@ -95,7 +108,7 @@ capture of another host and validation evidence for a new integration.
 
 ## Public entrypoints
 
-The package exposes twelve JavaScript subpaths plus `styles.css`. Source
+The package exposes sixteen JavaScript subpaths plus `styles.css`. Source
 consumers use the corresponding directories and files.
 
 | Subpath | Main responsibility and APIs |
@@ -112,6 +125,10 @@ consumers use the corresponding directories and files.
 | `session` | URL/session hooks, `TutorialSessionIntegration`, draft loading and the authoring bridge |
 | `capture` | `TutorialCaptureRun`, capture protocol, framing, replay, screenshot capture and freshness helpers |
 | `validation` | `validateTutorialLesson`, host metadata schema, lesson fingerprint and JSON/Markdown report model |
+| `browser-capture` | Versioned capture package, bounded JSON/ZIP import, sanitization and isolated DOM replay |
+| `browser-capture-studio` | `CaptureStudio`, `BrowserCapturePlayer`, editable real-element previews and reading exports |
+| `browser-capture-export` | Self-contained interactive HTML export with a prebuilt trusted player runtime |
+| `simulation` | `createTutorialServiceSimulator`: exact response fixtures, stateful collections and reset |
 
 There is no root barrel that loads every feature. `core` cannot import React or
 higher layers; core, player, recording and Studio do not import the optional
@@ -119,9 +136,36 @@ review addon. Boundary checks inspect source imports, CSS dependencies and build
 inputs. The directories are subpaths of one package, not independently
 versioned packages.
 
-The application supplies lesson content, ordering, routes, snapshots, semantic
+For semantic lessons, the application supplies content, ordering, routes, snapshots, semantic
 actions, fixtures and reset behavior, launch policy and any offline host
 runtime. Keep those adapters in the application, outside Tourkit.
+
+## Chrome recorder and captured websites
+
+```sh
+npm ci
+npm run package:extension
+npm run build:capture-studio
+```
+
+Load `dist-extension/` through **chrome://extensions → Developer mode → Load
+unpacked**. On the source website, choose **Start on this tab**, perform the
+workflow, then **Stop recording → Open in Studio**. The extension bundles Studio;
+no account or server is required. Its dashboard can download a `.tourkit` package.
+
+The existing application Studio includes **Import captured website**. The
+standalone editor in `dist-capture-studio/` accepts the same file. Both let you
+change step instructions and order, select a different target in the captured
+DOM, change captured text and replace screenshots. **Save package** preserves
+editable data. **Interactive HTML** includes the player, captured states and
+bundled assets in one file.
+
+Captured playback uses real elements and saved interface states. It does not run
+the source website's application JavaScript, reconnect its backend, or invent
+unvisited workflows. For a frontend you control, `tourkit/simulation` supplies
+explicit stateful service behavior; the `simulated-backend` example demonstrates
+create, save, reopen, edit and reset. See [CHROME_RECORDER.md](CHROME_RECORDER.md)
+for the format, privacy controls, exports, API examples and supported boundaries.
 
 ## Player integration
 
@@ -451,8 +495,10 @@ for dark mode.
 | Full Studio and stage | `node tooling/build-example.mjs studio` | `.tmp-tourkit-studio-example` |
 | Warehouse/observatory libraries | `node tooling/build-example.mjs library` | `.tmp-tourkit-library-example` |
 | Proposal review and inbox | `node tooling/build-example.mjs review` | `.tmp-tourkit-review-example` |
+| Stateful local service | `node tooling/build-example.mjs simulated-backend` | `.tmp-tourkit-simulated-backend-example` |
+| Captured website editor | `npm run build:capture-studio` | `dist-capture-studio` |
 
-`npm run build:examples` builds all five. Serve an output directory over HTTP
+`npm run build:examples` builds the six application examples. Serve an output directory over HTTP
 to try it. `npm run build:site` builds every example into `site/<id>/` with a
 landing page; that is what the Pages site deploys. Every example build checks
 its actual input graph for application imports. Examples contain demonstration
@@ -489,10 +535,14 @@ npm ci
 npm run check          # source/CSS boundaries, pinned codec, TypeScript
 npm test               # boundary and codec tooling tests, then Vitest
 npm run build          # dist/: ESM, declarations, styles.css, build manifest
-npm run build:examples # the five examples
+npm run build:examples # the six application examples
+npm run build:capture-studio # standalone captured-website editor
+npm run package:extension   # unpacked Chrome extension and ZIP
 npm run build:site     # examples plus landing page under site/
 npx playwright install chromium
 npm run test:browser   # Studio, library, review and native-capture acceptance
+npm run test:capture:browser # DOM isolation, edits, recovery and offline export
+npm run test:extension:browser # real MV3 recording against a local fixture
 npm run capture -- --help
 npm run validate:lesson -- --help
 ```
@@ -501,10 +551,17 @@ npm run validate:lesson -- --help
 instead. The browser tests serve their own local HTTP fixtures and need the
 example builds. They are executable assertions about the examples, not a
 substitute for checking your own host application. CI runs check, test,
-example builds and browser tests on Node 22.
+example builds, the recorder and browser tests on Node 22. Extension tests require
+full Chromium with extension support; `TOURKIT_TEST_EXTENSION_CHROMIUM` can select
+that executable separately. To automate Chrome's native screenshot API, the test
+uses a broader permission in a disposable manifest/profile and visits a local
+fixture. It asserts that the distributed manifest retains `activeTab` and has no
+required host grants. Toolbar permission activation still needs a manual check.
 
 ## Documentation
 
+- [CHROME_RECORDER.md](CHROME_RECORDER.md): record, import, edit and publish captured
+  websites; simulated services and their limits.
 - [ADOPTING.md](ADOPTING.md): integrating Tourkit into a new host.
 - [RUNTIME_SUPPORT.md](RUNTIME_SUPPORT.md): supported runtime boundaries,
   storage and wire identifiers, current limitations.

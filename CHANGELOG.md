@@ -2,6 +2,28 @@
 
 ## Unreleased
 
+### Chrome recorder and captured-website Studio
+
+- Added a Manifest V3 recorder for rendered DOM, element targets, CSS/assets and
+  masked native screenshot checkpoints. Recording sessions survive popup closure
+  and worker restart; pause/resume, navigation segments and capture notes are
+  available in the local dashboard.
+- Added the versioned `tourkit-browser-capture` package, bounded JSON/ZIP import,
+  `.tourkit` exchange and an isolated replay controller. Captured site scripts
+  and service connections do not run in this player.
+- Added Capture Studio with step editing, reordering, target repair, captured
+  text edits, screenshot review, local autosave and recovery. Existing
+  `TutorialWorkspace` exposes **Import captured website**.
+- Added standalone Practice/Watch playback, HTML/Markdown guides and a
+  self-contained interactive HTML exporter. Inputs survive checkpoint changes
+  until reset; the final recorded result is shown before completion.
+- Added explicit service simulation with response fixtures, stateful CRUD,
+  search, required-field validation and reset, plus a project-workspace example.
+- Added four public subpaths, standalone Studio and extension builds, ZIP
+  packaging and CI checks for actual DOM replay, editor exchange, offline export
+  and real extension recording. Captures preserve their privacy classification;
+  imported recordings are never declared synthetic automatically.
+
 Product-tour support, added while moving RenderCV's driver.js onboarding tour
 onto Tourkit. See [MIGRATING_FROM_DRIVER_JS.md](MIGRATING_FROM_DRIVER_JS.md)
 and the README's [Product tours](README.md#product-tours) section.

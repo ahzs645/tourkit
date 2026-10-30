@@ -4,13 +4,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { compile, optimize } from "@tailwindcss/node";
 import { Scanner } from "@tailwindcss/oxide";
+import { buildCapturePlayerRuntime } from "./build-capture-studio.mjs";
 
 export const kitRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const exampleOutputName = (example) => example === "task-list" ? ".tmp-tourkit-example"
   : example === "dialog-workflow" ? ".tmp-tourkit-dialog-example" : `.tmp-tourkit-${example}-example`;
 
 export async function buildTutorialExample(example = "task-list", output = path.join(process.cwd(), exampleOutputName(example))) {
-  if (!["task-list", "dialog-workflow", "studio", "library", "review"].includes(example)) throw new Error(`Unknown tutorial example: ${example}`);
+  if (!["task-list", "dialog-workflow", "studio", "library", "review", "simulated-backend"].includes(example)) throw new Error(`Unknown tutorial example: ${example}`);
   const entryPoints = example === "studio"
     ? { main: path.join(kitRoot, "examples/studio/main.tsx"), stage: path.join(kitRoot, "examples/studio/stage.tsx") }
     : { example: path.join(kitRoot, `examples/${example}.tsx`) };
@@ -40,6 +41,7 @@ export async function buildTutorialExample(example = "task-list", output = path.
   }
   for (const name of Object.keys(entryPoints)) await writeFile(path.join(output, `${name}.css`), `${css}\n${bundledStyles}`);
   for (const [name, content] of Object.entries(pages)) await writeFile(path.join(output, name), content);
+  if (example === "studio") await writeFile(path.join(output, "player-runtime.json"), JSON.stringify(await buildCapturePlayerRuntime()));
   console.log(`Standalone ${example} example built in ${output} (${inputs.length} module files; no application imports).`);
   return { output: path.resolve(output), inputs };
 }
