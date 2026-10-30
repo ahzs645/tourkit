@@ -25,6 +25,18 @@ jobs:
           npm run check
           npm test
           npm run build:examples
+      # pnpm builds a git-hosted Tourkit inside its store, which can sit under
+      # a node_modules directory (pnpm/action-setup's does). Declaration emit
+      # then treats Tourkit's own files as a dependency's, and an exported
+      # component with an inferred return type fails with TS2883.
+      - name: Build from a path inside node_modules, as a pnpm git install does
+        run: |
+          target="$RUNNER_TEMP/consumer/node_modules/.pnpm-store/tmp/tourkit"
+          mkdir -p "$target"
+          git archive HEAD | tar -x -C "$target"
+          cd "$target"
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build
       - run: npx playwright install --with-deps chromium
       - name: Verify Studio, library, review and native capture in Chromium
         env:

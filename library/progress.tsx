@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactElement } from "react";
 import { CircleCheck } from "lucide-react";
 import type { TutorialManifest } from "../core/schema";
 import { TutorialLaunchControl, type TutorialLibraryLaunch } from "./lesson";
@@ -13,7 +14,7 @@ export type TutorialLibraryProgressProps = TutorialLibraryLaunch & {
   startLabel?: string;
 };
 
-export function TutorialLibraryProgress({ tutorials, statuses, variant = "card", label = "Learning progress", startLabel = "Start", ...launch }: TutorialLibraryProgressProps) {
+export function TutorialLibraryProgress({ tutorials, statuses, variant = "card", label = "Learning progress", startLabel = "Start", ...launch }: TutorialLibraryProgressProps): ReactElement {
   const { total, completedCount, inProgress, suggested } = tutorialLibrarySummary(tutorials, statuses);
   const progress = (
     <div role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={total || 1} aria-valuenow={completedCount}

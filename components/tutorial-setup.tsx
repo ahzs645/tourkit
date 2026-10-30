@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import type { TutorialSetup } from "../core/schema";
 
 export const TUTORIAL_SETUP_KINDS = {
@@ -8,7 +9,7 @@ export const TUTORIAL_SETUP_KINDS = {
 } as const;
 
 /** Learners can inspect the exercise's scope before launching it. */
-export function TutorialSetupDetails({ setup }: { setup?: TutorialSetup }) {
+export function TutorialSetupDetails({ setup }: { setup?: TutorialSetup }): ReactElement | null {
   if (!setup) return null;
   return (
     <details className="mt-2 text-xs leading-5 text-slate-600 dark:text-slate-300" data-testid="tutorial-setup">

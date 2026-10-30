@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import clsx from "clsx";
 
 interface SpinnerProps {
@@ -5,7 +6,7 @@ interface SpinnerProps {
   label?: string;
 }
 
-export function Spinner({ className, label = "Loading" }: SpinnerProps) {
+export function Spinner({ className, label = "Loading" }: SpinnerProps): ReactElement {
   return (
     <svg
       className={clsx("animate-spin-smooth", className)}

@@ -159,7 +159,13 @@ onlyBuiltDependencies:
 "tourkit": "github:ahzs645/tourkit#<commit sha>"
 ```
 
-Pin a commit that is on `main`. A commit only on a feature branch can disappear
+Pin a commit that is on `main` and includes the CHANGELOG's "builds from a
+path inside `node_modules`" fix. On GitHub's runners, `pnpm/action-setup`
+puts the store under a `node_modules` directory, and pnpm builds Tourkit
+there. TypeScript's declaration emit then treats Tourkit's own files as a
+dependency's, and an exported component with an inferred return type fails
+with `TS2883`. That broke RenderCV's first CI run even though local installs
+passed; Tourkit's CI now builds from such a path too. A commit only on a feature branch can disappear
 after a squash merge and branch deletion. The first install builds Tourkit
 (about 30 s); later installs reuse pnpm's store. The built `player` entry pulls
 in only `driver.js`, `@floating-ui/dom`, `zod`, `lucide-react` and React, plus

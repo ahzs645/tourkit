@@ -37,6 +37,14 @@ and the README's [Product tours](README.md#product-tours) section.
   or animation ends, so a control that slides in on a transform no longer
   leaves its step suspended.
 
+### Build
+
+- Tourkit builds from a path inside `node_modules`, where pnpm's store sits
+  on GitHub's runners and where pnpm builds a git-hosted Tourkit. Four exported
+  components (`Spinner`, `TutorialSetupDetails`, `TutorialLibraryProgress`,
+  `StepViewContext`) now declare their return types; declaration emit failed
+  on their inferred types there (TS2883). CI builds from such a path.
+
 ### Styles
 
 - New CSS variables `--tourkit-accent`, `--tourkit-accent-ink`,

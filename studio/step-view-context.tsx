@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { BuilderSelect } from "../ui/builder-select";
 import { Button } from "../ui/button";
 import type { TutorialRecordingStep } from "../recording/types";
@@ -7,7 +8,7 @@ import { tutorialContextMatches, type TutorialViewState } from "../core/view-con
 export function StepViewContext({ step, index, liveView, onChange, onGoToView }: {
   step: TutorialRecordingStep; index: number; liveView?: TutorialViewState;
   onChange: (patch: Partial<TutorialRecordingStep>) => void; onGoToView?: () => void;
-}) {
+}): ReactElement {
   const { viewContext } = useTutorialStudioEnvironment();
   const current = viewContext(liveView ?? {});
   const matches = tutorialContextMatches(step.context, liveView);

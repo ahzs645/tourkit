@@ -33,6 +33,14 @@ card's bounding boxes and computed type matched to within 1 px on every part,
 and the arrow to within 4 px. RenderCV's typecheck, 159 tests and production
 build passed. The bundle contains none of Tourkit's export libraries.
 
+RenderCV's first CI run after the merge failed at install: pnpm built Tourkit
+inside `/home/runner/setup-pnpm/node_modules/.bin/store/…`, and declaration
+emit there rejected four components' inferred return types (TS2883). Reproduced
+by building a copy under a `node_modules` path with its own `npm ci`. That
+failed with the same four errors, then built cleanly once their return types
+were declared. A RenderCV install with its pnpm store under `node_modules`
+then succeeded too.
+
 **Limits.** One existing test, *portable validator CLI › writes JSON/Markdown
 reports…*, intermittently passes its 5 s timeout when the whole suite runs
 on a loaded machine. It fails the same way on the 0.1.0 commit, and passes when
