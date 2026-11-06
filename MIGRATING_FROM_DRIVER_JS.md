@@ -27,6 +27,7 @@ validated manifest of steps plus a host action executor.
 | `onHighlightStarted` that sends analytics | `onStepChange(step, index)` |
 | `onCloseClick` / `onDestroyed` → "skipped" | `onStop` (stop control, Skip and Escape) |
 | Last step's Done → "completed" | `onComplete` |
+| A step that failed silently | `onError({ kind, message, step, stepIndex })` |
 | Steps filtered with `null` for a disabled feature | Build the manifest at runtime and leave the step out |
 | `showProgress`, `progressText: "{{current}} of {{total}}"` | `overlay.showProgress` (default true), `labels.progress: "{current} of {total}"` |
 | `nextBtnText`, `prevBtnText`, `doneBtnText` | `labels.next`, `labels.previous`, `labels.finish` |
@@ -91,6 +92,11 @@ driver-style card:
   `min-height` on its Skip button, so the original was 16 px tall, not 32.
 - Render the `notice` Tourkit passes. It holds the paused, "Bring it into
   view" and blocked-click messages; without it those states are unrecoverable.
+- Handle `error`. When a step cannot be shown, `renderCard` runs with `error`
+  set: draw `error.help`, a control named `error.recoverLabel` that calls
+  `error.recover`, and keep Next (which skips the step) and `stop`. The text comes
+  from `labels.errorAnchorHelp`, `labels.errorStepHelp`, `labels.retry` and
+  `labels.takeMeBack`, so a localised tour must set those too.
 - Draw the arrow from `data-card-position` (the side of the control the card
   sits on) and `--tourkit-arrow-offset` (where along that edge the control
   is). The offset follows `anchor.align` the way driver's arrow does.
@@ -168,8 +174,8 @@ with `TS2883`. That broke RenderCV's first CI run even though local installs
 passed; Tourkit's CI now builds from such a path too. A commit only on a feature branch can disappear
 after a squash merge and branch deletion. The first install builds Tourkit
 (about 30 s); later installs reuse pnpm's store. The built `player` entry pulls
-in only `driver.js`, `@floating-ui/dom`, `zod`, `lucide-react` and React, plus
-driver's own CSS; the export libraries are not bundled.
+in only `driver.js`, `@floating-ui/dom`, `zod`, `lucide-react` and React; the
+export libraries are not bundled.
 
 Two smaller notes. pnpm warns that Tourkit's peer range asks for React 19.3
 when a host is on 19.2; it still links the host's single React, which works.

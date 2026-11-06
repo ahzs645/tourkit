@@ -15,6 +15,7 @@ export type {
 } from "./iframe-protocol";
 export type {
   TutorialActionSubscription,
+  TutorialCardError,
   TutorialCardRenderProps,
   TutorialCompletionAction,
   TutorialExecutionContext,
@@ -23,6 +24,7 @@ export type {
   TutorialObservedAction,
   TutorialPlayerActionExecutor,
   TutorialPlayerAppearance,
+  TutorialPlayerFailure,
   TutorialPlayerLabels,
   TutorialPlayerProps,
   TutorialPlayerStatus,

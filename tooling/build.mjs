@@ -20,7 +20,11 @@ entryPoints.share = path.join(directory, "share.ts");
 entryPoints.session = path.join(directory, "components/tutorial-session.ts");
 entryPoints.capture = path.join(directory, "recording/capture.ts");
 entryPoints.validation = path.join(directory, "tooling/validate-lesson.ts");
-const result = await build({ absWorkingDir: directory, entryPoints, outdir: output, bundle: true, splitting: true, format: "esm", platform: "browser", target: "es2022", packages: "external", metafile: true, write: false, chunkNames: "chunks/[name]-[hash]" });
+// esbuild ignores any tsconfig.json under a node_modules directory, which is
+// where pnpm builds git-hosted packages on CI, so the JSX mode must be set here.
+const result = await build({ absWorkingDir: directory, entryPoints, outdir: output, bundle: true, splitting: true, format: "esm", platform: "browser", target: "es2022", packages: "external", jsx: "automatic", metafile: true, write: false, chunkNames: "chunks/[name]-[hash]" });
+const classicJsx = result.outputFiles.filter((file) => file.path.endsWith(".js") && /\bReact\.(createElement|Fragment)\b/.test(file.text));
+if (classicJsx.length) throw new Error(`Classic JSX in the build, which throws "React is not defined" in the browser: ${classicJsx.map((file) => path.relative(directory, file.path)).join(", ")}`);
 const outside = Object.keys(result.metafile.inputs).filter((file) => file.startsWith("../") || path.isAbsolute(file));
 if (outside.length) throw new Error(`Package build escaped the Tourkit: ${outside.join(", ")}`);
 await rm(output, { recursive: true, force: true });

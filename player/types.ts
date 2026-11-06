@@ -185,11 +185,36 @@ export interface TutorialCardRenderProps {
    * Render it somewhere in the card so those situations stay recoverable.
    */
   notice: import("react").ReactNode;
+  /**
+   * The step could not be shown, or null. The card is then docked in the
+   * corner, not attached to a control: draw `error.help` and the recovery
+   * instead of the step's text. Next skips the step and `stop` ends the run.
+   */
+  error: TutorialCardError | null;
   next: () => void;
   previous: () => void;
   togglePause: () => void;
   /** Ends the run, as the stop control, Skip and Escape do. */
   stop: () => void;
+}
+
+/** A step the player could not show, as `renderCard` receives it. */
+export interface TutorialCardError {
+  kind: "anchor" | "step";
+  /** The technical message, for logs. `help` is the sentence for the learner. */
+  message: string;
+  help: string;
+  /** Name of the recovery control: `labels.retry` or `labels.takeMeBack`. */
+  recoverLabel: string;
+  recover: () => void;
+}
+
+/** What `onError` reports. Fires once each time a step fails. */
+export interface TutorialPlayerFailure {
+  kind: "anchor" | "step";
+  message: string;
+  step: TutorialStep;
+  stepIndex: number;
 }
 
 export interface TutorialPlayerProps {
@@ -299,6 +324,8 @@ export interface TutorialPlayerProps {
   onStepChange?: (step: TutorialStep, index: number) => void;
   onComplete?: () => void;
   onStop?: () => void;
+  /** A step could not be shown. The learner sees the recovery card either way. */
+  onError?: (failure: TutorialPlayerFailure) => void;
   /**
    * Choices offered on the celebration card after the final step. When empty
    * or omitted the player simply unmounts on completion (embedded hosts such

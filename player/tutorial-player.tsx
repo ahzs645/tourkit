@@ -22,7 +22,7 @@ import { DEFAULT_TUTORIAL_DOM_POLICY, type TutorialDomPolicy } from "./dom-polic
 import { TUTORIAL_SURFACE_CSS, TUTORIAL_SURFACE_PROPS } from "./surface";
 import { TutorialOverlay } from "./tutorial-overlay";
 import { autoplayStepDurationMs } from "./playback-timing";
-import { DEFAULT_TUTORIAL_PLAYER_LABELS, flattenTutorialSteps } from "./types";
+import { DEFAULT_TUTORIAL_PLAYER_LABELS, flattenTutorialSteps, formatTutorialLabel } from "./types";
 import { isTutorialAnchorFullyVisible } from "./visibility";
 import type {
   TutorialObservedAction,
@@ -282,6 +282,7 @@ function TutorialPlayerRun({
   onStepChange,
   onComplete,
   onStop,
+  onError,
   completionActions,
   onDismissCompletion,
   labels: labelOverrides,
@@ -1418,6 +1419,26 @@ function TutorialPlayerRun({
     }, domPolicyRef.current);
   }, [currentStep?.anchor?.id, domPolicyRef, errorKind, setStatus, status]);
 
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
+  const errorCardRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (status !== "error" || !error || !currentStep) return;
+    onErrorRef.current?.({ kind: errorKind, message: error, step: currentStep, stepIndex });
+    errorCardRef.current?.focus({ preventScroll: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, status]);
+  useEffect(() => {
+    if (status !== "error") return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      event.preventDefault();
+      stop();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [status, stop]);
+
   // Escape dismisses the celebration card, matching the Escape that stops a
   // running tutorial: either way the key means "let me get back to work".
   useEffect(() => {
@@ -1547,8 +1568,44 @@ function TutorialPlayerRun({
             })();
           }
         : null;
+      const hostCard = renderCard && currentStep ? renderCard({
+        step: currentStep,
+        stepIndex,
+        stepCount: flatSteps.length,
+        mode,
+        title: currentStep.overlay.title,
+        body: currentStep.overlay.body,
+        progress: currentStep.overlay.showProgress ? formatTutorialLabel(labels.progress, { current: stepIndex + 1, total: flatSteps.length }) : "",
+        labels,
+        canGoNext: true,
+        isFinish: isLastStep,
+        canGoPrevious: false,
+        busy: false,
+        suspended: false,
+        paused: false,
+        notice: null,
+        error: {
+          kind: errorKind,
+          message: error ?? "",
+          help: errorKind === "anchor" ? labels.errorAnchorHelp : labels.errorStepHelp,
+          recoverLabel: takeMeBack ? labels.takeMeBack : labels.retry,
+          recover: takeMeBack ?? (() => setStatus("idle")),
+        },
+        next,
+        previous,
+        togglePause: () => {},
+        stop,
+      }) : null;
+      if (hostCard) {
+        return (
+          <div ref={errorCardRef} role="alert" tabIndex={-1} data-testid="tutorial-error" data-custom-card="true" {...TUTORIAL_SURFACE_PROPS} style={{ position: "fixed", right: 16, bottom: 16, zIndex: 8200, maxWidth: "calc(100vw - 32px)", outline: "none" }}>
+            <style>{TUTORIAL_SURFACE_CSS}</style>
+            {hostCard}
+          </div>
+        );
+      }
       return (
-        <div role="alert" data-testid="tutorial-error" {...TUTORIAL_SURFACE_PROPS} style={{ position: "fixed", right: 16, bottom: 16, zIndex: 8200, width: 340, padding: 16, border: "1px solid var(--tourkit-line-soft)", borderRadius: 12, background: "var(--tourkit-bg)", color: "var(--tourkit-ink)", boxShadow: "0 16px 40px rgba(15, 23, 42, .25)" }}>
+        <div ref={errorCardRef} role="alert" tabIndex={-1} data-testid="tutorial-error" {...TUTORIAL_SURFACE_PROPS} style={{ position: "fixed", right: 16, bottom: 16, zIndex: 8200, width: 340, padding: 16, border: "1px solid var(--tourkit-line-soft)", borderRadius: 12, background: "var(--tourkit-bg)", color: "var(--tourkit-ink)", boxShadow: "0 16px 40px rgba(15, 23, 42, .25)" }}>
           <style>{TUTORIAL_SURFACE_CSS}</style>
           <strong>{labels.errorTitle}</strong>
           <p style={{ margin: "8px 0 4px", fontSize: 13, color: "var(--tourkit-ink-2)" }}>{error}</p>

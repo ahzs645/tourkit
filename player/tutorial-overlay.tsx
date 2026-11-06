@@ -5,7 +5,6 @@ import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, ty
 import { createPortal } from "react-dom";
 import { driver, type Driver } from "driver.js";
 import { autoUpdate } from "@floating-ui/dom";
-import "driver.js/dist/driver.css";
 import { ArrowDownToLine, ChevronLeft, ChevronRight, Pause, Play, Square, X } from "lucide-react";
 
 import { findTutorialAnchor, openListOf, resolveRingElement, topmostApplicationDialog, visibleBoxOf } from "./anchor";
@@ -99,9 +98,20 @@ interface TutorialOverlayProps {
  * grades outcomes, so every route through the UI must stay clickable — not
  * only the spotlighted element — and clicks must pass through the dimmed
  * area to the real controls underneath, as the previous overlay allowed.
+ *
+ * driver.css is deliberately not imported. Its `.driver-active * {
+ * pointer-events: none }` can only be undone by another blanket rule, and
+ * that one switches on everything a host hid with pointer-events: none: a
+ * closed drawer's invisible backdrop then sits on top of the page and takes
+ * every click. The rules Tourkit needs from it are copied here instead.
  */
 const OVERLAY_CSS = `
-.driver-active * { pointer-events: auto; }
+.driver-layer { width: auto; max-width: none; height: auto; max-height: none; color: inherit; pointer-events: none; background: 0 0; border: 0; margin: 0; padding: 0; position: fixed; inset: 0; overflow: visible; }
+.driver-layer::backdrop { display: none; }
+.driver-active.driver-no-scroll { overflow: hidden; }
+@keyframes animate-fade-in { 0% { opacity: 0; } to { opacity: 1; } }
+.driver-fade .driver-overlay { animation: animate-fade-in var(--driver-animation-duration, .4s) ease-in-out; }
+.driver-no-interaction, .driver-no-interaction * { pointer-events: none !important; }
 .driver-active .driver-overlay { pointer-events: none !important; }
 .driver-active .tourkit-pointer,
 .driver-active .tourkit-pointer * { pointer-events: none !important; }
@@ -134,6 +144,9 @@ const OVERLAY_CSS = `
   .tourkit-surface, .tourkit-surface * { animation-iteration-count: 1 !important; transition: none !important; }
 }
 `;
+
+const prefersReducedMotion = () => typeof window.matchMedia === "function"
+  && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** Card dimensions per authored size. Widths cap at the viewport minus a margin. */
 const CARD_METRICS = {
@@ -439,10 +452,11 @@ export function TutorialOverlay({
   }, [anchor, domPolicy, guided, suspended, targetId]);
 
   useEffect(() => {
+    const animate = transitionMs > 0 && !prefersReducedMotion();
     const instance = driver({
-      animate: transitionMs > 0,
-      duration: transitionMs > 0 ? transitionMs : undefined,
-      smoothScroll: true,
+      animate,
+      duration: animate ? transitionMs : undefined,
+      smoothScroll: !prefersReducedMotion(),
       allowClose: false,
       allowKeyboardControl: false,
       disableActiveInteraction: false,
@@ -950,7 +964,7 @@ export function TutorialOverlay({
   const scrollAnchorIntoView = useCallback((behavior: ScrollBehavior = "smooth") => {
     const ringElement = resolveRingElement(anchor, targetId, domPolicy);
     if (typeof ringElement.scrollIntoView !== "function") return;
-    ringElement.scrollIntoView({ block: "center", inline: "nearest", behavior });
+    ringElement.scrollIntoView({ block: "center", inline: "nearest", behavior: prefersReducedMotion() ? "instant" : behavior });
   }, [anchor, domPolicy, targetId]);
   useEffect(() => {
     if (anchorIsBody || suspensionReason === "dialog") return;
@@ -1082,7 +1096,8 @@ export function TutorialOverlay({
       const press = event.key === "ArrowRight" ? keyboardRef.current.next : keyboardRef.current.previous;
       if (!press) return;
       event.preventDefault();
-      press();
+      // One step per press: a held key must not read past the whole tour.
+      if (!event.repeat) press();
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
@@ -1315,6 +1330,7 @@ export function TutorialOverlay({
     paused,
     notice: hasNotice ? notice : null,
     next: onNext,
+    error: null,
     previous: onPrevious,
     togglePause: onTogglePause,
     stop: onStop,

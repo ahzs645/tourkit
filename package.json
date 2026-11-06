@@ -98,6 +98,7 @@
     "check": "node tooling/check.mjs && tsc -p tsconfig.json",
     "test": "node --test tooling/boundaries.test.mjs tooling/build-share-codec.test.mjs && vitest run --config vitest.config.ts",
     "build": "node tooling/build.mjs",
+    "test:dist": "vitest run --config tooling/dist-smoke/vitest.config.ts",
     "build:examples": "node tooling/build-example.mjs task-list && node tooling/build-example.mjs dialog-workflow && node tooling/build-example.mjs studio && node tooling/build-example.mjs library && node tooling/build-example.mjs review && node tooling/build-example.mjs simulated-backend",
     "test:browser": "node --test tooling/studio-browser.test.mjs tooling/library-browser.test.mjs tooling/review-browser.test.mjs tooling/native-capture.test.mjs",
     "capture": "node tooling/capture-native.mjs",

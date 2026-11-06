@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+### Host integration fixes
+
+- Builds set the JSX mode themselves. esbuild ignores `tsconfig.json` under a
+  `node_modules` directory, so a pnpm git install on CI emitted classic JSX with
+  no `React` import, and the first render threw `React is not defined`. The
+  build now refuses to finish with classic JSX in its output, and CI renders the
+  built player from such a path (`npm run test:dist`).
+- `driver.js/dist/driver.css` is no longer imported. Its blanket
+  `.driver-active *` rule, and the rule that undid it, switched on host elements
+  hidden with `pointer-events: none`, so a closed drawer's invisible backdrop
+  took clicks meant for the highlighted control. The rules Tourkit needs are in
+  the player's own injected CSS.
+- `onError` reports each step that cannot be shown.
+- `renderCard` now draws the recovery card too, through the new `error` prop, so
+  a host card stays in the host's words. A failed step moves focus to its card,
+  and Escape stops the run from it.
+- A held arrow key moves one step, not one per repeat.
+- The spotlight and scrolling respect `prefers-reduced-motion`.
+
 ### Chrome recorder and captured-website Studio
 
 - Added a Manifest V3 recorder for rendered DOM, element targets, CSS/assets and

@@ -1,11 +1,11 @@
 // @vitest-environment happy-dom
 import { act, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { parseTutorialManifest } from "../core/schema";
 import { tutorialManifestToRecordingDraft, tutorialRecordingDraftToManifest } from "../recording/draft";
 import { TutorialPlayer } from "./tutorial-player";
-import type { TutorialPlayerActionExecutor, TutorialPlayerProps } from "./types";
+import type { TutorialCardRenderProps, TutorialPlayerActionExecutor, TutorialPlayerProps } from "./types";
 
 // A product tour: reading steps over a host whose second control lives in a
 // drawer that only the host's own navigation opens.
@@ -177,6 +177,85 @@ it("notices a control that slid into view on a transform once its transition end
   });
   await flush();
   expect(overlay()?.dataset.suspensionReason).toBe("");
+});
+
+const pressRight = (repeat = false) => act(async () => {
+  document.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, repeat }));
+});
+
+it("moves one step per press, so a held arrow key cannot read past the tour", async () => {
+  await mount({ keyboardNavigation: true });
+  await pressRight(true);
+  await flush();
+  expect(title()).toBe("The toolbar");
+  await pressRight();
+  await flush();
+  expect(title()).toBe("Your files");
+});
+
+it("leaves pointer-events alone on the host's own elements", async () => {
+  await mount();
+  const css = document.querySelector('[data-testid="tutorial-overlay"] style')?.textContent ?? "";
+  expect(css).toContain(".driver-overlay");
+  expect(css).not.toMatch(/\.driver-active \* *\{/);
+});
+
+describe("a step that cannot be shown", () => {
+  const broken = parseTutorialManifest({
+    schemaVersion: 1, id: "broken-tour", title: "Broken tour", launch: { fixture: "app" },
+    interaction: "guided",
+    chapters: [{ id: "tour", title: "Tour", steps: [
+      { id: "fine", completion: "continue", anchor: { id: "app.toolbar" }, overlay: { title: "Fine", body: "It works." } },
+      { id: "missing", completion: "continue", anchor: { id: "never.there", waitMs: 20 }, overlay: { title: "Gone", body: "No control." } },
+      { id: "after", completion: "continue", anchor: { id: "app.toolbar" }, overlay: { title: "After", body: "Past it." } },
+    ] }],
+  });
+  const fail = async (props: Partial<TutorialPlayerProps>) => {
+    await mount({ manifest: broken, keyboardNavigation: true, ...props });
+    await pressRight();
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 120)); });
+  };
+
+  it("tells the host once, naming the step and the kind of failure", async () => {
+    const onError = vi.fn();
+    await fail({ onError });
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError.mock.calls[0][0]).toMatchObject({ kind: "anchor", stepIndex: 1, step: { id: "missing" } });
+    expect(onError.mock.calls[0][0].message).toContain("never.there");
+  });
+
+  it("hands the recovery to the host's card, in the host's words", async () => {
+    const card = vi.fn((props: TutorialCardRenderProps) => <div data-testid="host-card">
+      <p>{props.error?.help ?? props.body}</p>
+      {props.error ? <button onClick={props.error.recover}>{props.error.recoverLabel}</button> : null}
+      <button onClick={props.next}>{props.isFinish ? "Done" : "Onward"}</button>
+    </div>);
+    await fail({ renderCard: card, labels: { errorAnchorHelp: "That control is not here.", retry: "Again", next: "Next" } });
+
+    const host = document.querySelector('[data-testid="tutorial-error"]')!;
+    expect(host.textContent).toContain("That control is not here.");
+    expect(host.textContent).toContain("Again");
+    expect(host.textContent).not.toContain("never.there");
+    expect(document.activeElement).toBe(host);
+    expect(card.mock.lastCall![0].error?.kind).toBe("anchor");
+
+    await act(async () => [...host.querySelectorAll("button")].find((item) => item.textContent === "Onward")!.click());
+    await flush();
+    expect(card.mock.lastCall![0].step.id).toBe("after");
+    expect(card.mock.lastCall![0].error).toBeNull();
+  });
+
+  it("stops on Escape from the error card, with or without a host card", async () => {
+    for (const renderCard of [undefined, () => <p>Host card</p>]) {
+      const onStop = vi.fn();
+      await fail({ onStop, renderCard });
+      await act(async () => {
+        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      });
+      expect(onStop).toHaveBeenCalledTimes(1);
+      await act(async () => root!.render(null));
+    }
+  });
 });
 
 it("keeps prepare actions and card alignment through a Studio draft", () => {
