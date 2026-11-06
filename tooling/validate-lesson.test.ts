@@ -176,5 +176,6 @@ describe("portable validator CLI", () => {
       expect(run("--output", inputPath).status).toBe(2);
       expect(JSON.parse(await readFile(inputPath, "utf8"))).toEqual(manifest());
     } finally { await rm(directory, { recursive: true, force: true }); }
-  });
+    // Six CLI runs, each allowed 20 s: vitest's default 5 s fails on a busy machine.
+  }, 120_000);
 });
