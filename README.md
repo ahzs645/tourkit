@@ -108,7 +108,7 @@ capture of another host and validation evidence for a new integration.
 
 ## Public entrypoints
 
-The package exposes sixteen JavaScript subpaths plus `styles.css`. Source
+The package exposes seventeen JavaScript subpaths plus `styles.css`. Source
 consumers use the corresponding directories and files.
 
 | Subpath | Main responsibility and APIs |
@@ -120,6 +120,7 @@ consumers use the corresponding directories and files.
 | `studio` | `TutorialWorkspace`, `TutorialStudio`, `MyTutorials`, `TutorialStudioEnvironmentProvider`, `TutorialCardMenu` and `TutorialBulkExport` |
 | `ui` | Shared buttons, inputs, dialogs, tooltips, search and selection controls |
 | `library` | `TutorialLibrary`, lesson cards/rows, progress summaries, status-source adapters and section models |
+| `tips` | `Tip`, `useTip` and the one-tip-at-a-time queue for one-time coachmarks, with per-user dismissal storage |
 | `review` | Optional review model, storage, inbox, file exchange, layers and tutorial/Studio bindings |
 | `share` | `createTutorialShareCodec` and its launch-route/hash-key policy |
 | `session` | URL/session hooks, `TutorialSessionIntegration`, draft loading and the authoring bridge |
@@ -139,6 +140,48 @@ versioned packages.
 For semantic lessons, the application supplies content, ordering, routes, snapshots, semantic
 actions, fixtures and reset behavior, launch policy and any offline host
 runtime. Keep those adapters in the application, outside Tourkit.
+
+## One-time tips
+
+`tips` is for small coachmarks that point at a feature once, outside any
+lesson: "Jump anywhere with ⌘K" beside a search button, or "Pin pages here"
+beside a sidebar. It needs no manifest, player or driver.js, and imports only
+React.
+
+```tsx
+import { Tip, resetTips } from "tourkit/tips";
+
+<Tip
+  tipKey="command-palette"
+  anchor="[data-command-palette-trigger]"
+  placement="bottom"
+  title="Jump anywhere with ⌘K"
+  storageKey={`acme.tips:${userId}`}
+>
+  Press ⌘K to search pages, records and actions.
+</Tip>;
+```
+
+- Only one tip is on screen. Tips queue in mount order; after one is
+  dismissed the next waits for a later page load instead of chaining.
+- Dismissals are stored in localStorage under `storageKey`; scope it per user.
+  `resetTips(storageKey)` brings them back (for a "Reset tips" setting).
+- An anchored tip waits up to five seconds for its anchor, renders in a portal
+  beside it, follows it on scroll and resize, and hides while it is off
+  screen. It does not show while `hideAnchoredWhen` matches (phones by
+  default); without `anchor` the tip renders inline.
+- It is non-modal: focus is never moved or trapped. Esc (unless a modal dialog
+  or menu is open) or the dismiss button closes it, and focus inside the tip
+  returns to the anchor.
+- Automated browsers (`navigator.webdriver`) get no tips unless localStorage
+  `tourkit.tips.force` is `"1"`. Pass `suppressed` to decide yourself.
+
+`tips/tips.css` (in the combined stylesheet, and imported by the component for
+source consumers) styles the default `tourkit-tip` class prefix through
+`--tourkit-tip-*` custom properties. A host with its own design system passes
+`classPrefix` (the block for `__head`, `__title`, `__close`, `__body`,
+`__actions`, `__image`, `__tail` and the `--<prefix>-tail` property),
+`closeIcon` and the button class names instead.
 
 ## Chrome recorder and captured websites
 

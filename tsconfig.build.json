@@ -17,6 +17,7 @@
     "shared/**/*",
     "ui/**/*",
     "library/**/*",
+    "tips/**/*",
     "review/**/*",
     "share.ts",
     "types/**/*.d.ts",

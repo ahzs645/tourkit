@@ -53,6 +53,10 @@
       "types": "./dist/types/library/index.d.ts",
       "import": "./dist/library.js"
     },
+    "./tips": {
+      "types": "./dist/types/tips/index.d.ts",
+      "import": "./dist/tips.js"
+    },
     "./review": {
       "types": "./dist/types/review/index.d.ts",
       "import": "./dist/review.js"

@@ -15,7 +15,7 @@ const output = path.join(directory, "dist");
 const issues = await tourkitBoundaryIssues(directory);
 if (issues.length) throw new Error(issues.join("\n"));
 await verifyTutorialVendor(directory);
-const entryPoints = Object.fromEntries(["core", "player", "recording", "export", "studio", "ui", "library", "review", "browser-capture", "browser-capture-studio", "browser-capture-export", "simulation"].map((name) => [name, path.join(directory, name, "index.ts")]));
+const entryPoints = Object.fromEntries(["core", "player", "recording", "export", "studio", "ui", "library", "review", "tips", "browser-capture", "browser-capture-studio", "browser-capture-export", "simulation"].map((name) => [name, path.join(directory, name, "index.ts")]));
 entryPoints.share = path.join(directory, "share.ts");
 entryPoints.session = path.join(directory, "components/tutorial-session.ts");
 entryPoints.capture = path.join(directory, "recording/capture.ts");
@@ -29,7 +29,7 @@ const outside = Object.keys(result.metafile.inputs).filter((file) => file.starts
 if (outside.length) throw new Error(`Package build escaped the Tourkit: ${outside.join(", ")}`);
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
-const clientEntries = new Set(["player.js", "studio.js", "ui.js", "library.js", "review.js", "session.js", "capture.js", "browser-capture-studio.js"]);
+const clientEntries = new Set(["player.js", "studio.js", "ui.js", "library.js", "tips.js", "review.js", "session.js", "capture.js", "browser-capture-studio.js"]);
 for (const file of result.outputFiles) {
   await mkdir(path.dirname(file.path), { recursive: true });
   // Bundling removes source directives. Restore the public React boundary for

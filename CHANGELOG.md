@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### One-time tips
+
+- Added the `tips` subpath: `Tip`, `useTip`, `resetTips` and a shared queue so
+  only one coachmark is on screen at a time. Dismissals persist per host-chosen
+  storage key, anchored tips wait for and follow their anchor, and automated
+  browsers get no tips by default. Hosts can keep their own styling through
+  `classPrefix`, `closeIcon` and button class names. It needs only React and
+  works with React 18. Extracted from Societyer.
+
 ### Host integration fixes
 
 - Builds set the JSX mode themselves. esbuild ignores `tsconfig.json` under a
