@@ -35,6 +35,14 @@ export function findTutorialAnchor(document: Document, anchorId: string, domPoli
  * list is a popup of its own, drawn outside the control's box — without this
  * the ring and the spotlight stay on the closed field while the learner picks
  * from a list the overlay has dimmed.
+ *
+ * Only a popup counts: the control says it opens one (`aria-haspopup`, anything
+ * but "false", or `role="combobox"`), or what it controls has a popup's role
+ * (listbox, menu, tree, grid, dialog). A disclosure — a section heading or an
+ * accordion button — carries `aria-expanded` and `aria-controls` too, but it
+ * opens a panel in the page's flow, not a popup. Handing the ring to that
+ * panel ringed a whole expanded section, and scrolling it into view pushed
+ * the button the step points at out of its scroll port.
  */
 export function openListOf(element: HTMLElement): HTMLElement | null {
   // An anchorless step's "anchor" is the page itself: searching it would pick
@@ -54,10 +62,19 @@ export function openListOf(element: HTMLElement): HTMLElement | null {
       // A list inside the element is already inside its box (the Palette's
       // always-open search results): handing the spotlight to it would only
       // shrink it and dim the rest of the region.
-      if (list?.isConnected && !element.contains(list)) return list;
+      if (list?.isConnected && !element.contains(list) && opensPopup(control, list)) return list;
     }
   }
   return null;
+}
+
+const POPUP_ROLES = new Set(["listbox", "menu", "tree", "grid", "dialog"]);
+
+/** Whether `control` opens `list` as a popup, rather than disclosing a panel in place. */
+function opensPopup(control: HTMLElement, list: HTMLElement): boolean {
+  const popup = control.getAttribute("aria-haspopup");
+  if ((popup !== null && popup !== "false") || control.getAttribute("role") === "combobox") return true;
+  return POPUP_ROLES.has(list.getAttribute("role") ?? "");
 }
 
 /**

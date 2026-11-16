@@ -54,6 +54,34 @@ describe("ring hand-off to an open list", () => {
     expect(openListOf(field)).toBe(document.getElementById("list-1"));
   });
 
+  it("keeps the ring on an open disclosure rather than the panel it shows in place", () => {
+    document.body.innerHTML = `
+      <button data-tutorial-id="section.toggle" aria-expanded="true" aria-controls="panel-1">Stream crossings</button>
+      <div id="panel-1">A tall section's contents</div>
+    `;
+    const toggle = document.querySelector<HTMLElement>('[data-tutorial-id="section.toggle"]')!;
+    expect(openListOf(toggle)).toBeNull();
+    expect(resolveRingElement(toggle, null)).toBe(toggle);
+  });
+
+  it("follows aria-controls to a popup: a combobox, a control naming its popup, or a popup role", () => {
+    document.body.innerHTML = `
+      <button id="menu" aria-haspopup="menu" aria-expanded="true" aria-controls="menu-list">Actions</button>
+      <div id="menu-list" role="menu"></div>
+      <input id="search" role="combobox" aria-expanded="true" aria-controls="results">
+      <div id="results" role="listbox"></div>
+      <button id="no-popup" aria-haspopup="false" aria-expanded="true" aria-controls="panel-2"></button>
+      <div id="panel-2"></div>
+      <button id="plain" aria-expanded="true" aria-controls="plain-list">Priority</button>
+      <div id="plain-list" role="listbox"></div>
+    `;
+    expect(openListOf(document.getElementById("menu")!)).toBe(document.getElementById("menu-list"));
+    expect(openListOf(document.getElementById("search")!)).toBe(document.getElementById("results"));
+    expect(openListOf(document.getElementById("no-popup")!)).toBeNull();
+    // A button that does not say so still opens a popup when what it controls is one.
+    expect(openListOf(document.getElementById("plain")!)).toBe(document.getElementById("plain-list"));
+  });
+
   it("finds no list for an anchorless step, whatever is expanded elsewhere on the page", () => {
     dropDown({ open: true });
     expect(openListOf(document.body)).toBeNull();
