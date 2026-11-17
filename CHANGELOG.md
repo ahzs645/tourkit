@@ -29,6 +29,12 @@
   and Escape stops the run from it.
 - A held arrow key moves one step, not one per repeat.
 - The spotlight and scrolling respect `prefers-reduced-motion`.
+- pdfmake is now 0.3.14. From 0.3.12 its browser build decodes a PNG with an
+  alpha channel in a Web Worker, so a PDF with a screenshot threw
+  `Worker is not defined` in Node and needed `worker-src blob:` under a strict
+  CSP. The PDF exports (tutorial and review feedback) now flatten 8-bit
+  translucent PNGs onto white before handing them over, which pdfmake embeds
+  without decoding. Opaque pixels are unchanged and other images pass through.
 
 ### Chrome recorder and captured-website Studio
 

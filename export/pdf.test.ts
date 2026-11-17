@@ -2,26 +2,27 @@ import { describe, expect, it, vi } from "vitest";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
-import { PDFArray, PDFDocument, PDFRawStream, decodePDFRawStream } from "@cantoo/pdf-lib";
+import { PDFArray, PDFDocument, PDFName, PDFRawStream, decodePDFRawStream } from "@cantoo/pdf-lib";
 import type { Node } from "pdfmake/interfaces";
-import { deflateSync } from "node:zlib";
+import { deflateSync, inflateSync } from "node:zlib";
 import type { TutorialDocument } from "./document";
 import { tutorialPdf, tutorialPdfDefinition } from "./pdf";
 import { TutorialExportOptionsSchema } from "./options";
 
+function chunk(type: string, bytes: Buffer) {
+  const payload = Buffer.concat([Buffer.from(type), bytes]);
+  let crc = 0xffffffff;
+  for (const byte of payload) {
+    crc ^= byte;
+    for (let i = 0; i < 8; i++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+  }
+  const header = Buffer.alloc(4); header.writeUInt32BE(bytes.length);
+  const footer = Buffer.alloc(4); footer.writeUInt32BE((crc ^ 0xffffffff) >>> 0);
+  return Buffer.concat([header, payload, footer]);
+}
+
 // A real, compressible 800 x 600 PNG exercises image placement without a large fixture.
 function screenshot() {
-  const chunk = (type: string, bytes: Buffer) => {
-    const payload = Buffer.concat([Buffer.from(type), bytes]);
-    let crc = 0xffffffff;
-    for (const byte of payload) {
-      crc ^= byte;
-      for (let i = 0; i < 8; i++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
-    }
-    const header = Buffer.alloc(4); header.writeUInt32BE(bytes.length);
-    const footer = Buffer.alloc(4); footer.writeUInt32BE((crc ^ 0xffffffff) >>> 0);
-    return Buffer.concat([header, payload, footer]);
-  };
   const header = Buffer.alloc(13);
   header.writeUInt32BE(800, 0); header.writeUInt32BE(600, 4); header[8] = 8; header[9] = 2;
   const rows = Buffer.alloc(600 * (800 * 3 + 1), 255);
@@ -110,6 +111,30 @@ describe("tutorial PDF layout", () => {
     const presentation = await PDFDocument.load(await (await tutorialPdf(doc)).arrayBuffer());
     expect(presentation.getPageCount()).toBe(4);
     expect(presentation.getPage(0).getWidth()).toBeGreaterThan(presentation.getPage(0).getHeight());
+  });
+
+  it("embeds translucent screenshots and logos without pdfmake's Web Worker, flattened onto the white page", async () => {
+    // pdfmake's browser build decodes PNGs with alpha in a Worker, which Node does not have.
+    expect(typeof Worker).toBe("undefined");
+    const header = Buffer.alloc(13);
+    header.writeUInt32BE(2, 0); header.writeUInt32BE(1, 4); header[8] = 8; header[9] = 6;
+    const png = Buffer.concat([Buffer.from("89504e470d0a1a0a", "hex"), chunk("IHDR", header),
+      chunk("IDAT", deflateSync(Buffer.from([0, 10, 20, 30, 255, 0, 0, 0, 128]))), chunk("IEND", Buffer.alloc(0))]);
+    const image = { dataUrl: `data:image/png;base64,${png.toString("base64")}`, width: 2, height: 1, alt: "Translucent screenshot" };
+    const doc = guide();
+    doc.branding = TutorialExportOptionsSchema.parse({ branding: { logo: image } }).branding;
+    doc.chapters = [{ title: "Translucent", steps: [{ number: 1, title: "Look", instruction: "Look at the screen.", screenshot: image }] }];
+    const pdf = await PDFDocument.load(await (await tutorialPdf(doc)).arrayBuffer());
+    const images = pdf.context.enumerateIndirectObjects().map(([, object]) => object)
+      .filter((object): object is PDFRawStream => object instanceof PDFRawStream && object.dict.get(PDFName.of("Subtype")) === PDFName.of("Image"));
+    expect(images.length).toBeGreaterThan(0);
+    for (const embedded of images) {
+      expect(embedded.dict.get(PDFName.of("SMask"))).toBeUndefined();
+      expect(embedded.dict.get(PDFName.of("ColorSpace"))).toBe(PDFName.of("DeviceRGB"));
+      // One unfiltered row: the opaque pixel as it was, the half-transparent black one on white.
+      expect([...inflateSync(embedded.contents)]).toEqual([0, 10, 20, 30, 127, 127, 127]);
+    }
+    expect(doc.chapters[0].steps[0].screenshot!.dataUrl).toBe(image.dataUrl);
   });
 
   it("preserves a step longer than a page rather than making its stack unbreakable", async () => {

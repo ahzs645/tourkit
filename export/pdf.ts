@@ -1,5 +1,6 @@
 import type { Content, TDocumentDefinitions } from "pdfmake/interfaces";
 import { fitScreenshot } from "../core/screenshot";
+import { pdfReadyImage } from "../shared/pdf-image";
 import { documentStepTitle, stepParagraphs, type TutorialDocument } from "./document";
 import { TutorialBrandingSchema } from "./options";
 import type { TutorialExportRuntime, TutorialExportMetadata, TutorialPdfFontUrls } from "./runtime";
@@ -89,10 +90,11 @@ export function tutorialPdfDefinition(doc: TutorialDocument, imageHeights?: Read
   };
 }
 
-export async function tutorialPdf(doc: TutorialDocument, runtime: Pick<TutorialExportRuntime, "pdfFonts" | "metadata"> = {}): Promise<Blob> {
-  if (doc.pdfFont === "LiberationSans" && !runtime.pdfFonts?.LiberationSans) {
+export async function tutorialPdf(source: TutorialDocument, runtime: Pick<TutorialExportRuntime, "pdfFonts" | "metadata"> = {}): Promise<Blob> {
+  if (source.pdfFont === "LiberationSans" && !runtime.pdfFonts?.LiberationSans) {
     throw new Error("Liberation Sans is not configured for this application. Choose Roboto or provide all four font assets.");
   }
+  const doc = await withPdfReadyImages(source);
   const [{ default: pdfMake }, { default: fonts }] = await Promise.all([
     import("pdfmake/build/pdfmake"), import("pdfmake/build/vfs_fonts"),
   ]);
@@ -157,6 +159,21 @@ export async function tutorialPdf(doc: TutorialDocument, runtime: Pick<TutorialE
     }),
   ]).finally(() => clearTimeout(timeout));
   return new Blob([new Uint8Array(buffer)], { type: "application/pdf" });
+}
+
+/** pdfmake would decode translucent PNGs in a Web Worker; hand it images it embeds as they are. */
+async function withPdfReadyImages(doc: TutorialDocument): Promise<TutorialDocument> {
+  const logo = doc.branding?.logo;
+  return {
+    ...doc,
+    ...(doc.branding && logo ? { branding: { ...doc.branding, logo: { ...logo, dataUrl: await pdfReadyImage(logo.dataUrl) } } } : {}),
+    chapters: await Promise.all(doc.chapters.map(async (chapter) => ({
+      ...chapter,
+      steps: await Promise.all(chapter.steps.map(async (step) => step.screenshot
+        ? { ...step, screenshot: { ...step.screenshot, dataUrl: await pdfReadyImage(step.screenshot.dataUrl) } }
+        : step)),
+    }))),
+  };
 }
 
 const sansFonts = new Map<string, Promise<Record<string, string>>>();
