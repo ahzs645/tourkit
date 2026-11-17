@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, onTestFinished, vi } from "vitest";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
@@ -114,8 +114,9 @@ describe("tutorial PDF layout", () => {
   });
 
   it("embeds translucent screenshots and logos without pdfmake's Web Worker, flattened onto the white page", async () => {
-    // pdfmake's browser build decodes PNGs with alpha in a Worker, which Node does not have.
-    expect(typeof Worker).toBe("undefined");
+    // pdfmake's browser build decodes PNGs with alpha in a Worker; fail if it starts one.
+    vi.stubGlobal("Worker", class { constructor() { throw new Error("pdfmake started a Web Worker"); } });
+    onTestFinished(() => { vi.unstubAllGlobals(); });
     const header = Buffer.alloc(13);
     header.writeUInt32BE(2, 0); header.writeUInt32BE(1, 4); header[8] = 8; header[9] = 6;
     const png = Buffer.concat([Buffer.from("89504e470d0a1a0a", "hex"), chunk("IHDR", header),
