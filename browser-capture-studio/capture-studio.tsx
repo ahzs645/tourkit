@@ -65,7 +65,8 @@ export function CaptureStudio({ initialCapture, onCaptureChange, exportInteracti
   const selectedIndex = Math.max(0, capture?.steps.findIndex((step) => step.id === selectedId) ?? 0);
   const selected = capture?.steps[selectedIndex];
   const captureRef = useRef(capture);
-  captureRef.current = capture;
+  // Event handlers read the latest capture; it is stored after each render, not during it.
+  useEffect(() => { captureRef.current = capture; });
   const change = (next: BrowserCapturePackage) => { setCapture(next); onCaptureChange?.(next); };
   const replace = (next: BrowserCapturePackage) => { change(next); setSelectedId(next.steps[0]?.id ?? ""); setMode("edit"); setView("interface"); setVariables({}); setRecovery(null); setMessage(`Opened ${next.steps.length} captured steps.`); setError(""); };
   useEffect(() => { if (initialCapture) replace(parseBrowserCapture(initialCapture)); }, [initialCapture]);
