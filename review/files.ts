@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import { pdfReadyImage } from "../shared/pdf-image";
 
 import { REVIEW_HTML_DATA_IDS, extractReviewBundleFromHtml, reviewFeedbackHtml } from "./html";
 import {
@@ -279,12 +280,15 @@ export async function reviewFeedbackPdf(bundle: ReviewFeedbackBundle): Promise<B
       { image: marked, width: snapshot.width * scale, height: snapshot.height * scale },
     );
   }
+  // pdfmake would decode a translucent PNG in a Web Worker; hand it one it embeds as it is.
+  const attachmentImages = new Map(await Promise.all(items.map(async (item) =>
+    [item.id, await Promise.all(item.attachments.map((attachment) => pdfReadyImage(attachment.image)))] as const)));
   const list = items.map((item) => ({
     stack: [
       { text: [{ text: `${numbers.get(item.id)}  `, bold: true, color: item.color }, { text: item.anchor.fieldLabel || item.page, bold: true }, { text: `   ${item.kind} · ${item.status}`, color: "#64748b" }] },
       { text: `${item.page} · ${personLabel(item.author)} · ${new Date(item.createdAt).toLocaleString()}`, color: "#64748b", fontSize: 9 },
       ...(item.text ? [{ text: item.text, margin: [0, 3, 0, 0] }] : []),
-      ...item.attachments.map((attachment) => ({ image: attachment.image, fit: [contentWidth, 260], margin: [0, 4, 0, 0] })),
+      ...attachmentImages.get(item.id)!.map((image) => ({ image, fit: [contentWidth, 260], margin: [0, 4, 0, 0] })),
       ...item.replies.map((reply) => ({ text: [{ text: `${personLabel(reply.author)} (round ${reply.round}): `, bold: true }, reply.text], margin: [12, 3, 0, 0], fontSize: 10 })),
     ],
     margin: [0, 0, 0, 10],
