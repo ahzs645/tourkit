@@ -1420,7 +1420,8 @@ function TutorialPlayerRun({
   }, [currentStep?.anchor?.id, domPolicyRef, errorKind, setStatus, status]);
 
   const onErrorRef = useRef(onError);
-  onErrorRef.current = onError;
+  // Stored after each render, not during it. Effects run in order, so the error effect below sees the latest handler.
+  useEffect(() => { onErrorRef.current = onError; });
   const errorCardRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (status !== "error" || !error || !currentStep) return;
